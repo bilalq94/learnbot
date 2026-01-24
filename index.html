@@ -4,341 +4,58 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LearnBot - Gamified Study Timer</title>
-  <meta name="description" content="Turn study time into XP. Track progress across all your courses. $5 one-time, no subscription.">
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
 </head>
 <body>
   <div id="root"></div>
-
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
   <script type="text/babel">
-    const { useState, useEffect, useRef } = React;
+const { useState, useEffect, useRef } = React;
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyC7kmCsM5NXtPvfTzU8rWTXUM79AvdoWwM",
-      authDomain: "learnbot-93edf.firebaseapp.com",
-      projectId: "learnbot-93edf",
-      storageBucket: "learnbot-93edf.firebasestorage.app",
-      messagingSenderId: "454467617675",
-      appId: "1:454467617675:web:4fdb61926d487383afe58e"
-    };
+const firebaseConfig = {
+  apiKey: "AIzaSyC7kmCsM5NXtPvfTzU8rWTXUM79AvdoWwM",
+  authDomain: "learnbot-93edf.firebaseapp.com",
+  projectId: "learnbot-93edf",
+  storageBucket: "learnbot-93edf.firebasestorage.app",
+  messagingSenderId: "454467617675",
+  appId: "1:454467617675:web:4fdb61926d487383afe58e"
+};
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const auth = firebase.auth();
+const db = firebase.firestore();
+const TRIAL_DAYS = 14;
 
-    const TRIAL_DAYS = 14;
-
-    const Icon = ({ name, className = "w-6 h-6" }) => {
-      const paths = {
-        play: "M5 3l14 9-14 9V3z",
-        pause: "M6 4h4v16H6V4zm8 0h4v16h-4V4z",
-        square: "M6 6h12v12H6z",
-        trophy: "M7 8h10M7 12h10M9 16h6",
-        zap: "M13 2L3 14h8l-1 8 10-12h-8l1-8z",
-        target: "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z",
-        book: "M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z",
-        plus: "M12 5v14m-7-7h14",
-        x: "M18 6L6 18M6 6l12 12",
-        logout: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m7 14l5-5-5-5m5 5H9",
-        crown: "M2 4l3 12h14l3-12-6 5-4-7-4 7-6-5z",
-        calendar: "M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"
-      };
-      return (
-        <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-          <path d={paths[name]} />
-        </svg>
-      );
-    };
-
-    function LearnBot() {
-      const [view, setView] = useState('landing');
-      const [isLogin, setIsLogin] = useState(false);
-      const [user, setUser] = useState(null);
-      const [name, setName] = useState('');
-      const [email, setEmail] = useState('');
-      const [pass, setPass] = useState('');
-      const [isPro, setIsPro] = useState(false);
-      const [loading, setLoading] = useState(true);
-      const [error, setError] = useState('');
-      
-      const [time, setTime] = useState(1500);
-      const [running, setRunning] = useState(false);
-      const [duration, setDuration] = useState(25);
-      const [selectedCourse, setSelectedCourse] = useState('');
-      
-      const [sessions, setSessions] = useState([]);
-      const [courses, setCourses] = useState([]);
-      const [xp, setXp] = useState(0);
-      const [showDone, setShowDone] = useState(false);
-      const [earnedXp, setEarnedXp] = useState(0);
-      const [tab, setTab] = useState('timer');
-      const [newCourse, setNewCourse] = useState('');
-      const [showPaywall, setShowPaywall] = useState(false);
-      const [deadlines, setDeadlines] = useState([]);
-      const [showAddDeadline, setShowAddDeadline] = useState(false);
-      const [newDeadline, setNewDeadline] = useState({ course: '', title: '', date: '', type: 'assignment' });
-      
-      const timer = useRef(null);
-      const level = Math.floor(xp / 100) + 1;
-      const levelXp = xp % 100;
-
-      useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-          if (firebaseUser) {
-            await loadUserData(firebaseUser);
-            setView('app');
-          }
-          setLoading(false);
-        });
-        return unsubscribe;
-      }, []);
-
-      async function loadUserData(firebaseUser) {
-        try {
-          const userDoc = await db.collection('users').doc(firebaseUser.uid).get();
-          if (userDoc.exists) {
-            const data = userDoc.data();
-            setUser({ uid: firebaseUser.uid, email: firebaseUser.email, ...data });
-            setName(data.name || '');
-            setEmail(firebaseUser.email);
-            setIsPro(data.isPro || false);
-            setCourses(data.courses || []);
-            setSessions(data.sessions || []);
-            setDeadlines(data.deadlines || []);
-            setXp(data.xp || 0);
-          }
-        } catch (err) {
-          console.error('Error loading user data:', err);
-        }
-      }
-
-      async function saveUserData() {
-        if (!user) return;
-        try {
-          await db.collection('users').doc(user.uid).set({
-            name,
-            email: user.email,
-            isPro,
-            courses,
-            sessions,
-            deadlines,
-            xp,
-            trialStartDate: user.trialStartDate || new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }, { merge: true });
-        } catch (err) {
-          console.error('Error saving:', err);
-        }
-      }
-
-      useEffect(() => {
-        if (user) {
-          saveUserData();
-        }
-      }, [courses, sessions, deadlines, xp, isPro]);
-
-      async function signup() {
-        if (!name || !email || !pass) return;
-        setError('');
-        setLoading(true);
-        try {
-          const result = await auth.createUserWithEmailAndPassword(email, pass);
-          await db.collection('users').doc(result.user.uid).set({
-            name,
-            email,
-            isPro: false,
-            trialStartDate: new Date().toISOString(),
-            createdAt: new Date().toISOString(),
-            courses: [],
-            sessions: [],
-            deadlines: [],
-            xp: 0
-          });
-          setUser({ uid: result.user.uid, email, name, trialStartDate: new Date().toISOString() });
-          setView('app');
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      }
-
-      async function login() {
-        if (!email || !pass) return;
-        setError('');
-        setLoading(true);
-        try {
-          const result = await auth.signInWithEmailAndPassword(email, pass);
-          await loadUserData(result.user);
-          setView('app');
-        } catch (err) {
-          setError(err.code === 'auth/user-not-found' ? 'No account found' : err.message);
-        } finally {
-          setLoading(false);
-        }
-      }
-
-      async function signInWithGoogle() {
-        setError('');
-        setLoading(true);
-        try {
-          const provider = new firebase.auth.GoogleAuthProvider();
-          const result = await auth.signInWithPopup(provider);
-          
-          const userDoc = await db.collection('users').doc(result.user.uid).get();
-          if (!userDoc.exists) {
-            await db.collection('users').doc(result.user.uid).set({
-              name: result.user.displayName || '',
-              email: result.user.email,
-              isPro: false,
-              trialStartDate: new Date().toISOString(),
-              createdAt: new Date().toISOString(),
-              courses: [],
-              sessions: [],
-              deadlines: [],
-              xp: 0
-            });
-          }
-          
-          await loadUserData(result.user);
-          setView('app');
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      }
-
-      async function logout() {
-        await auth.signOut();
-        setUser(null);
-        setName('');
-        setEmail('');
-        setSessions([]);
-        setCourses([]);
-        setDeadlines([]);
-        setXp(0);
-        setView('landing');
-      }
-
-      function isTrialActive() {
-        if (!user || !user.trialStartDate) return true;
-        const trialStart = new Date(user.trialStartDate);
-        const daysSince = (Date.now() - trialStart.getTime()) / (1000 * 60 * 60 * 24);
-        return daysSince < TRIAL_DAYS;
-      }
-
-      const hasAccess = isPro || isTrialActive();
-
-      useEffect(() => {
-        if (running && time > 0) {
-          timer.current = setInterval(() => {
-            setTime(t => {
-              if (t <= 1) {
-                finish();
-                return 0;
-              }
-              return t - 1;
-            });
-          }, 1000);
-        } else {
-          clearInterval(timer.current);
-        }
-        return () => clearInterval(timer.current);
-      }, [running, time]);
-
-      function finish() {
-        setRunning(false);
-        const pts = 10 + duration;
-        const s = { course: selectedCourse, duration, xp: pts, time: Date.now() };
-        setSessions(prev => [...prev, s]);
-        setXp(prev => prev + pts);
-        setEarnedXp(pts);
-        setShowDone(true);
-        setTimeout(() => {
-          setShowDone(false);
-          setTime(duration * 60);
-          setSelectedCourse('');
-        }, 3000);
-      }
-
-      function addCourse() {
-        if (!hasAccess && courses.length >= 2) {
-          setShowPaywall(true);
-          return;
-        }
-        if (newCourse.trim()) {
-          setCourses(prev => [...prev, { id: Date.now(), name: newCourse.trim() }]);
-          setNewCourse('');
-        }
-      }
-
-      function upgrade() {
-        setIsPro(true);
-        setShowPaywall(false);
-      }
-
-      function addDeadline() {
-        if (newDeadline.course && newDeadline.title && newDeadline.date) {
-          setDeadlines(prev => [...prev, { ...newDeadline, id: Date.now() }]);
-          setNewDeadline({ course: '', title: '', date: '', type: 'assignment' });
-          setShowAddDeadline(false);
-        }
-      }
-
-      function fmt(s) {
-        const m = Math.floor(s / 60);
-        const sec = s % 60;
-        return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
-      }
-
-      const prog = ((duration * 60 - time) / (duration * 60)) * 100;
-
-      if (loading) {
-        return (
-          <div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
-            <div className="text-white text-2xl">Loading LearnBot...</div>
-          </div>
-        );
-      }
-
-      if (view === 'landing') {
-        return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4 flex items-center justify-center' },
-          React.createElement('div', { className: 'max-w-4xl w-full' },
-            React.createElement('div', { className: 'text-center mb-12' },
-              React.createElement('div', { className: 'text-7xl mb-6' }, '🤖'),
-              React.createElement('h1', { className: 'text-6xl font-bold text-white mb-4' }, 'LearnBot'),
-              React.createElement('p', { className: 'text-3xl font-bold text-white mb-3' }, 'Stop feeling guilty.'),
-              React.createElement('p', { className: 'text-3xl font-bold text-white mb-6' }, 'Start earning XP.'),
-              React.createElement('p', { className: 'text-xl text-white opacity-90 max-w-2xl mx-auto' },
-                'Turn every study session into progress you can see.',
-                React.createElement('br'),
-                'No subscriptions. No BS. Just $5, once.'
-              )
-            )
-          )
-        );
-      }
-
-      return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4' },
-        React.createElement('div', { className: 'text-white text-center py-20' },
-          React.createElement('h1', { className: 'text-4xl font-bold mb-4' }, 'LearnBot is Loading...'),
-          React.createElement('p', null, 'Full app coming soon!')
-        )
-      );
-    }
-
-    ReactDOM.render(React.createElement(LearnBot), document.getElementById('root'));
+const Icon = ({ name, className = "w-6 h-6" }) => {
+  const paths = {
+    play: "M5 3l14 9-14 9V3z",
+    pause: "M6 4h4v16H6V4zm8 0h4v16h-4V4z",
+    square: "M6 6h12v12H6z",
+    trophy: "M7 8h10M7 12h10M9 16h6",
+    zap: "M13 2L3 14h8l-1 8 10-12h-8l1-8z",
+    target: "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z",
+    book: "M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z",
+    plus: "M12 5v14m-7-7h14",
+    x: "M18 6L6 18M6 6l12 12",
+    logout: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m7 14l5-5-5-5m5 5H9",
+    crown: "M2 4l3 12h14l3-12-6 5-4-7-4 7-6-5z",
+    calendar: "M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"
+  };
+  return (
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+      <path d={paths[name]} />
+    </svg>
+  );
+};
+function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('timer');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const timer=useRef(null);const level=Math.floor(xp/100)+1;const levelXp=xp%100;useEffect(()=>{const unsubscribe=auth.onAuthStateChanged(async(firebaseUser)=>{if(firebaseUser){await loadUserData(firebaseUser);setView('app')}setLoading(false)});return unsubscribe},[]);async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0)}}catch(err){console.error('Error loading user data:',err)}}async function saveUserData(){if(!user)return;try{await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro]);async function signup(){if(!name||!email||!pass)return;setError('');setLoading(true);try{const result=await auth.createUserWithEmailAndPassword(email,pass);await db.collection('users').doc(result.user.uid).set({name,email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0});setUser({uid:result.user.uid,email,name,trialStartDate:new Date().toISOString()});setView('app')}catch(err){setError(err.message)}finally{setLoading(false)}}async function login(){if(!email||!pass)return;setError('');setLoading(true);try{const result=await auth.signInWithEmailAndPassword(email,pass);await loadUserData(result.user);setView('app')}catch(err){setError(err.code==='auth/user-not-found'?'No account found':err.message)}finally{setLoading(false)}}async function signInWithGoogle(){setError('');setLoading(true);try{const provider=new firebase.auth.GoogleAuthProvider();const result=await auth.signInWithPopup(provider);const userDoc=await db.collection('users').doc(result.user.uid).get();if(!userDoc.exists){await db.collection('users').doc(result.user.uid).set({name:result.user.displayName||'',email:result.user.email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0})}await loadUserData(result.user);setView('app')}catch(err){setError(err.message)}finally{setLoading(false)}}async function logout(){await auth.signOut();setUser(null);setName('');setEmail('');setSessions([]);setCourses([]);setDeadlines([]);setXp(0);setView('landing')}function isTrialActive(){if(!user||!user.trialStartDate)return true;const trialStart=new Date(user.trialStartDate);const daysSince=(Date.now()-trialStart.getTime())/(1000*60*60*24);return daysSince<TRIAL_DAYS}const hasAccess=isPro||isTrialActive();useEffect(()=>{if(running&&time>0){timer.current=setInterval(()=>{setTime(t=>{if(t<=1){finish();return 0}return t-1})},1000)}else{clearInterval(timer.current)}return()=>clearInterval(timer.current)},[running,time]);function finish(){setRunning(false);const pts=10+duration;const s={course:selectedCourse,duration,xp:pts,time:Date.now()};setSessions(prev=>[...prev,s]);setXp(prev=>prev+pts);setEarnedXp(pts);setShowDone(true);setTimeout(()=>{setShowDone(false);setTime(duration*60);setSelectedCourse('')},3000)}function addCourse(){if(!hasAccess&&courses.length>=2){setShowPaywall(true);return}if(newCourse.trim()){setCourses(prev=>[...prev,{id:Date.now(),name:newCourse.trim()}]);setNewCourse('')}}function upgrade(){setIsPro(true);setShowPaywall(false)}function addDeadline(){if(newDeadline.course&&newDeadline.title&&newDeadline.date){setDeadlines(prev=>[...prev,{...newDeadline,id:Date.now()}]);setNewDeadline({course:'',title:'',date:'',type:'assignment'});setShowAddDeadline(false)}}function fmt(s){const m=Math.floor(s/60);const sec=s%60;return`${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`}const prog=((duration*60-time)/(duration*60))*100;if(loading){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center"><div className="text-white text-2xl">Loading LearnBot...</div></div>)}if(view==='landing'){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4 flex items-center justify-center"><div className="max-w-4xl w-full"><div className="text-center mb-12"><div className="text-7xl mb-6">🤖</div><h1 className="text-6xl font-bold text-white mb-4">LearnBot</h1><p className="text-3xl font-bold text-white mb-3">Stop feeling guilty.</p><p className="text-3xl font-bold text-white mb-6">Start earning XP.</p><p className="text-xl text-white opacity-90 max-w-2xl mx-auto">Turn every study session into progress you can see.<br/>No subscriptions. No BS. Just $5, once.</p></div><div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-8 mb-8"><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6"><h3 className="text-white font-bold text-2xl mb-4 text-center">{isLogin?'Welcome Back!':'Start Free. Upgrade When Ready.'}</h3>{!isLogin&&<input type="text" placeholder="Your name" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 mb-3 text-lg"/>}<input type="email" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 mb-3 text-lg"/><input type="password" placeholder="Password" value={pass} onChange={e=>setPass(e.target.value)} onKeyPress={e=>e.key==='Enter'&&(isLogin?login():signup())} className="w-full bg-white rounded-lg px-4 py-3 mb-4 text-lg"/>{error&&<p className="text-red-200 text-sm mb-3 bg-red-500 bg-opacity-30 p-2 rounded">{error}</p>}<button onClick={isLogin?login:signup} disabled={(isLogin?(!email||!pass):(!name||!email||!pass))||loading} className="w-full bg-gradient-to-r from-teal-400 to-cyan-400 text-white py-4 rounded-lg font-bold text-xl hover:scale-105 transition-transform disabled:opacity-50 shadow-lg">{loading?(isLogin?'Logging in...':'Creating Account...'):(isLogin?'Log In →':'Start Earning XP Free →')}</button><button onClick={()=>{setIsLogin(!isLogin);setError('')}} className="w-full text-white text-sm mt-3 hover:underline">{isLogin?"Don't have an account? Sign up":'Already have an account? Log in'}</button></div></div></div></div>)}return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4"><div className="text-white text-center py-20"><h1 className="text-4xl font-bold">App loading - Full version coming after you deploy!</h1></div></div>)}
+ReactDOM.render(<LearnBot />, document.getElementById('root'));
   </script>
 </body>
 </html>
