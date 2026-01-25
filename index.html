@@ -46,7 +46,8 @@ const Icon = ({ name, className = "w-6 h-6" }) => {
     x: "M18 6L6 18M6 6l12 12",
     logout: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m7 14l5-5-5-5m5 5H9",
     crown: "M2 4l3 12h14l3-12-6 5-4-7-4 7-6-5z",
-    calendar: "M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"
+    calendar: "M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
+    flame: "M12 2c1 3-1 5-2 6S8 10 8 12c0 2.5 2 4 4 4s4-1.5 4-4c0-2-1-2-2-4s-3-3-2-6z"
   };
   return (
     <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -55,8 +56,7 @@ const Icon = ({ name, className = "w-6 h-6" }) => {
   );
 };
 
-// Completion Alert Component
-function CompletionAlert({ earnedXp, onClose, course, duration, level, totalXp }) {
+function CompletionAlert({ earnedXp, onClose, course, duration, level, totalXp, streak, isNewStreak, isMilestone }) {
   const [displayXp, setDisplayXp] = useState(0);
   const [show, setShow] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -65,7 +65,6 @@ function CompletionAlert({ earnedXp, onClose, course, duration, level, totalXp }
     setShow(true);
     playCompletionSound();
     
-    // Animate XP counter
     const dur = 1000;
     const steps = 30;
     const increment = earnedXp / steps;
@@ -124,6 +123,7 @@ function CompletionAlert({ earnedXp, onClose, course, duration, level, totalXp }
 ⏱️  ${duration} minutes studying ${course}
 🏆 Level ${level} (${totalXp} XP)
 ⚡ +${earnedXp} XP earned
+${streak > 0 ? `🔥 ${streak} day streak!` : ''}
 
 Join me: learnbot.us`;
 
@@ -132,7 +132,6 @@ Join me: learnbot.us`;
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      // Fallback for older browsers
       const textArea = document.createElement('textarea');
       textArea.value = shareText;
       document.body.appendChild(textArea);
@@ -144,7 +143,6 @@ Join me: learnbot.us`;
     }
   };
 
-  // Generate electric particles
   const particles = [];
   const shapes = ['square', 'triangle'];
   
@@ -288,7 +286,6 @@ Join me: learnbot.us`;
       </div>
 
       <div className="alert-card bg-gradient-to-br from-cyan-600 to-teal-700 rounded-3xl p-10 text-center max-w-md w-full mx-4 relative overflow-hidden border-2 border-cyan-400 glow-box">
-        {/* Close button */}
         <button 
           onClick={handleClose}
           className="absolute top-4 right-4 text-white hover:text-cyan-200 transition-colors z-20"
@@ -333,7 +330,7 @@ Join me: learnbot.us`;
             </div>
           </div>
 
-          <div className="flex justify-center gap-3 mb-4">
+          <div className="flex justify-center gap-3 mb-4 flex-wrap">
             <div className="flex items-center gap-2 bg-white bg-opacity-20 px-4 py-2 rounded-full border border-cyan-400">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"/>
               <span className="text-white text-sm font-semibold">Data Synced</span>
@@ -342,7 +339,26 @@ Join me: learnbot.us`;
               <Icon name="zap" className="w-4 h-4 text-yellow-300"/>
               <span className="text-white text-sm font-semibold">Level Up</span>
             </div>
+            {streak > 0 && (
+              <div className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 px-4 py-2 rounded-full border-2 border-orange-300">
+                <span className="text-2xl">🔥</span>
+                <span className="text-white text-sm font-bold">{streak} Day{streak !== 1 ? 's' : ''}!</span>
+              </div>
+            )}
           </div>
+
+          {isMilestone && (
+            <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl p-4 mb-4 border-2 border-yellow-300">
+              <div className="text-2xl mb-2">🎉</div>
+              <div className="text-white font-bold text-lg">
+                {streak === 7 && "Week Warrior Badge Unlocked!"}
+                {streak === 30 && "Month Master Badge Unlocked!"}
+                {streak === 100 && "Centurion Badge Unlocked!"}
+                {streak === 365 && "Year Legend Badge Unlocked! 👑"}
+              </div>
+              <div className="text-white text-sm mt-1">+50 Bonus XP!</div>
+            </div>
+          )}
 
           <button 
             onClick={shareProgress}
@@ -356,7 +372,416 @@ Join me: learnbot.us`;
   );
 }
 
-function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('timer');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const timer=useRef(null);const level=Math.floor(xp/100)+1;const levelXp=xp%100;useEffect(()=>{const unsubscribe=auth.onAuthStateChanged(async(firebaseUser)=>{if(firebaseUser){await loadUserData(firebaseUser);setView('app')}setLoading(false)});return unsubscribe},[]);async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0)}}catch(err){console.error('Error loading user data:',err)}}async function saveUserData(){if(!user)return;try{await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro]);async function signup(){if(!name||!email||!pass)return;setError('');setLoading(true);try{const result=await auth.createUserWithEmailAndPassword(email,pass);await db.collection('users').doc(result.user.uid).set({name,email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0});setUser({uid:result.user.uid,email,name,trialStartDate:new Date().toISOString()});setView('app')}catch(err){setError(err.message)}finally{setLoading(false)}}async function login(){if(!email||!pass)return;setError('');setLoading(true);try{const result=await auth.signInWithEmailAndPassword(email,pass);await loadUserData(result.user);setView('app')}catch(err){setError(err.code==='auth/user-not-found'?'No account found':err.message)}finally{setLoading(false)}}async function signInWithGoogle(){setError('');setLoading(true);try{const provider=new firebase.auth.GoogleAuthProvider();const result=await auth.signInWithPopup(provider);const userDoc=await db.collection('users').doc(result.user.uid).get();if(!userDoc.exists){await db.collection('users').doc(result.user.uid).set({name:result.user.displayName||'',email:result.user.email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0})}await loadUserData(result.user);setView('app')}catch(err){setError(err.message)}finally{setLoading(false)}}async function logout(){await auth.signOut();setUser(null);setName('');setEmail('');setSessions([]);setCourses([]);setDeadlines([]);setXp(0);setView('landing')}function isTrialActive(){if(!user||!user.trialStartDate)return true;const trialStart=new Date(user.trialStartDate);const daysSince=(Date.now()-trialStart.getTime())/(1000*60*60*24);return daysSince<TRIAL_DAYS}const hasAccess=isPro||isTrialActive();useEffect(()=>{if(running&&time>0){timer.current=setInterval(()=>{setTime(t=>{if(t<=1){finish();return 0}return t-1})},1000)}else{clearInterval(timer.current)}return()=>clearInterval(timer.current)},[running,time]);function finish(){setRunning(false);const pts=10+duration;const s={course:selectedCourse,duration,xp:pts,time:Date.now()};setSessions(prev=>[...prev,s]);setXp(prev=>prev+pts);setEarnedXp(pts);setShowDone(true)}function addCourse(){if(!hasAccess&&courses.length>=2){setShowPaywall(true);return}if(newCourse.trim()){setCourses(prev=>[...prev,{id:Date.now(),name:newCourse.trim()}]);setNewCourse('')}}function upgrade(){setIsPro(true);setShowPaywall(false)}function addDeadline(){if(newDeadline.course&&newDeadline.title&&newDeadline.date){setDeadlines(prev=>[...prev,{...newDeadline,id:Date.now()}]);setNewDeadline({course:'',title:'',date:'',type:'assignment'});setShowAddDeadline(false)}}function fmt(s){const m=Math.floor(s/60);const sec=s%60;return`${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`}const prog=((duration*60-time)/(duration*60))*100;if(loading){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center"><div className="text-white text-2xl">Loading LearnBot...</div></div>)}if(view==='landing'){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4 flex items-center justify-center"><div className="max-w-4xl w-full"><div className="text-center mb-12"><div className="text-7xl mb-6">🤖</div><h1 className="text-6xl font-bold text-white mb-4">LearnBot</h1><p className="text-3xl font-bold text-white mb-3">Stop feeling guilty.</p><p className="text-3xl font-bold text-white mb-6">Start earning XP.</p><p className="text-xl text-white opacity-90 max-w-2xl mx-auto">Turn every study session into progress you can see.<br/>No subscriptions. No BS. Just $5, once.</p></div><div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-8 mb-8"><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6"><h3 className="text-white font-bold text-2xl mb-4 text-center">{isLogin?'Welcome Back!':'Start Free. Upgrade When Ready.'}</h3>{!isLogin&&<input type="text" placeholder="Your name" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 mb-3 text-lg"/>}<input type="email" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 mb-3 text-lg"/><input type="password" placeholder="Password" value={pass} onChange={e=>setPass(e.target.value)} onKeyPress={e=>e.key==='Enter'&&(isLogin?login():signup())} className="w-full bg-white rounded-lg px-4 py-3 mb-4 text-lg"/>{error&&<p className="text-red-200 text-sm mb-3 bg-red-500 bg-opacity-30 p-2 rounded">{error}</p>}<button onClick={isLogin?login:signup} disabled={(isLogin?(!email||!pass):(!name||!email||!pass))||loading} className="w-full bg-gradient-to-r from-teal-400 to-cyan-400 text-white py-4 rounded-lg font-bold text-xl hover:scale-105 transition-transform disabled:opacity-50 shadow-lg">{loading?(isLogin?'Logging in...':'Creating Account...'):(isLogin?'Log In →':'Start Earning XP Free →')}</button><button onClick={()=>{setIsLogin(!isLogin);setError('')}} className="w-full text-white text-sm mt-3 hover:underline">{isLogin?"Don't have an account? Sign up":'Already have an account? Log in'}</button></div></div></div></div>)}
+function StreakLostModal({ lostStreak, onClose }) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setShow(true);
+  }, []);
+
+  const handleClose = () => {
+    setShow(false);
+    setTimeout(onClose, 300);
+  };
+
+  return (
+    <div className={`fixed inset-0 flex items-center justify-center bg-black transition-opacity duration-300 z-50 ${show ? 'bg-opacity-70' : 'bg-opacity-0'}`}>
+      <div className="bg-gradient-to-br from-gray-700 to-gray-800 rounded-3xl p-10 text-center max-w-md w-full mx-4 relative overflow-hidden border-2 border-gray-500">
+        <div className="text-6xl mb-4">💔</div>
+        <h2 className="text-3xl font-bold text-white mb-3">Streak Lost</h2>
+        <p className="text-white text-lg mb-2">You lost your <span className="font-bold text-red-400">{lostStreak} day</span> streak</p>
+        <p className="text-white opacity-75 mb-6">Don't give up! Start fresh today 💪</p>
+        <button onClick={handleClose} className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 rounded-xl font-bold hover:scale-105 transition-all">
+          Start New Streak 🔥
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);
+
+// LEADERBOARD STATE
+const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);
+
+const timer=useRef(null);const level=Math.min(Math.floor(xp/100)+1,10);const levelXp=(xp%100);
+
+const USER_TYPES = [
+  { value: 'k12', label: 'K-12 Student', emoji: '🎓' },
+  { value: 'college', label: 'College/University Student', emoji: '🎓' },
+  { value: 'professional', label: 'Working Professional', emoji: '💼' },
+  { value: 'self_taught', label: 'Self-Taught Learner', emoji: '🚀' },
+  { value: 'hobbyist', label: 'Hobbyist', emoji: '🎨' },
+  { value: 'other', label: 'Other', emoji: '📚' }
+];
+
+function getUserTypeDisplay() {
+  const type = USER_TYPES.find(t => t.value === userType);
+  return type ? `${type.emoji} ${type.label}` : '';
+}
+
+// LEADERBOARD FUNCTIONS
+function getMonday(date = new Date()) {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  d.setDate(diff);
+  d.setHours(0, 0, 0, 0);
+  return d.toISOString().split('T')[0];
+}
+
+function calculateWeeklyMinutes() {
+  const monday = getMonday();
+  const weekSessions = sessions.filter(s => {
+    const sessionDate = new Date(s.time).toISOString().split('T')[0];
+    return sessionDate >= monday;
+  });
+  return weekSessions.reduce((sum, s) => sum + s.duration, 0);
+}
+
+function calculateTotalMinutes() {
+  return sessions.reduce((sum, s) => sum + s.duration, 0);
+}
+
+async function loadLeaderboard() {
+  setLoadingLeaderboard(true);
+  try {
+    const snapshot = await db.collection('users').get();
+    const users = [];
+    const monday = getMonday();
+    
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.username) {
+        const weekSessions = (data.sessions || []).filter(s => {
+          const sessionDate = new Date(s.time).toISOString().split('T')[0];
+          return sessionDate >= monday;
+        });
+        const weekMins = weekSessions.reduce((sum, s) => sum + s.duration, 0);
+        const totalMins = (data.sessions || []).reduce((sum, s) => sum + s.duration, 0);
+        
+        users.push({
+          id: doc.id,
+          username: data.username,
+          level: Math.min(Math.floor((data.xp || 0) / 100) + 1, 10),
+          tier: data.tier || 0,
+          weeklyMinutes: weekMins,
+          totalMinutes: totalMins,
+          weeklyTarget: (data.weeklyTarget || 10) * 60
+        });
+      }
+    });
+    
+    setLeaderboardData(users);
+  } catch (err) {
+    console.error('Error loading leaderboard:', err);
+  }
+  setLoadingLeaderboard(false);
+}
+
+function getLeaderboardRank() {
+  if (!username || leaderboardData.length === 0) return null;
+  
+  const sortedUsers = [...leaderboardData].sort((a, b) => {
+    if (leaderboardType === 'weekly') {
+      return b.weeklyMinutes - a.weeklyMinutes;
+    }
+    return b.totalMinutes - a.totalMinutes;
+  });
+  
+  const rank = sortedUsers.findIndex(u => u.username === username);
+  return rank >= 0 ? rank + 1 : null;
+}
+
+function getTimeUntilMonday() {
+  const now = new Date();
+  const nextMonday = new Date();
+  const daysUntilMonday = (8 - now.getDay()) % 7 || 7;
+  nextMonday.setDate(now.getDate() + daysUntilMonday);
+  nextMonday.setHours(0, 0, 0, 0);
+  
+  const diff = nextMonday - now;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  
+  return `${days}d ${hours}h`;
+}
+
+function getMedalEmoji(rank) {
+  if (rank === 1) return '🥇';
+  if (rank === 2) return '🥈';
+  if (rank === 3) return '🥉';
+  return '';
+}
+
+function shareRank() {
+  const rank = getLeaderboardRank();
+  const minutes = leaderboardType === 'weekly' ? weeklyMinutes : totalMinutes;
+  const tierBadge = getTierBadge(tier);
+  
+  const text = `🏆 I'm #${rank} on LearnBot ${leaderboardType === 'weekly' ? 'this week' : 'all-time'}!
+
+${minutes} study minutes 🔥
+Level ${level}${tierBadge ? ` • ${tierBadge}` : ''}
+
+Join the grind: learnbot.us${username ? `/ref/${username}` : ''}`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    setShareText('Copied to clipboard!');
+    setTimeout(() => setShareText(''), 2000);
+  }).catch(() => {
+    setShareText(text);
+    setShowShareModal(true);
+  });
+}
+
+async function submitUsername(u) {
+  try {
+    setUsername(u);
+    setShowUsernamePrompt(false);
+    
+    if (user && user.uid) {
+      await db.collection('users').doc(user.uid).set({
+        username: u
+      }, { merge: true });
+    }
+    
+    if (user && !user.onboardingCompleted) {
+      setShowOnboarding(true);
+    }
+  } catch (error) {
+    console.error('Error saving username:', error);
+    alert('Error saving username. Please try again.');
+    setShowUsernamePrompt(true);
+  }
+}
+
+function openEditProfile() {
+  setEditingUserType(userType);
+  setEditingGoal(goal);
+  setEditingWeeklyTarget(weeklyTarget);
+  setShowEditProfile(true);
+  setShowMenu(false);
+}
+
+function saveProfileUpdates() {
+  setUserType(editingUserType);
+  setGoal(editingGoal);
+  setWeeklyTarget(editingWeeklyTarget);
+  setShowEditProfile(false);
+}
+
+function getDaysDifference(date1, date2) {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+  const diffTime = Math.abs(d2 - d1);
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+function updateStreak() {
+  const today = new Date().toISOString().split('T')[0];
+  
+  if (!lastStudyDate) {
+    setStreak(1);
+    setLastStudyDate(today);
+    setLongestStreak(Math.max(1, longestStreak));
+    return { isNewStreak: true, isMilestone: false };
+  }
+  
+  if (lastStudyDate === today) {
+    return { isNewStreak: false, isMilestone: false };
+  }
+  
+  const daysDiff = getDaysDifference(lastStudyDate, today);
+  
+  if (daysDiff === 1) {
+    const newStreak = streak + 1;
+    setStreak(newStreak);
+    setLastStudyDate(today);
+    setLongestStreak(Math.max(newStreak, longestStreak));
+    
+    const isMilestone = [7, 30, 100, 365].includes(newStreak);
+    if (isMilestone) {
+      setXp(prev => prev + 50);
+    }
+    
+    return { isNewStreak: true, isMilestone };
+  } else {
+    if (streak >= 7) {
+      setLostStreakCount(streak);
+      setTimeout(() => setShowStreakLost(true), 4000);
+    }
+    setStreak(1);
+    setLastStudyDate(today);
+    return { isNewStreak: true, isMilestone: false };
+  }
+}
+
+function getStreakMessage() {
+  if (streak === 0) return "Start your streak today!";
+  if (streak === 1) return "Keep it going tomorrow!";
+  if (streak < 7) return `${7 - streak} days to Week Warrior!`;
+  if (streak < 30) return `${30 - streak} days to Month Master!`;
+  if (streak < 100) return `${100 - streak} days to Centurion!`;
+  if (streak < 365) return `${365 - streak} days to Year Legend!`;
+  return "You're a legend! 👑";
+}
+
+useEffect(() => {
+  if (user) {
+    const weekMins = calculateWeeklyMinutes();
+    const totalMins = calculateTotalMinutes();
+    setWeeklyMinutes(weekMins);
+    setTotalMinutes(totalMins);
+    
+    // Check if week has reset
+    const monday = getMonday();
+    if (!weekStartDate) {
+      setWeekStartDate(monday);
+    }
+  }
+}, [sessions, user]);
+
+useEffect(() => {
+  if (tab === 'leaderboard' && username) {
+    loadLeaderboard();
+  }
+}, [tab]);
+
+useEffect(()=>{const unsubscribe=auth.onAuthStateChanged(async(firebaseUser)=>{if(firebaseUser){await loadUserData(firebaseUser);setView('app')}setLoading(false)});return unsubscribe},[]);
+
+async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());
+
+if(!data.username){setShowUsernamePrompt(true)}else if(!data.onboardingCompleted){setShowOnboarding(true)}}}catch(err){console.error('Error loading user data:',err)}}
+
+async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
+
+useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes]);
+
+async function signup(){if(!name||!email||!pass)return;setError('');setLoading(true);try{const result=await auth.createUserWithEmailAndPassword(email,pass);const monday=getMonday();await db.collection('users').doc(result.user.uid).set({name,email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,goal:'',weeklyTarget:10,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday,onboardingCompleted:false});setUser({uid:result.user.uid,email,name,trialStartDate:new Date().toISOString()});setWeekStartDate(monday);setView('app');setShowUsernamePrompt(true)}catch(err){setError(err.message)}finally{setLoading(false)}}
+
+async function login(){if(!email||!pass)return;setError('');setLoading(true);try{const result=await auth.signInWithEmailAndPassword(email,pass);await loadUserData(result.user);setView('app')}catch(err){setError(err.code==='auth/user-not-found'?'No account found':err.message)}finally{setLoading(false)}}
+
+async function signInWithGoogle(){setError('');setLoading(true);try{const provider=new firebase.auth.GoogleAuthProvider();const result=await auth.signInWithPopup(provider);const userDoc=await db.collection('users').doc(result.user.uid).get();const monday=getMonday();if(!userDoc.exists){await db.collection('users').doc(result.user.uid).set({name:result.user.displayName||'',email:result.user.email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday})}await loadUserData(result.user);setView('app')}catch(err){setError(err.message)}finally{setLoading(false)}}
+
+async function logout(){await auth.signOut();setUser(null);setName('');setEmail('');setSessions([]);setCourses([]);setDeadlines([]);setXp(0);setStreak(0);setLastStudyDate('');setUserType('');setView('landing')}
+
+function isTrialActive(){if(!user||!user.trialStartDate)return true;const trialStart=new Date(user.trialStartDate);const daysSince=(Date.now()-trialStart.getTime())/(1000*60*60*24);return daysSince<TRIAL_DAYS}
+
+const hasAccess=isPro||isTrialActive();
+
+useEffect(()=>{if(running&&time>0){timer.current=setInterval(()=>{setTime(t=>{if(t<=1){finish();return 0}return t-1})},1000)}else{clearInterval(timer.current)}return()=>clearInterval(timer.current)},[running,time]);
+
+function finish(){
+  setRunning(false);
+  const pts=10+duration;
+  const newXp=xp+pts;
+  const newLevel=Math.min(Math.floor(newXp/100)+1,10);
+  
+  const streakInfo = updateStreak();
+  
+  if(newLevel===10&&level<10){
+    setTimeout(()=>{setShowTierUp(true)},3500)
+  }
+  
+  const s={course:selectedCourse,duration,xp:pts,time:Date.now()};
+  setSessions(prev=>[...prev,s]);
+  setXp(prev=>prev+pts);
+  setEarnedXp(pts);
+  setShowDone(true);
+}
+
+function addCourse(){if(!hasAccess&&courses.length>=2){setShowPaywall(true);return}if(newCourse.trim()){setCourses(prev=>[...prev,{id:Date.now(),name:newCourse.trim()}]);setNewCourse('')}}
+
+function getTierBadge(){if(tier===0)return'';if(tier===1)return'🥈';if(tier===2)return'🥇';return'💎'.repeat(Math.max(tier-2,1))}
+
+function getTierName(){if(tier===0)return'';if(tier===1)return'Silver Scholar';if(tier===2)return'Gold Scholar';if(tier===3)return'Diamond Scholar';return`${tier-2}x Diamond Scholar`}
+
+function upgrade(){setIsPro(true);setShowPaywall(false)}
+
+function addDeadline(){if(newDeadline.course&&newDeadline.title&&newDeadline.date){setDeadlines(prev=>[...prev,{...newDeadline,id:Date.now()}]);setNewDeadline({course:'',title:'',date:'',type:'assignment'});setShowAddDeadline(false)}}
+
+function completeOnboarding(){
+  setCourses(tempCourses);
+  setUserType(tempUserType);
+  setShowOnboarding(false);
+  setOnboardingStep(1);
+  setTempCourses([]);
+  setTempCourse('');
+  setTempUserType('');
+  if(user){
+    db.collection('users').doc(user.uid).set({onboardingCompleted:true},{merge:true})
+  }
+}
+
+function addTempCourse(){if(tempCourse.trim()){setTempCourses(prev=>[...prev,{id:Date.now(),name:tempCourse.trim()}]);setTempCourse('')}}
+
+function tierUp(){setTier(prev=>prev+1);setXp(0);setShowTierUp(false)}
+
+function fmt(s){const m=Math.floor(s/60);const sec=s%60;return`${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`}
+
+function getWeeklyHours(){const now=Date.now();const weekAgo=now-7*24*60*60*1000;const weekSessions=sessions.filter(s=>s.time>=weekAgo);return weekSessions.reduce((sum,s)=>sum+(s.duration/60),0)}
+
+const prog=((duration*60-time)/(duration*60))*100;
+
+if(loading){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center"><div className="text-white text-2xl">Loading LearnBot...</div></div>)}
+
+if(view==='landing'){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4 flex items-center justify-center relative overflow-hidden"><style>{`
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5),
+                0 0 40px rgba(20, 184, 166, 0.3),
+                0 0 60px rgba(6, 182, 212, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8),
+                0 0 60px rgba(20, 184, 166, 0.5),
+                0 0 90px rgba(6, 182, 212, 0.4);
+  }
+}
+@keyframes neon-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.5),
+                0 0 20px rgba(6, 182, 212, 0.5),
+                0 0 30px rgba(6, 182, 212, 0.3),
+                inset 0 0 10px rgba(6, 182, 212, 0.2);
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.8),
+                 0 0 20px rgba(6, 182, 212, 0.6),
+                 0 0 30px rgba(6, 182, 212, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.8),
+                0 0 30px rgba(6, 182, 212, 0.7),
+                0 0 40px rgba(6, 182, 212, 0.5),
+                inset 0 0 15px rgba(6, 182, 212, 0.3);
+    text-shadow: 0 0 15px rgba(6, 182, 212, 1),
+                 0 0 25px rgba(6, 182, 212, 0.8),
+                 0 0 35px rgba(6, 182, 212, 0.6);
+  }
+}
+.fade-in-1 { animation: fadeInUp 0.6s ease-out 0.1s both; }
+.fade-in-2 { animation: fadeInUp 0.6s ease-out 0.3s both; }
+.fade-in-3 { animation: fadeInUp 0.6s ease-out 0.5s both; }
+.fade-in-4 { animation: fadeInUp 0.6s ease-out 0.7s both; }
+.fade-in-5 { animation: fadeInUp 0.6s ease-out 0.9s both; }
+.float-animation { animation: float 3s ease-in-out infinite; }
+.pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.neon-glow { animation: neon-glow 2s ease-in-out infinite; }
+`}</style><div className="absolute inset-0 overflow-hidden pointer-events-none"><div className="absolute top-20 left-10 text-2xl md:text-4xl opacity-20 float-animation" style={{animationDelay: '0s'}}>⚡</div><div className="absolute top-40 right-20 text-3xl md:text-5xl opacity-20 float-animation" style={{animationDelay: '0.5s'}}>🏆</div><div className="absolute bottom-32 left-20 text-2xl md:text-4xl opacity-20 float-animation" style={{animationDelay: '1s'}}>📚</div><div className="absolute bottom-20 right-10 text-3xl md:text-5xl opacity-20 float-animation" style={{animationDelay: '1.5s'}}>🎯</div></div><div className="max-w-4xl w-full relative z-10"><div className="text-center mb-8 md:mb-12"><div className="text-6xl md:text-8xl mb-4 md:mb-6 fade-in-1 float-animation">🤖</div><h1 className="text-4xl md:text-7xl font-black text-white mb-4 md:mb-6 fade-in-2 tracking-tight">LearnBot</h1><p className="text-2xl md:text-4xl font-bold text-white mb-2 md:mb-4 fade-in-3">Learning can be FUN!</p><p className="text-2xl md:text-4xl font-bold text-white mb-4 md:mb-8 fade-in-3">Start earning XP.</p><p className="text-base md:text-xl text-white max-w-2xl mx-auto leading-relaxed fade-in-4 px-4">Track your study sessions. Level up your focus. Watch your progress grow.</p></div><div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-4 md:p-8 mb-8 fade-in-5"><div className="bg-white bg-opacity-20 rounded-xl p-4 md:p-6"><h3 className="text-white font-bold text-xl md:text-2xl mb-4 md:mb-6 text-center">{isLogin?'Welcome Back!':'Get Started Free'}</h3>{!isLogin&&<input type="text" placeholder="Your name" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 mb-3 text-base md:text-lg"/>}<input type="email" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 mb-3 text-base md:text-lg"/><input type="password" placeholder="Password" value={pass} onChange={e=>setPass(e.target.value)} onKeyPress={e=>e.key==='Enter'&&(isLogin?login():signup())} className="w-full bg-white rounded-lg px-4 py-3 mb-4 text-base md:text-lg"/>{error&&<p className="text-red-200 text-sm mb-3 bg-red-500 bg-opacity-30 p-2 rounded">{error}</p>}<button onClick={isLogin?login:signup} disabled={(isLogin?(!email||!pass):(!name||!email||!pass))||loading} className="w-full bg-slate-900 text-cyan-400 py-4 md:py-5 rounded-xl font-black text-lg md:text-2xl hover:scale-105 transition-all disabled:opacity-50 border-2 border-cyan-400 neon-glow relative overflow-hidden"><span className="relative z-10">{loading?(isLogin?'Logging in...':'Creating Account...'):(isLogin?'Log In →':'⚡ Start Earning XP →')}</span></button><button onClick={()=>{setIsLogin(!isLogin);setError('')}} className="w-full text-white text-sm mt-4 hover:underline opacity-90 hover:opacity-100 transition-opacity">{isLogin?"Don't have an account? Sign up":'Already have an account? Log in'}</button></div></div></div></div>)}
 
 return(
 <div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4">
@@ -367,38 +792,158 @@ return(
         <button onClick={()=>setShowPaywall(true)} className="ml-4 bg-white text-teal-600 px-4 py-1 rounded-lg font-bold text-sm">Lock in $5 Forever</button>
       </div>
     )}
-    <div className="flex items-center justify-between mb-6">
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 bg-cyan-400 rounded-xl flex items-center justify-center"><span className="text-2xl">🤖</span></div>
+    <div className="flex items-center justify-between mb-4 md:mb-6">
+      <div className="flex items-center gap-2 md:gap-3">
+        <div className="w-10 h-10 md:w-12 md:h-12 bg-cyan-400 rounded-xl flex items-center justify-center"><span className="text-xl md:text-2xl">🤖</span></div>
         <div>
-          <h1 className="text-2xl font-bold text-white">LearnBot</h1>
-          <p className="text-white opacity-70 text-sm">Hey {name}! {isPro&&<Icon name="crown" className="inline w-4 h-4 text-yellow-300"/>}</p>
+          <h1 className="text-xl md:text-2xl font-bold text-white">LearnBot</h1>
+          <p className="text-white opacity-70 text-xs md:text-sm">Hey {name}! {isPro&&<Icon name="crown" className="inline w-3 h-3 md:w-4 md:h-4 text-yellow-300"/>}</p>
         </div>
       </div>
-      <button onClick={logout} className="text-white opacity-80 hover:opacity-100"><Icon name="logout" className="w-5 h-5"/></button>
+      <button onClick={()=>setShowMenu(true)} className="text-white opacity-80 hover:opacity-100 p-2">
+        <svg className="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
     </div>
-    <div className="grid grid-cols-3 gap-4 mb-6">
-      <div className="bg-white bg-opacity-20 rounded-xl p-4 text-white">
-        <div className="flex items-center gap-2 mb-2"><Icon name="trophy" className="w-5 h-5 text-yellow-300"/><span className="text-sm">Level</span></div>
-        <div className="text-3xl font-bold">{level}</div>
-        <div className="w-full bg-white bg-opacity-30 rounded-full h-2 mt-2"><div className="bg-yellow-300 h-2 rounded-full" style={{width:`${levelXp}%`}}/></div>
+    <div className="grid grid-cols-3 gap-2 md:gap-4 mb-4 md:mb-6">
+      <div className="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-white">
+        <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2"><Icon name="trophy" className="w-4 h-4 md:w-5 md:h-5 text-yellow-300"/><span className="text-xs md:text-sm">Level</span></div>
+        <div className="text-2xl md:text-3xl font-bold flex items-center gap-1">{level}{getTierBadge()&&<span className="text-xl md:text-2xl">{getTierBadge()}</span>}</div>
+        <div className="w-full bg-white bg-opacity-30 rounded-full h-1.5 md:h-2 mt-1 md:mt-2"><div className="bg-yellow-300 h-1.5 md:h-2 rounded-full" style={{width:`${levelXp}%`}}/></div>
       </div>
-      <div className="bg-white bg-opacity-20 rounded-xl p-4 text-white">
-        <div className="flex items-center gap-2 mb-2"><Icon name="zap" className="w-5 h-5 text-orange-300"/><span className="text-sm">Total XP</span></div>
-        <div className="text-3xl font-bold">{xp}</div>
+      <div className="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-white">
+        <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2"><Icon name="zap" className="w-4 h-4 md:w-5 md:h-5 text-orange-300"/><span className="text-xs md:text-sm">Total XP</span></div>
+        <div className="text-2xl md:text-3xl font-bold">{xp}</div>
       </div>
-      <div className="bg-white bg-opacity-20 rounded-xl p-4 text-white">
-        <div className="flex items-center gap-2 mb-2"><Icon name="target" className="w-5 h-5 text-green-300"/><span className="text-sm">Sessions</span></div>
-        <div className="text-3xl font-bold">{sessions.length}</div>
+      <div className="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-white">
+        <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
+          <span className="text-lg md:text-xl">🔥</span>
+          <span className="text-xs md:text-sm">Streak</span>
+        </div>
+        <div className="text-2xl md:text-3xl font-bold">{streak}</div>
       </div>
     </div>
-    <div className="flex gap-2 mb-6 bg-white bg-opacity-20 rounded-xl p-2 overflow-x-auto">
-      <button onClick={()=>setTab('timer')} className={`px-4 py-3 rounded-lg font-semibold ${tab==='timer'?'bg-white text-teal-600':'text-white'}`}>Timer</button>
-      <button onClick={()=>setTab('courses')} className={`px-4 py-3 rounded-lg font-semibold ${tab==='courses'?'bg-white text-teal-600':'text-white'}`}>Courses</button>
-      <button onClick={()=>setTab('deadlines')} className={`px-4 py-3 rounded-lg font-semibold ${tab==='deadlines'?'bg-white text-teal-600':'text-white'}`}>Deadlines</button>
-      <button onClick={()=>setTab('stats')} className={`px-4 py-3 rounded-lg font-semibold ${tab==='stats'?'bg-white text-teal-600':'text-white'}`}>Stats</button>
-      {!isPro&&<button onClick={()=>setShowPaywall(true)} className="px-4 py-3 rounded-lg font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 text-white flex items-center gap-2"><Icon name="crown" className="w-4 h-4"/>Pro</button>}
+    <div className="flex gap-1 md:gap-2 mb-4 md:mb-6 bg-white bg-opacity-20 rounded-xl p-1.5 md:p-2 overflow-x-auto">
+      <button onClick={()=>setTab('dashboard')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='dashboard'?'bg-white text-teal-600':'text-white'}`}>Dashboard</button>
+      <button onClick={()=>setTab('timer')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='timer'?'bg-white text-teal-600':'text-white'}`}>Timer</button>
+      <button onClick={()=>setTab('courses')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='courses'?'bg-white text-teal-600':'text-white'}`}>Courses</button>
+      <button onClick={()=>setTab('deadlines')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='deadlines'?'bg-white text-teal-600':'text-white'}`}>Deadlines</button>
+      <button onClick={()=>setTab('stats')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='stats'?'bg-white text-teal-600':'text-white'}`}>Stats</button>
+      <button onClick={()=>setTab('leaderboard')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='leaderboard'?'bg-white text-teal-600':'text-white'}`}>🏆</button>
+      {!isPro&&<button onClick={()=>setShowPaywall(true)} className="px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 text-white flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-base"><Icon name="crown" className="w-3 h-3 md:w-4 md:h-4"/>Pro</button>}
     </div>
+    {tab==='dashboard'&&(
+      <div className="space-y-4 md:space-y-6">
+        <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Welcome back, {name}! 👋</h2>
+          {goal?<p className="text-white text-base md:text-lg opacity-90">🎯 Goal: {goal}</p>:<p className="text-white opacity-75 text-sm md:text-base">Set your learning goal in settings!</p>}
+        </div>
+
+        <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-6 relative overflow-hidden border-2 border-orange-300">
+          <style>{`
+            @keyframes flamePulse {
+              0%, 100% { transform: scale(1); }
+              50% { transform: scale(1.1); }
+            }
+            .flame-pulse { animation: flamePulse 2s ease-in-out infinite; }
+          `}</style>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+              <span className="text-3xl flame-pulse">🔥</span>
+              Current Streak
+            </h3>
+            {longestStreak > 0 && longestStreak > streak && (
+              <div className="text-white text-xs md:text-sm opacity-75">
+                Best: {longestStreak} days
+              </div>
+            )}
+          </div>
+          
+          <div className="text-center mb-4">
+            <div className={`text-7xl md:text-8xl font-black text-white mb-2 ${streak > 0 ? 'flame-pulse' : 'opacity-50'}`}>
+              {streak > 0 ? streak : '0'}
+            </div>
+            <div className="text-white text-xl md:text-2xl font-bold">
+              DAY{streak !== 1 ? 'S' : ''}
+            </div>
+          </div>
+
+          <div className="bg-white bg-opacity-20 rounded-xl p-3 mb-3">
+            <p className="text-white text-sm md:text-base">
+              {streak === 0 ? '🎯 Complete a session to start your streak!' : 
+               lastStudyDate === new Date().toISOString().split('T')[0] ? 
+               "✅ Today's session complete!" : 
+               '⏰ Study today to keep your streak alive!'}
+            </p>
+          </div>
+
+          {streak > 0 && (
+            <div className="text-white text-center text-sm opacity-90">
+              {getStreakMessage()}
+            </div>
+          )}
+
+          {streak >= 7 && (
+            <div className="mt-4 flex justify-center gap-2 flex-wrap">
+              {streak >= 7 && <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-xs font-bold">🔥 Week Warrior</div>}
+              {streak >= 30 && <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-xs font-bold">🔥🔥 Month Master</div>}
+              {streak >= 100 && <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-xs font-bold">🔥🔥🔥 Centurion</div>}
+              {streak >= 365 && <div className="bg-yellow-400 bg-opacity-90 px-3 py-1 rounded-full text-gray-900 text-xs font-bold">👑 Year Legend</div>}
+            </div>
+          )}
+        </div>
+
+        <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl md:text-2xl font-bold text-white">This Week's Progress</h3>
+            <div className="text-white text-xs md:text-sm opacity-75">{Math.round(getWeeklyHours())} / {weeklyTarget} hours</div>
+          </div>
+          <div className="w-full bg-white bg-opacity-30 rounded-full h-3 md:h-4 mb-2">
+            <div className="bg-gradient-to-r from-yellow-300 to-orange-300 h-3 md:h-4 rounded-full transition-all" style={{width:`${Math.min((getWeeklyHours()/weeklyTarget)*100,100)}%`}}/>
+          </div>
+          <p className="text-white text-xs md:text-sm opacity-75">
+            {getWeeklyHours()>=weeklyTarget?'🎉 Goal reached! Amazing work!':weeklyTarget-getWeeklyHours()>0?`${Math.round(weeklyTarget-getWeeklyHours())} hours to go this week`:'Keep it up!'}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2 md:gap-4">
+          <div className="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-white">
+            <div className="flex flex-col md:flex-row items-center md:gap-2 mb-1 md:mb-2"><Icon name="trophy" className="w-4 h-4 md:w-5 md:h-5 text-yellow-300"/><span className="text-xs md:text-sm">Level</span></div>
+            <div className="text-2xl md:text-3xl font-bold flex items-center gap-1">{level}{getTierBadge()&&<span className="text-xl md:text-2xl">{getTierBadge()}</span>}</div>
+          </div>
+          <div className="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-white">
+            <div className="flex flex-col md:flex-row items-center md:gap-2 mb-1 md:mb-2"><Icon name="zap" className="w-4 h-4 md:w-5 md:h-5 text-orange-300"/><span className="text-xs md:text-sm">Total XP</span></div>
+            <div className="text-2xl md:text-3xl font-bold">{xp}</div>
+          </div>
+          <div className="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-white">
+            <div className="flex flex-col md:flex-row items-center md:gap-2 mb-1 md:mb-2"><Icon name="target" className="w-4 h-4 md:w-5 md:h-5 text-green-300"/><span className="text-xs md:text-sm">Sessions</span></div>
+            <div className="text-2xl md:text-3xl font-bold">{sessions.length}</div>
+          </div>
+        </div>
+
+        <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
+          <h3 className="text-lg md:text-xl font-bold text-white mb-4">Quick Actions</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <button onClick={()=>setTab('timer')} className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white py-3 md:py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-105 transition-all text-sm md:text-base">
+              <Icon name="play" className="w-4 h-4 md:w-5 md:h-5"/>
+              Start Session
+            </button>
+            <button onClick={()=>setTab('courses')} className="bg-white bg-opacity-20 text-white py-3 md:py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-opacity-30 transition-all text-sm md:text-base">
+              <Icon name="plus" className="w-4 h-4 md:w-5 md:h-5"/>
+              Add Course
+            </button>
+          </div>
+        </div>
+
+        <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
+          <h3 className="text-lg md:text-xl font-bold text-white mb-4">Recent Sessions</h3>
+          <div className="space-y-3">
+            {sessions.length===0?<div className="text-center py-8"><Icon name="trophy" className="w-10 h-10 md:w-12 md:h-12 text-white opacity-40 mx-auto mb-3"/><p className="text-white opacity-70 text-sm md:text-base">No sessions yet! Start your first one.</p></div>:sessions.slice(-5).reverse().map((s,i)=><div key={i} className="bg-white bg-opacity-20 rounded-lg p-3 md:p-4 flex justify-between"><div><div className="text-white font-semibold text-sm md:text-base">{s.course}</div><div className="text-white opacity-70 text-xs md:text-sm">{s.duration} min</div></div><div className="text-yellow-300 font-bold text-sm md:text-base">+{s.xp} XP</div></div>)}
+          </div>
+        </div>
+      </div>
+    )}
     {tab==='timer'&&(
       <div className="bg-white bg-opacity-20 rounded-2xl p-6">
         <select value={selectedCourse} onChange={e=>setSelectedCourse(e.target.value)} disabled={running} className="w-full bg-white bg-opacity-30 text-white rounded-lg px-4 py-3 mb-6">
@@ -406,7 +951,7 @@ return(
           {courses.map(c=><option key={c.id} value={c.name}>{c.name}</option>)}
         </select>
         {!running&&time===duration*60&&(
-          <div className="flex gap-3 mb-6 justify-center">
+          <div className="flex gap-3 mb-6 justify-center flex-wrap">
             {[5,15,25,45,60].map(d=><button key={d} onClick={()=>{setDuration(d);setTime(d*60)}} className={`px-6 py-2 rounded-lg font-semibold ${duration===d?'bg-teal-600 text-white':'bg-white bg-opacity-30 text-white'}`}>{d}m</button>)}
           </div>
         )}
@@ -422,7 +967,7 @@ return(
             </div>
           </div>
         </div>
-        <div className="flex gap-4 justify-center">
+        <div className="flex gap-4 justify-center flex-wrap">
           {!running?<button onClick={()=>{if(selectedCourse)setRunning(true)}} disabled={!selectedCourse} className="bg-teal-500 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 disabled:opacity-50"><Icon name="play"/>Start</button>:(<><button onClick={()=>setRunning(false)} className="bg-yellow-400 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2"><Icon name="pause"/>Pause</button><button onClick={()=>{setRunning(false);setTime(duration*60);setSelectedCourse('')}} className="bg-red-400 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2"><Icon name="square"/>Stop</button></>)}
         </div>
       </div>
@@ -454,14 +999,390 @@ return(
         </div>
       </div>
     )}
+    {tab==='leaderboard'&&(
+      <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
+        {!username ? (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🏆</div>
+            <h3 className="text-2xl font-bold text-white mb-3">Join the Leaderboard!</h3>
+            <p className="text-white opacity-90 mb-6">Choose a username to compete with other studiers</p>
+            <button onClick={()=>setShowUsernamePrompt(true)} className="bg-white text-teal-600 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all">
+              Pick Username →
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
+                <span>🏆</span>
+                <span>Leaderboard</span>
+              </h2>
+              {shareText && <span className="text-green-300 text-sm">{shareText}</span>}
+            </div>
+
+            <div className="flex gap-2 mb-6">
+              <button 
+                onClick={()=>setLeaderboardType('weekly')} 
+                className={`flex-1 py-3 rounded-xl font-bold transition-all ${leaderboardType==='weekly'?'bg-white text-teal-600':'bg-white bg-opacity-20 text-white hover:bg-opacity-30'}`}
+              >
+                This Week
+              </button>
+              <button 
+                onClick={()=>setLeaderboardType('alltime')} 
+                className={`flex-1 py-3 rounded-xl font-bold transition-all ${leaderboardType==='alltime'?'bg-white text-teal-600':'bg-white bg-opacity-20 text-white hover:bg-opacity-30'}`}
+              >
+                All-Time
+              </button>
+            </div>
+
+            {loadingLeaderboard ? (
+              <div className="text-center py-12">
+                <div className="text-white text-lg">Loading rankings...</div>
+              </div>
+            ) : (
+              <>
+                <div className="space-y-3 mb-6">
+                  {leaderboardData
+                    .sort((a, b) => leaderboardType === 'weekly' ? b.weeklyMinutes - a.weeklyMinutes : b.totalMinutes - a.totalMinutes)
+                    .slice(0, 10)
+                    .map((user, index) => {
+                      const rank = index + 1;
+                      const minutes = leaderboardType === 'weekly' ? user.weeklyMinutes : user.totalMinutes;
+                      const isCurrentUser = user.username === username;
+                      const progress = user.weeklyTarget > 0 ? Math.min((user.weeklyMinutes / user.weeklyTarget) * 100, 100) : 0;
+                      
+                      return (
+                        <div 
+                          key={user.id} 
+                          className={`rounded-xl p-4 ${rank <= 3 ? 'bg-gradient-to-r' : 'bg-white bg-opacity-20'} ${
+                            rank === 1 ? 'from-yellow-400 to-yellow-500' :
+                            rank === 2 ? 'from-gray-300 to-gray-400' :
+                            rank === 3 ? 'from-orange-400 to-orange-500' :
+                            isCurrentUser ? 'bg-cyan-500 bg-opacity-40 border-2 border-cyan-300' : ''
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3 flex-1">
+                              <div className={`text-2xl font-bold ${rank <= 3 ? 'text-white' : 'text-white'} w-8 text-center`}>
+                                {getMedalEmoji(rank) || rank}
+                              </div>
+                              <div className="flex-1">
+                                <div className={`font-bold ${rank <= 3 ? 'text-white' : 'text-white'} flex items-center gap-2`}>
+                                  <span className="text-base md:text-lg">{user.username}</span>
+                                  {user.tier > 0 && <span className="text-xl">{getTierBadge(user.tier)}</span>}
+                                  {isCurrentUser && <span className="text-xs bg-white bg-opacity-30 px-2 py-0.5 rounded">YOU</span>}
+                                </div>
+                                <div className={`text-sm ${rank <= 3 ? 'text-white opacity-90' : 'text-white opacity-75'}`}>
+                                  {minutes} min • Level {user.level}
+                                </div>
+                                {leaderboardType === 'weekly' && user.weeklyTarget > 0 && (
+                                  <div className="mt-2">
+                                    <div className="w-full bg-white bg-opacity-30 rounded-full h-1.5">
+                                      <div 
+                                        className={`h-1.5 rounded-full ${rank <= 3 ? 'bg-white' : 'bg-cyan-300'}`}
+                                        style={{width: `${progress}%`}}
+                                      />
+                                    </div>
+                                    <div className={`text-xs mt-1 ${rank <= 3 ? 'text-white opacity-75' : 'text-white opacity-60'}`}>
+                                      {Math.round(progress)}% of goal
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+
+                {(() => {
+                  const rank = getLeaderboardRank();
+                  const myData = leaderboardData.find(u => u.username === username);
+                  
+                  if (rank && rank > 10 && myData) {
+                    const minutes = leaderboardType === 'weekly' ? myData.weeklyMinutes : myData.totalMinutes;
+                    const progress = myData.weeklyTarget > 0 ? Math.min((myData.weeklyMinutes / myData.weeklyTarget) * 100, 100) : 0;
+                    
+                    return (
+                      <div className="bg-cyan-500 bg-opacity-40 rounded-xl p-4 border-2 border-cyan-300 mb-6">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="text-2xl font-bold text-white w-8 text-center">
+                              {rank}
+                            </div>
+                            <div className="flex-1">
+                              <div className="font-bold text-white flex items-center gap-2">
+                                <span className="text-base md:text-lg">{username}</span>
+                                {myData.tier > 0 && <span className="text-xl">{getTierBadge(myData.tier)}</span>}
+                                <span className="text-xs bg-white bg-opacity-30 px-2 py-0.5 rounded">YOU</span>
+                              </div>
+                              <div className="text-sm text-white opacity-75">
+                                {minutes} min • Level {myData.level}
+                              </div>
+                              {leaderboardType === 'weekly' && myData.weeklyTarget > 0 && (
+                                <div className="mt-2">
+                                  <div className="w-full bg-white bg-opacity-30 rounded-full h-1.5">
+                                    <div className="bg-cyan-300 h-1.5 rounded-full" style={{width: `${progress}%`}} />
+                                  </div>
+                                  <div className="text-xs mt-1 text-white opacity-60">
+                                    {Math.round(progress)}% of goal
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+
+                <div className="bg-white bg-opacity-10 rounded-xl p-4 text-center">
+                  <div className="text-white text-sm opacity-75 mb-2">
+                    {leaderboardType === 'weekly' ? `Resets in: ${getTimeUntilMonday()}` : 'All-time rankings'}
+                  </div>
+                  {leaderboardType === 'weekly' && (
+                    <div className="text-white text-xs opacity-60">
+                      Top 3 each week earn bonus XP: 🥇 +100 XP • 🥈 +50 XP • 🥉 +25 XP
+                    </div>
+                  )}
+                </div>
+
+                <button 
+                  onClick={shareRank}
+                  className="w-full mt-4 bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+                >
+                  📤 Share My Rank
+                </button>
+              </>
+            )}
+          </>
+        )}
+      </div>
+    )}
     {showDone && <CompletionAlert 
       earnedXp={earnedXp} 
       course={selectedCourse}
       duration={duration}
       level={level}
       totalXp={xp}
+      streak={streak}
+      isNewStreak={lastStudyDate !== new Date().toISOString().split('T')[0]}
+      isMilestone={[7, 30, 100, 365].includes(streak)}
       onClose={() => {setShowDone(false);setTime(duration*60);setSelectedCourse('');}} 
     />}
+    {showStreakLost && <StreakLostModal lostStreak={lostStreakCount} onClose={() => setShowStreakLost(false)} />}
+    {showTierUp&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-3xl p-8 md:p-12 text-center max-w-lg w-full relative overflow-hidden border-4 border-yellow-300 shadow-2xl"><style>{`@keyframes sparkle{0%,100%{transform:scale(1) rotate(0deg);opacity:1}50%{transform:scale(1.2) rotate(180deg);opacity:0.8}}@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}`}</style><div className="absolute inset-0 bg-gradient-to-br from-yellow-300/20 to-orange-300/20"/><div className="relative z-10"><div className="text-7xl md:text-8xl mb-6 animate-bounce">{tier===0?'🥈':tier===1?'🥇':'💎'}</div><h2 className="text-4xl md:text-5xl font-black text-white mb-3" style={{animation:'slideUp 0.6s ease-out'}}>LEVEL 10!</h2><div className="bg-white bg-opacity-30 backdrop-blur-sm rounded-2xl p-6 mb-6"><h3 className="text-2xl md:text-3xl font-bold text-white mb-2">Ready to Ascend?</h3><p className="text-white text-lg mb-4">{tier===0?'Become a Silver Scholar':'Advance to the next tier!'}</p><div className="text-6xl mb-2">{tier===0?'🥈':tier===1?'🥇':tier===2?'💎':'💎'.repeat(tier-1)}</div><p className="text-white font-bold text-xl">{tier===0?'Silver Scholar':tier===1?'Gold Scholar':tier===2?'Diamond Scholar':`${tier-1}x Diamond Scholar`}</p></div><div className="space-y-3"><button onClick={tierUp} className="w-full bg-white text-orange-600 py-4 rounded-xl font-black text-xl hover:scale-105 transition-all shadow-lg">Reset to Level 1 & Advance Tier 🚀</button><button onClick={()=>setShowTierUp(false)} className="w-full bg-white bg-opacity-20 text-white py-3 rounded-xl font-semibold hover:bg-opacity-30 transition-colors">Stay at Level 10</button></div><p className="text-white text-sm mt-4 opacity-75">All courses, sessions, and achievements are kept!</p></div></div></div>}
+    {showMenu&&<div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end" onClick={()=>setShowMenu(false)}><div className="bg-gradient-to-br from-cyan-600 to-teal-700 w-full md:w-96 h-full overflow-y-auto shadow-2xl" onClick={e=>e.stopPropagation()}><div className="p-6"><div className="flex justify-between items-center mb-6"><h2 className="text-2xl font-bold text-white">Account</h2><button onClick={()=>setShowMenu(false)} className="text-white hover:text-cyan-200"><Icon name="x" className="w-6 h-6"/></button></div><div className="space-y-6"><div className="bg-white bg-opacity-20 rounded-xl p-4"><h3 className="text-white font-bold mb-3 flex items-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>Account Info</h3><div className="space-y-2 text-white text-sm"><div><span className="opacity-75">Name:</span> <span className="font-semibold">{name}</span></div><div><span className="opacity-75">Email:</span> <span className="font-semibold">{email}</span></div>{userType&&<div><span className="opacity-75">Type:</span> <span className="font-semibold">{getUserTypeDisplay()}</span></div>}<div className="flex items-center gap-2"><span className="opacity-75">Plan:</span> {isPro?<span className="bg-yellow-400 text-teal-800 px-3 py-1 rounded-full font-bold text-xs flex items-center gap-1"><Icon name="crown" className="w-3 h-3"/>Premium</span>:<span className="bg-white bg-opacity-30 px-3 py-1 rounded-full font-semibold text-xs">Free</span>}</div>{tier>0&&<div className="flex items-center gap-2"><span className="opacity-75">Tier:</span><span className="font-bold text-lg flex items-center gap-1">{getTierBadge()} {getTierName()}</span></div>}{!isPro&&isTrialActive()&&<div className="text-xs opacity-75 bg-green-400 bg-opacity-20 p-2 rounded">🎉 Trial active until Feb 7</div>}</div><button onClick={openEditProfile} className="w-full mt-4 bg-white bg-opacity-10 hover:bg-opacity-20 text-white py-2 px-4 rounded-lg font-semibold text-sm transition-colors flex items-center justify-center gap-2">
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+  </svg>
+  Edit Profile
+</button></div><div className="bg-white bg-opacity-20 rounded-xl p-4"><h3 className="text-white font-bold mb-3 flex items-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>Notifications</h3><div className="space-y-3"><div className="flex items-center justify-between bg-white bg-opacity-10 p-3 rounded-lg"><div className="flex items-center gap-2"><span className="text-white text-sm font-semibold">📧 Email Reminders</span></div><button onClick={()=>setEmailReminders(!emailReminders)} className={`relative w-12 h-6 rounded-full transition-colors ${emailReminders?'bg-green-400':'bg-white bg-opacity-30'}`}><div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${emailReminders?'translate-x-7':'translate-x-1'}`}/></button></div><div className="flex items-center justify-between bg-white bg-opacity-10 p-3 rounded-lg opacity-50"><div className="flex items-center gap-2"><span className="text-white text-sm font-semibold">📱 SMS Reminders</span><span className="text-xs bg-white bg-opacity-20 px-2 py-0.5 rounded">Soon</span></div><button disabled className="relative w-12 h-6 rounded-full bg-white bg-opacity-30 cursor-not-allowed"><div className="absolute top-1 left-1 w-4 h-4 bg-white rounded-full"/></button></div></div></div><div className="bg-white bg-opacity-20 rounded-xl p-4"><h3 className="text-white font-bold mb-3 flex items-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>Settings</h3><div className="space-y-3 text-white text-sm"><div><label className="opacity-75 block mb-1">Weekly Study Goal:</label><div className="flex items-center gap-2"><input type="range" min="0" max="40" value={weeklyTarget} onChange={e=>setWeeklyTarget(parseInt(e.target.value))} className="flex-1 h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer"/><span className="font-bold">{weeklyTarget}h</span></div></div><div><label className="opacity-75 block mb-1">Main Goal:</label><input type="text" value={goal} onChange={e=>setGoal(e.target.value)} placeholder="e.g., Pass my finals" className="w-full bg-white bg-opacity-20 rounded-lg px-3 py-2 text-white placeholder-white placeholder-opacity-50"/></div></div></div>{!isPro&&<button onClick={()=>{setShowMenu(false);setShowPaywall(true)}} className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:scale-105 transition-all shadow-lg"><Icon name="crown" className="w-5 h-5"/>Upgrade to Premium - $5</button>}<button onClick={logout} className="w-full bg-white bg-opacity-20 text-white py-4 rounded-xl font-bold hover:bg-opacity-30 transition-colors flex items-center justify-center gap-2"><Icon name="logout" className="w-5 h-5"/>Log Out</button></div></div></div></div>}
+    {showUsernamePrompt&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4">
+      <div className="bg-gradient-to-br from-cyan-600 to-teal-700 rounded-2xl p-8 max-w-md w-full">
+        <div className="text-center mb-6">
+          <div className="text-6xl mb-4">🏆</div>
+          <h2 className="text-3xl font-bold text-white mb-2">Choose Your Username</h2>
+          <p className="text-white opacity-90">Pick a unique username to unlock the leaderboard!</p>
+        </div>
+
+        <div className="mb-6">
+          <input 
+            type="text" 
+            value={tempUsername}
+            onChange={(e) => {
+              const value = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
+              setTempUsername(value);
+            }}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' && tempUsername.length >= 3) {
+                document.getElementById('claim-username-btn').click();
+              }
+            }}
+            placeholder="StudyGrinder, CodeNinja..."
+            maxLength={20}
+            className="w-full bg-white rounded-lg px-4 py-3 text-lg text-gray-800 mb-2"
+            autoFocus
+          />
+          
+          <p className="text-white text-xs opacity-75 mt-2">
+            3-20 characters • Letters, numbers, underscores only
+          </p>
+        </div>
+
+        <button 
+          id="claim-username-btn"
+          onClick={async () => {
+            console.log('Claim button clicked, username:', tempUsername);
+            
+            if (tempUsername.length < 3 || tempUsername.length > 20) {
+              alert('Username must be 3-20 characters');
+              return;
+            }
+            
+            console.log('Checking if username is available...');
+            
+            try {
+              const snapshot = await db.collection('users').where('username', '==', tempUsername).get();
+              console.log('Username check result - empty:', snapshot.empty);
+              
+              if (snapshot.empty) {
+                console.log('Username available! Submitting...');
+                await submitUsername(tempUsername);
+                setTempUsername('');
+              } else {
+                console.log('Username taken');
+                alert('Username "' + tempUsername + '" is already taken - please choose another');
+              }
+            } catch (error) {
+              console.error('Error checking username:', error);
+              alert('Error checking username. Please try again.');
+            }
+          }}
+          disabled={tempUsername.length < 3}
+          className="w-full bg-white text-teal-600 py-4 rounded-xl font-bold text-xl hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {tempUsername.length < 3 ? 'Enter Username (3+ chars)' : 'Claim Username →'}
+        </button>
+      </div>
+    </div>}
+    {showOnboarding&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-cyan-600 to-teal-700 rounded-2xl p-8 max-w-lg w-full"><div className="mb-6"><div className="flex justify-center gap-2 mb-6">{[1,2,3,4].map(s=><div key={s} className={`h-2 flex-1 rounded-full ${s<=onboardingStep?'bg-yellow-300':'bg-white bg-opacity-30'}`}/>)}</div>
+    
+    {onboardingStep===1&&<div className="text-center">
+      <div className="text-6xl mb-4">🤖</div>
+      <h2 className="text-3xl font-bold text-white mb-4">Welcome to LearnBot!</h2>
+      <p className="text-white text-lg mb-8 opacity-90">Let's personalize your learning experience</p>
+      <button onClick={()=>setOnboardingStep(2)} className="w-full bg-white text-teal-600 py-4 rounded-xl font-bold text-xl hover:scale-105 transition-all">Get Started →</button>
+    </div>}
+    
+    {onboardingStep===2&&<div>
+      <h2 className="text-2xl font-bold text-white mb-4 text-center">Who are you?</h2>
+      <p className="text-white text-sm mb-6 opacity-90 text-center">This helps us customize LearnBot for you</p>
+      <div className="space-y-3 mb-6">
+        {USER_TYPES.map(type => (
+          <button
+            key={type.value}
+            onClick={() => setTempUserType(type.value)}
+            className={`w-full p-4 rounded-xl font-semibold text-left flex items-center gap-3 transition-all hover:scale-105 ${
+              tempUserType === type.value
+                ? 'bg-white text-teal-600 shadow-lg'
+                : 'bg-white bg-opacity-20 text-white hover:bg-opacity-30'
+            }`}
+          >
+            <span className="text-2xl">{type.emoji}</span>
+            <span className="text-lg">{type.label}</span>
+            {tempUserType === type.value && <span className="ml-auto text-2xl">✓</span>}
+          </button>
+        ))}
+      </div>
+      <div className="flex gap-3">
+        <button onClick={()=>setOnboardingStep(1)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-semibold hover:bg-opacity-30 transition-colors">← Back</button>
+        <button onClick={()=>setOnboardingStep(3)} disabled={!tempUserType} className="flex-1 bg-white text-teal-600 py-3 rounded-lg font-bold hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed">Next →</button>
+      </div>
+    </div>}
+    
+    {onboardingStep===3&&<div>
+      <h2 className="text-2xl font-bold text-white mb-4">What are you studying?</h2>
+      <p className="text-white text-sm mb-4 opacity-90">Add the courses or subjects you want to focus on</p>
+      <div className="flex gap-2 mb-4">
+        <input type="text" placeholder="e.g., Calculus, Biology..." value={tempCourse} onChange={e=>setTempCourse(e.target.value)} onKeyPress={e=>e.key==='Enter'&&addTempCourse()} className="flex-1 bg-white rounded-lg px-4 py-3 text-lg"/>
+        <button onClick={addTempCourse} className="bg-yellow-300 text-teal-700 px-6 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors">Add</button>
+      </div>
+      <div className="space-y-2 mb-6 max-h-40 overflow-y-auto">
+        {tempCourses.map(c=><div key={c.id} className="bg-white bg-opacity-20 rounded-lg p-3 flex justify-between items-center"><span className="text-white font-semibold">{c.name}</span><button onClick={()=>setTempCourses(tempCourses.filter(x=>x.id!==c.id))} className="text-red-300 hover:text-red-200"><Icon name="x" className="w-5 h-5"/></button></div>)}
+      </div>
+      <div className="flex gap-3">
+        <button onClick={()=>setOnboardingStep(2)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-semibold hover:bg-opacity-30 transition-colors">← Back</button>
+        <button onClick={()=>setOnboardingStep(4)} disabled={tempCourses.length===0} className="flex-1 bg-white text-teal-600 py-3 rounded-lg font-bold hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed">Next →</button>
+      </div>
+    </div>}
+    
+    {onboardingStep===4&&<div>
+      <h2 className="text-2xl font-bold text-white mb-4">Set Your Goals</h2>
+      <div className="mb-6">
+        <label className="text-white text-sm font-semibold mb-2 block">What's your main learning goal?</label>
+        <input type="text" placeholder="e.g., Pass my finals, Get into MIT..." value={goal} onChange={e=>setGoal(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 text-lg mb-6"/>
+        <label className="text-white text-sm font-semibold mb-2 block">Weekly study target: {weeklyTarget} hours</label>
+        <input type="range" min="0" max="40" value={weeklyTarget} onChange={e=>setWeeklyTarget(parseInt(e.target.value))} className="w-full h-3 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer"/>
+        <div className="flex justify-between text-white text-xs mt-1 opacity-75"><span>0h</span><span>20h</span><span>40h</span></div>
+      </div>
+      <div className="flex gap-3">
+        <button onClick={()=>setOnboardingStep(3)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-semibold hover:bg-opacity-30 transition-colors">← Back</button>
+        <button onClick={completeOnboarding} className="flex-1 bg-yellow-300 text-teal-700 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors">Complete Setup ✓</button>
+      </div>
+    </div>}
+    
+    </div></div></div>}
+    {showEditProfile&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-cyan-600 to-teal-700 rounded-2xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto"><div className="flex justify-between items-center mb-6"><h2 className="text-2xl font-bold text-white">Edit Profile</h2><button onClick={()=>setShowEditProfile(false)} className="text-white hover:text-cyan-200"><Icon name="x" className="w-6 h-6"/></button></div>
+
+    <div className="space-y-6">
+      <div>
+        <label className="text-white text-sm font-semibold mb-2 block">I am a...</label>
+        <div className="space-y-2">
+          {USER_TYPES.map(type => (
+            <button
+              key={type.value}
+              onClick={() => setEditingUserType(type.value)}
+              className={`w-full p-3 rounded-lg font-semibold text-left flex items-center gap-3 transition-all ${
+                editingUserType === type.value
+                  ? 'bg-white text-teal-600 shadow-lg'
+                  : 'bg-white bg-opacity-20 text-white hover:bg-opacity-30'
+              }`}
+            >
+              <span className="text-xl">{type.emoji}</span>
+              <span>{type.label}</span>
+              {editingUserType === type.value && <span className="ml-auto">✓</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="text-white text-sm font-semibold mb-2 block">Main Learning Goal</label>
+        <input 
+          type="text" 
+          value={editingGoal} 
+          onChange={e=>setEditingGoal(e.target.value)} 
+          placeholder="e.g., Pass my finals, Learn Python..." 
+          className="w-full bg-white rounded-lg px-4 py-3 text-gray-800 text-base"
+        />
+      </div>
+
+      <div>
+        <label className="text-white text-sm font-semibold mb-2 block">Weekly Study Target: {editingWeeklyTarget} hours</label>
+        <input 
+          type="range" 
+          min="0" 
+          max="40" 
+          value={editingWeeklyTarget} 
+          onChange={e=>setEditingWeeklyTarget(parseInt(e.target.value))} 
+          className="w-full h-3 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer"
+        />
+        <div className="flex justify-between text-white text-xs mt-1 opacity-75">
+          <span>0h</span>
+          <span>20h</span>
+          <span>40h</span>
+        </div>
+      </div>
+
+      <div className="flex gap-3 pt-4">
+        <button 
+          onClick={()=>setShowEditProfile(false)} 
+          className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-xl font-semibold hover:bg-opacity-30 transition-colors"
+        >
+          Cancel
+        </button>
+        <button 
+          onClick={saveProfileUpdates} 
+          className="flex-1 bg-white text-teal-600 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+        >
+          Save Changes ✓
+        </button>
+      </div>
+    </div></div></div>}
     {showPaywall&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-white rounded-2xl p-8 max-w-md w-full"><div className="text-center mb-6"><div className="text-6xl mb-4">☕</div><h2 className="text-3xl font-bold text-gray-800 mb-2">Lock in Premium</h2><p className="text-gray-600">Trial ends Feb 7. $5 one-time.</p></div><button onClick={upgrade} className="w-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white py-4 rounded-lg font-bold mb-3">Unlock - $5 One-Time</button><button onClick={()=>setShowPaywall(false)} className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold">Not Now</button></div></div>}
   </div>
 </div>
