@@ -652,7 +652,6 @@ useEffect(() => {
 useEffect(()=>{const unsubscribe=auth.onAuthStateChanged(async(firebaseUser)=>{if(firebaseUser){await loadUserData(firebaseUser);setView('app')}setLoading(false)});return unsubscribe},[]);
 
 useEffect(() => {
-useEffect(() => {
   const urlParams = new URLSearchParams(window.location.search);
   const paymentStatus = urlParams.get('payment');
   
@@ -1497,4 +1496,3 @@ ReactDOM.render(<LearnBot />, document.getElementById('root'));
   </script>
 </body>
 </html>
-
