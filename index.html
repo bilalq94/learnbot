@@ -660,8 +660,11 @@ useEffect(()=>{const unsubscribe=auth.onAuthStateChanged(async(firebaseUser)=>{i
 useEffect(() => {
   const urlParams = new URLSearchParams(window.location.search);
   const paymentStatus = urlParams.get('payment');
+  const sessionId = urlParams.get('session_id');
   
-  if (paymentStatus === 'success') {
+  if (paymentStatus === 'success' && sessionId) {
+    // Only mark as pro if there's a valid Stripe session ID
+    console.log('Payment successful! Session ID:', sessionId);
     setIsPro(true);
     alert('🎉 Payment successful! Welcome to Premium!');
     window.history.replaceState({}, '', '/');
@@ -720,6 +723,13 @@ function getTierBadge(){if(tier===0)return'';if(tier===1)return'🥈';if(tier===
 function getTierName(){if(tier===0)return'';if(tier===1)return'Silver Scholar';if(tier===2)return'Gold Scholar';if(tier===3)return'Diamond Scholar';return`${tier-2}x Diamond Scholar`}
 
 async function upgrade() {
+  if (!window.Stripe) {
+    alert('Payment system loading... please try again in a moment.');
+    return;
+  }
+  
+  console.log('Starting Stripe Checkout...');
+  
   try {
     const { error } = await stripe.redirectToCheckout({
       lineItems: [{ price: STRIPE_PRICE_ID, quantity: 1 }],
@@ -732,11 +742,11 @@ async function upgrade() {
     
     if (error) {
       console.error('Stripe error:', error);
-      alert('Payment error. Please try again.');
+      alert('Payment error: ' + error.message);
     }
   } catch (err) {
     console.error('Checkout error:', err);
-    alert('Unable to start checkout. Please try again.');
+    alert('Unable to start checkout: ' + err.message);
   }
 }
 
