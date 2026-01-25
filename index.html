@@ -753,14 +753,25 @@ function startCheckout() {
   setPaymentProcessing(true);
   setPaymentError('');
   
-  // Open payment link in popup window
+  const paymentLink = 'https://buy.stripe.com/9B64gs9BV17q4ucgAqawo00';
+  
+  // Detect mobile device
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  
+  if (isMobile) {
+    // Mobile: Direct redirect (popups suck on mobile)
+    window.location.href = paymentLink;
+    return;
+  }
+  
+  // Desktop: Open in popup window
   const width = 600;
   const height = 700;
   const left = (window.screen.width / 2) - (width / 2);
   const top = (window.screen.height / 2) - (height / 2);
   
   const popup = window.open(
-    'https://buy.stripe.com/9B64gs9BV17q4ucgAqawo00',
+    paymentLink,
     'stripe-payment',
     `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no`
   );
@@ -1528,3 +1539,4 @@ ReactDOM.render(<LearnBot />, document.getElementById('root'));
   </script>
 </body>
 </html>
+
