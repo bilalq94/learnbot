@@ -8,6 +8,7 @@
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
   <div id="root"></div>
@@ -32,6 +33,12 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const db = firebase.firestore();
 const TRIAL_DAYS = 14;
+
+// Stripe Configuration
+const STRIPE_PUBLISHABLE_KEY = 'pk_live_51SszMs1YZ8KpavpkvjyyQWQ1rbvh1I66PjxIz3Nv7RnBX4dpbr7kealeSdryQeQMXYUTBTNO8U6rJT2zBvj2eSwO00RNjrqBYE';
+const STRIPE_PRICE_ID = 'price_1StZuU1YZ8KpavpkNArzzu7N';
+const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+
 
 const Icon = ({ name, className = "w-6 h-6" }) => {
   const paths = {
@@ -650,6 +657,21 @@ useEffect(() => {
 
 useEffect(()=>{const unsubscribe=auth.onAuthStateChanged(async(firebaseUser)=>{if(firebaseUser){await loadUserData(firebaseUser);setView('app')}setLoading(false)});return unsubscribe},[]);
 
+useEffect(() => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const paymentStatus = urlParams.get('payment');
+  
+  if (paymentStatus === 'success') {
+    setIsPro(true);
+    alert('🎉 Payment successful! Welcome to Premium!');
+    window.history.replaceState({}, '', '/');
+  } else if (paymentStatus === 'cancelled') {
+    alert('Payment cancelled. You can upgrade anytime!');
+    window.history.replaceState({}, '', '/');
+  }
+}, []);
+
+
 async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());
 
 if(!data.username){setShowUsernamePrompt(true)}else if(!data.onboardingCompleted){setShowOnboarding(true)}}}catch(err){console.error('Error loading user data:',err)}}
@@ -697,7 +719,26 @@ function getTierBadge(){if(tier===0)return'';if(tier===1)return'🥈';if(tier===
 
 function getTierName(){if(tier===0)return'';if(tier===1)return'Silver Scholar';if(tier===2)return'Gold Scholar';if(tier===3)return'Diamond Scholar';return`${tier-2}x Diamond Scholar`}
 
-function upgrade(){setIsPro(true);setShowPaywall(false)}
+async function upgrade() {
+  try {
+    const { error } = await stripe.redirectToCheckout({
+      lineItems: [{ price: STRIPE_PRICE_ID, quantity: 1 }],
+      mode: 'subscription',
+      successUrl: `${window.location.origin}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${window.location.origin}?payment=cancelled`,
+      customerEmail: user?.email || email,
+      clientReferenceId: user?.uid,
+    });
+    
+    if (error) {
+      console.error('Stripe error:', error);
+      alert('Payment error. Please try again.');
+    }
+  } catch (err) {
+    console.error('Checkout error:', err);
+    alert('Unable to start checkout. Please try again.');
+  }
+}
 
 function addDeadline(){if(newDeadline.course&&newDeadline.title&&newDeadline.date){setDeadlines(prev=>[...prev,{...newDeadline,id:Date.now()}]);setNewDeadline({course:'',title:'',date:'',type:'assignment'});setShowAddDeadline(false)}}
 
@@ -1436,7 +1477,7 @@ return(
         </button>
       </div>
     </div></div></div>}
-    {showPaywall&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-white rounded-2xl p-8 max-w-md w-full"><div className="text-center mb-6"><div className="text-6xl mb-4">☕</div><h2 className="text-3xl font-bold text-gray-800 mb-2">Lock in Premium</h2><p className="text-gray-600">Trial ends Feb 7. $5 one-time.</p></div><button onClick={upgrade} className="w-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white py-4 rounded-lg font-bold mb-3">Unlock - $5 One-Time</button><button onClick={()=>setShowPaywall(false)} className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold">Not Now</button></div></div>}
+    {showPaywall&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-cyan-600 to-teal-700 rounded-2xl p-8 max-w-md w-full relative overflow-hidden"><div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400 rounded-full blur-3xl opacity-20"></div><div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-400 rounded-full blur-3xl opacity-20"></div><div className="relative z-10"><div className="text-center mb-6"><div className="text-6xl mb-4">👑</div><h2 className="text-3xl font-bold text-white mb-2">Upgrade to Premium</h2><p className="text-white opacity-90">{isTrialActive() ? 'Lock in your premium features!' : 'Your trial has ended'}</p></div><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6"><div className="text-white mb-4"><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Unlimited courses</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>AI Tutor (coming soon!)</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Ad-free experience</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Premium leaderboard badge</span></div><div className="flex items-center gap-2"><span className="text-xl">✅</span><span>Priority support</span></div></div><div className="text-center"><div className="text-4xl font-bold text-yellow-300 mb-1">$4.99/month</div><div className="text-white text-sm opacity-75">Cancel anytime</div></div></div><button onClick={upgrade} className="w-full bg-white text-teal-600 py-4 rounded-xl font-bold text-lg mb-3 hover:scale-105 transition-all shadow-lg">Continue to Payment →</button><button onClick={()=>setShowPaywall(false)} className="w-full text-white text-sm opacity-75 hover:opacity-100">Maybe Later</button></div></div></div>}
     
   </div>
 </div>
