@@ -652,31 +652,49 @@ useEffect(() => {
 useEffect(()=>{const unsubscribe=auth.onAuthStateChanged(async(firebaseUser)=>{if(firebaseUser){await loadUserData(firebaseUser);setView('app')}setLoading(false)});return unsubscribe},[]);
 
 useEffect(() => {
+useEffect(() => {
   const urlParams = new URLSearchParams(window.location.search);
   const paymentStatus = urlParams.get('payment');
   
-  if (paymentStatus === 'success' && user) {
-    // Payment successful - save to Firebase
-    console.log('Payment successful! Upgrading user to premium...');
-    setIsPro(true);
+  if (paymentStatus === 'success') {
+    // Payment successful - wait for user to load then upgrade
+    console.log('Payment success detected!');
     
-    // Save to Firebase
-    db.collection('users').doc(user.uid).set({
-      isPro: true,
-      upgradeDate: new Date().toISOString()
-    }, { merge: true }).then(() => {
-      console.log('Premium status saved to Firebase');
-    }).catch(err => {
-      console.error('Error saving premium status:', err);
-    });
+    const upgradeUser = async () => {
+      // Wait for auth
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        console.log('Waiting for user to load...');
+        setTimeout(upgradeUser, 500);
+        return;
+      }
+      
+      console.log('Upgrading user to premium:', currentUser.uid);
+      setIsPro(true);
+      
+      // Save to Firebase
+      try {
+        await db.collection('users').doc(currentUser.uid).update({
+          isPro: true,
+          upgradeDate: new Date().toISOString()
+        });
+        console.log('✅ Premium status saved to Firebase');
+        alert('🎉 Payment successful! Welcome to Premium!');
+      } catch (err) {
+        console.error('❌ Error saving premium status:', err);
+        alert('Payment received! Please refresh if premium features don\'t appear.');
+      }
+      
+      // Clean URL
+      window.history.replaceState({}, '', '/');
+    };
     
-    alert('🎉 Payment successful! Welcome to Premium!');
-    window.history.replaceState({}, '', '/');
+    upgradeUser();
   } else if (paymentStatus === 'cancelled') {
     alert('Payment cancelled. You can upgrade anytime!');
     window.history.replaceState({}, '', '/');
   }
-}, [user]);
+}, []);
 
 
 async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());
@@ -1479,3 +1497,4 @@ ReactDOM.render(<LearnBot />, document.getElementById('root'));
   </script>
 </body>
 </html>
+
