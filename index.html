@@ -8,7 +8,6 @@
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
   <div id="root"></div>
@@ -33,11 +32,6 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const db = firebase.firestore();
 const TRIAL_DAYS = 14;
-
-// Stripe Configuration
-const STRIPE_PUBLISHABLE_KEY = 'pk_live_51SszMs1YZ8KpavpkvjyyQWQ1rbvh1I66PjxIz3Nv7RnBX4dpbr7kealeSdryQeQMXYUTBTNO8U6rJT2zBvj2eSwO00RNjrqBYE';
-const STRIPE_PRICE_ID = 'price_1StZuU1YZ8KpavpkNArzzu7N';
-const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
 
 
 const Icon = ({ name, className = "w-6 h-6" }) => {
@@ -722,32 +716,10 @@ function getTierBadge(){if(tier===0)return'';if(tier===1)return'🥈';if(tier===
 
 function getTierName(){if(tier===0)return'';if(tier===1)return'Silver Scholar';if(tier===2)return'Gold Scholar';if(tier===3)return'Diamond Scholar';return`${tier-2}x Diamond Scholar`}
 
-async function upgrade() {
-  if (!window.Stripe) {
-    alert('Payment system loading... please try again in a moment.');
-    return;
-  }
-  
-  console.log('Starting Stripe Checkout...');
-  
-  try {
-    const { error } = await stripe.redirectToCheckout({
-      lineItems: [{ price: STRIPE_PRICE_ID, quantity: 1 }],
-      mode: 'payment',  // Changed from 'subscription' to 'payment' for one-time
-      successUrl: `${window.location.origin}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${window.location.origin}?payment=cancelled`,
-      customerEmail: user?.email || email,
-      clientReferenceId: user?.uid,
-    });
-    
-    if (error) {
-      console.error('Stripe error:', error);
-      alert('Payment error: ' + error.message);
-    }
-  } catch (err) {
-    console.error('Checkout error:', err);
-    alert('Unable to start checkout: ' + err.message);
-  }
+function upgrade() {
+  // Redirect directly to Stripe Payment Link
+  const paymentLink = 'https://buy.stripe.com/9B64gs9BV17q4uc000awo00';
+  window.location.href = paymentLink;
 }
 
 function addDeadline(){if(newDeadline.course&&newDeadline.title&&newDeadline.date){setDeadlines(prev=>[...prev,{...newDeadline,id:Date.now()}]);setNewDeadline({course:'',title:'',date:'',type:'assignment'});setShowAddDeadline(false)}}
