@@ -8,6 +8,7 @@
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
   <div id="root"></div>
@@ -32,6 +33,11 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const db = firebase.firestore();
 const TRIAL_DAYS = 14;
+
+// Stripe Configuration
+const STRIPE_PUBLISHABLE_KEY = 'pk_live_51SszMs1YZ8KpavpkvjyyQWQ1rbvh1I66PjxIz3Nv7RnBX4dpbr7kealeSdryQeQMXYUTBTNO8U6rJT2zBvj2eSwO00RNjrqBYE';
+const STRIPE_PRICE_ID = 'price_1StZuU1YZ8KpavpkNArzzu7N';
+const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
 
 
 const Icon = ({ name, className = "w-6 h-6" }) => {
@@ -400,7 +406,7 @@ function StreakLostModal({ lostStreak, onClose }) {
   );
 }
 
-function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);
+function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);
 
 // LEADERBOARD STATE
 const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);
@@ -743,10 +749,28 @@ function getTierBadge(){if(tier===0)return'';if(tier===1)return'🥈';if(tier===
 
 function getTierName(){if(tier===0)return'';if(tier===1)return'Silver Scholar';if(tier===2)return'Gold Scholar';if(tier===3)return'Diamond Scholar';return`${tier-2}x Diamond Scholar`}
 
-function upgrade() {
-  // Redirect directly to Stripe Payment Link
-  const paymentLink = 'https://buy.stripe.com/9B64gs9BV17q4ucgAqawo00';
-  window.location.href = paymentLink;
+async function startCheckout() {
+  setPaymentProcessing(true);
+  setPaymentError('');
+  
+  try {
+    const { error } = await stripe.redirectToCheckout({
+      lineItems: [{ price: STRIPE_PRICE_ID, quantity: 1 }],
+      mode: 'payment',
+      successUrl: `${window.location.origin}?payment=success`,
+      cancelUrl: `${window.location.origin}?payment=cancelled`,
+      customerEmail: user?.email || email,
+      clientReferenceId: user?.uid,
+    });
+    
+    if (error) {
+      setPaymentError(error.message);
+      setPaymentProcessing(false);
+    }
+  } catch (err) {
+    setPaymentError('Unable to start checkout. Please try again.');
+    setPaymentProcessing(false);
+  }
 }
 
 function addDeadline(){if(newDeadline.course&&newDeadline.title&&newDeadline.date){setDeadlines(prev=>[...prev,{...newDeadline,id:Date.now()}]);setNewDeadline({course:'',title:'',date:'',type:'assignment'});setShowAddDeadline(false)}}
@@ -1486,7 +1510,7 @@ return(
         </button>
       </div>
     </div></div></div>}
-    {showPaywall&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-cyan-600 to-teal-700 rounded-2xl p-8 max-w-md w-full relative overflow-hidden"><div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400 rounded-full blur-3xl opacity-20"></div><div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-400 rounded-full blur-3xl opacity-20"></div><div className="relative z-10"><div className="text-center mb-6"><div className="text-6xl mb-4">👑</div><h2 className="text-3xl font-bold text-white mb-2">Upgrade to Premium</h2><p className="text-white opacity-90">{isTrialActive() ? 'Lock in lifetime access!' : 'Your trial has ended'}</p></div><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6"><div className="text-white mb-4"><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Unlimited courses</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>AI Tutor (coming soon!)</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Premium features forever</span></div></div><div className="text-center"><div className="text-5xl font-bold text-yellow-300 mb-1">$5</div><div className="text-white text-sm opacity-75">One-time payment • Lifetime access</div></div></div><button onClick={upgrade} className="w-full bg-white text-teal-600 py-4 rounded-xl font-bold text-lg mb-3 hover:scale-105 transition-all shadow-lg">Continue to Payment →</button><button onClick={()=>setShowPaywall(false)} className="w-full text-white text-sm opacity-75 hover:opacity-100">Maybe Later</button></div></div></div>}
+    {showPaywall&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-cyan-600 to-teal-700 rounded-2xl p-8 max-w-md w-full relative overflow-hidden"><div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400 rounded-full blur-3xl opacity-20"></div><div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-400 rounded-full blur-3xl opacity-20"></div><div className="relative z-10"><div className="text-center mb-6"><div className="text-6xl mb-4">👑</div><h2 className="text-3xl font-bold text-white mb-2">Upgrade to Premium</h2><p className="text-white opacity-90">{isTrialActive() ? 'Lock in lifetime access!' : 'Your trial has ended'}</p></div><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6"><div className="text-white mb-4"><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Unlimited courses</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>AI Tutor (coming soon!)</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Premium features forever</span></div></div><div className="text-center"><div className="text-5xl font-bold text-yellow-300 mb-1">$5</div><div className="text-white text-sm opacity-75">One-time payment • Lifetime access</div></div></div>{paymentError&&<div className="bg-red-500 bg-opacity-20 border border-red-300 text-white p-3 rounded-lg mb-4 text-sm">{paymentError}</div>}<button onClick={startCheckout} disabled={paymentProcessing} className="w-full bg-white text-teal-600 py-4 rounded-xl font-bold text-lg mb-3 hover:scale-105 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">{paymentProcessing ? 'Opening checkout...' : 'Continue to Payment →'}</button><button onClick={()=>setShowPaywall(false)} disabled={paymentProcessing} className="w-full text-white text-sm opacity-75 hover:opacity-100 disabled:opacity-50">Maybe Later</button></div></div></div>}
     
   </div>
 </div>
