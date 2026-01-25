@@ -783,6 +783,59 @@ if(view==='landing'){return(<div className="min-h-screen bg-gradient-to-br from-
 .neon-glow { animation: neon-glow 2s ease-in-out infinite; }
 `}</style><div className="absolute inset-0 overflow-hidden pointer-events-none"><div className="absolute top-20 left-10 text-2xl md:text-4xl opacity-20 float-animation" style={{animationDelay: '0s'}}>⚡</div><div className="absolute top-40 right-20 text-3xl md:text-5xl opacity-20 float-animation" style={{animationDelay: '0.5s'}}>🏆</div><div className="absolute bottom-32 left-20 text-2xl md:text-4xl opacity-20 float-animation" style={{animationDelay: '1s'}}>📚</div><div className="absolute bottom-20 right-10 text-3xl md:text-5xl opacity-20 float-animation" style={{animationDelay: '1.5s'}}>🎯</div></div><div className="max-w-4xl w-full relative z-10"><div className="text-center mb-8 md:mb-12"><div className="text-6xl md:text-8xl mb-4 md:mb-6 fade-in-1 float-animation">🤖</div><h1 className="text-4xl md:text-7xl font-black text-white mb-4 md:mb-6 fade-in-2 tracking-tight">LearnBot</h1><p className="text-2xl md:text-4xl font-bold text-white mb-2 md:mb-4 fade-in-3">Learning can be FUN!</p><p className="text-2xl md:text-4xl font-bold text-white mb-4 md:mb-8 fade-in-3">Start earning XP.</p><p className="text-base md:text-xl text-white max-w-2xl mx-auto leading-relaxed fade-in-4 px-4">Track your study sessions. Level up your focus. Watch your progress grow.</p></div><div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-4 md:p-8 mb-8 fade-in-5"><div className="bg-white bg-opacity-20 rounded-xl p-4 md:p-6"><h3 className="text-white font-bold text-xl md:text-2xl mb-4 md:mb-6 text-center">{isLogin?'Welcome Back!':'Get Started Free'}</h3>{!isLogin&&<input type="text" placeholder="Your name" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 mb-3 text-base md:text-lg"/>}<input type="email" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 mb-3 text-base md:text-lg"/><input type="password" placeholder="Password" value={pass} onChange={e=>setPass(e.target.value)} onKeyPress={e=>e.key==='Enter'&&(isLogin?login():signup())} className="w-full bg-white rounded-lg px-4 py-3 mb-4 text-base md:text-lg"/>{error&&<p className="text-red-200 text-sm mb-3 bg-red-500 bg-opacity-30 p-2 rounded">{error}</p>}<button onClick={isLogin?login:signup} disabled={(isLogin?(!email||!pass):(!name||!email||!pass))||loading} className="w-full bg-slate-900 text-cyan-400 py-4 md:py-5 rounded-xl font-black text-lg md:text-2xl hover:scale-105 transition-all disabled:opacity-50 border-2 border-cyan-400 neon-glow relative overflow-hidden"><span className="relative z-10">{loading?(isLogin?'Logging in...':'Creating Account...'):(isLogin?'Log In →':'⚡ Start Earning XP →')}</span></button><button onClick={()=>{setIsLogin(!isLogin);setError('')}} className="w-full text-white text-sm mt-4 hover:underline opacity-90 hover:opacity-100 transition-opacity">{isLogin?"Don't have an account? Sign up":'Already have an account? Log in'}</button></div></div><div className="mt-8 text-center text-white text-xs opacity-75"><div className="mb-2">LearnBot - Powered by <strong>🐺 Alpha Software Group LLC</strong></div><div className="mb-2">© 2026 Alpha Software Group LLC. All rights reserved.</div><div className="flex justify-center gap-4"><a href="mailto:trylearnbot@gmail.com" className="hover:text-cyan-200">Contact</a><button onClick={()=>setView('terms')} className="hover:text-cyan-200">Terms</button><button onClick={()=>setView('privacy')} className="hover:text-cyan-200">Privacy</button></div></div></div></div>)}
 
+if(view==='terms'){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4 md:p-8">
+  <div className="max-w-4xl mx-auto bg-white rounded-2xl p-6 md:p-12">
+    <button onClick={()=>setView(user?'app':'landing')} className="mb-6 text-cyan-600 hover:text-cyan-700 font-semibold flex items-center gap-2">
+      ← Back to {user?'Dashboard':'Home'}
+    </button>
+    
+    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Terms of Service</h1>
+    
+    <div className="prose prose-sm md:prose-base max-w-none text-gray-700 space-y-6">
+      <p className="text-sm text-gray-500">Last Updated: January 25, 2026</p>
+      
+      <section>
+        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">1. Agreement to Terms</h2>
+        <p>By accessing LearnBot ("the Service"), operated by Alpha Software Group LLC ("Company", "we", "our", "us"), you agree to be bound by these Terms of Service.</p>
+      </section>
+      
+      <section>
+        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">2. Description of Service</h2>
+        <p>LearnBot is a gamified study timer application that helps students track their study sessions, earn experience points, and compete on leaderboards.</p>
+      </section>
+      
+      <section>
+        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">3. Contact Information</h2>
+        <p>For questions about these Terms, contact us at trylearnbot@gmail.com</p>
+      </section>
+    </div>
+  </div>
+</div>)}
+
+if(view==='privacy'){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4 md:p-8">
+  <div className="max-w-4xl mx-auto bg-white rounded-2xl p-6 md:p-12">
+    <button onClick={()=>setView(user?'app':'landing')} className="mb-6 text-cyan-600 hover:text-cyan-700 font-semibold flex items-center gap-2">
+      ← Back to {user?'Dashboard':'Home'}
+    </button>
+    
+    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Privacy Policy</h1>
+    
+    <div className="prose prose-sm md:prose-base max-w-none text-gray-700 space-y-6">
+      <p className="text-sm text-gray-500">Last Updated: January 25, 2026</p>
+      
+      <section>
+        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">1. Introduction</h2>
+        <p>Alpha Software Group LLC operates LearnBot. This Privacy Policy explains how we collect, use, and protect your personal information.</p>
+      </section>
+      
+      <section>
+        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">2. Contact Us</h2>
+        <p>For privacy questions, contact: trylearnbot@gmail.com</p>
+      </section>
+    </div>
+  </div>
+</div>)}
+
 return(
 <div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4">
   <div className="max-w-4xl mx-auto">
@@ -1385,243 +1438,9 @@ return(
     </div></div></div>}
     {showPaywall&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-white rounded-2xl p-8 max-w-md w-full"><div className="text-center mb-6"><div className="text-6xl mb-4">☕</div><h2 className="text-3xl font-bold text-gray-800 mb-2">Lock in Premium</h2><p className="text-gray-600">Trial ends Feb 7. $5 one-time.</p></div><button onClick={upgrade} className="w-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white py-4 rounded-lg font-bold mb-3">Unlock - $5 One-Time</button><button onClick={()=>setShowPaywall(false)} className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold">Not Now</button></div></div>}
     
-    <footer className="mt-8 pb-6 text-center">
-      <div className="bg-white bg-opacity-10 rounded-xl p-6 max-w-4xl mx-auto">
-        <div className="text-white text-sm mb-3">
-          <strong className="text-base">LearnBot</strong> - Gamified Study Timer
-        </div>
-        <div className="text-white text-xs opacity-75 mb-3">
-          Powered by <strong>🐺 Alpha Software Group LLC</strong>
-        </div>
-        <div className="text-white text-xs opacity-75 mb-4">
-          © 2026 Alpha Software Group LLC. All rights reserved.
-        </div>
-        <div className="flex flex-wrap justify-center gap-4 text-white text-xs">
-          <a href="mailto:trylearnbot@gmail.com" className="hover:text-cyan-300 transition-colors">
-            ✉️ trylearnbot@gmail.com
-          </a>
-          <button onClick={()=>setView('terms')} className="hover:text-cyan-300 transition-colors">
-            Terms of Service
-          </button>
-          <button onClick={()=>setView('privacy')} className="hover:text-cyan-300 transition-colors">
-            Privacy Policy
-          </button>
-        </div>
-      </div>
-    </footer>
   </div>
 </div>
 )}
-
-if(view==='terms'){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4 md:p-8">
-  <div className="max-w-4xl mx-auto bg-white rounded-2xl p-6 md:p-12">
-    <button onClick={()=>setView(user?'app':'landing')} className="mb-6 text-cyan-600 hover:text-cyan-700 font-semibold flex items-center gap-2">
-      ← Back to {user?'Dashboard':'Home'}
-    </button>
-    
-    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Terms of Service</h1>
-    
-    <div className="prose prose-sm md:prose-base max-w-none text-gray-700 space-y-6">
-      <p className="text-sm text-gray-500">Last Updated: January 25, 2026</p>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">1. Agreement to Terms</h2>
-        <p>By accessing LearnBot ("the Service"), operated by Alpha Software Group LLC ("Company", "we", "our", "us"), you agree to be bound by these Terms of Service.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">2. Description of Service</h2>
-        <p>LearnBot is a gamified study timer application that helps students track their study sessions, earn experience points, and compete on leaderboards.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">3. User Accounts</h2>
-        <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">4. Premium Subscription</h2>
-        <p>Premium features include unlimited courses, AI tutor access, and ad-free experience. Subscriptions are billed monthly or annually as selected. You may cancel at any time.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">5. Free Trial</h2>
-        <p>New users receive a 14-day free trial of Premium features. No payment is required during the trial period. Your trial will expire on the date specified in your account.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">6. Acceptable Use</h2>
-        <p>You agree not to use the Service to:</p>
-        <ul className="list-disc pl-6 mt-2 space-y-1">
-          <li>Violate any laws or regulations</li>
-          <li>Harass, abuse, or harm other users</li>
-          <li>Attempt to manipulate leaderboards or game mechanics</li>
-          <li>Reverse engineer or attempt to access the Service's source code</li>
-          <li>Use automated systems or bots</li>
-        </ul>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">7. Intellectual Property</h2>
-        <p>All content, features, and functionality of LearnBot are owned by Alpha Software Group LLC and are protected by copyright, trademark, and other intellectual property laws.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">8. Disclaimer of Warranties</h2>
-        <p>The Service is provided "as is" without warranties of any kind. We do not guarantee that the Service will be uninterrupted or error-free.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">9. Limitation of Liability</h2>
-        <p>Alpha Software Group LLC shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">10. Changes to Terms</h2>
-        <p>We reserve the right to modify these terms at any time. Continued use of the Service constitutes acceptance of modified terms.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">11. Contact Information</h2>
-        <p>For questions about these Terms, contact us at:</p>
-        <p className="mt-2">
-          <strong>Alpha Software Group LLC</strong><br/>
-          Email: trylearnbot@gmail.com
-        </p>
-      </section>
-    </div>
-  </div>
-</div>)}
-
-if(view==='privacy'){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4 md:p-8">
-  <div className="max-w-4xl mx-auto bg-white rounded-2xl p-6 md:p-12">
-    <button onClick={()=>setView(user?'app':'landing')} className="mb-6 text-cyan-600 hover:text-cyan-700 font-semibold flex items-center gap-2">
-      ← Back to {user?'Dashboard':'Home'}
-    </button>
-    
-    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Privacy Policy</h1>
-    
-    <div className="prose prose-sm md:prose-base max-w-none text-gray-700 space-y-6">
-      <p className="text-sm text-gray-500">Last Updated: January 25, 2026</p>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">1. Introduction</h2>
-        <p>Alpha Software Group LLC ("we", "our", "us") operates LearnBot. This Privacy Policy explains how we collect, use, and protect your personal information.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">2. Information We Collect</h2>
-        <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Account Information:</h3>
-        <ul className="list-disc pl-6 space-y-1">
-          <li>Name and email address</li>
-          <li>Username</li>
-          <li>Password (encrypted)</li>
-          <li>User type and learning goals</li>
-        </ul>
-        
-        <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Usage Information:</h3>
-        <ul className="list-disc pl-6 space-y-1">
-          <li>Study sessions (duration, courses)</li>
-          <li>XP, levels, and tier progress</li>
-          <li>Streak data</li>
-          <li>Leaderboard rankings</li>
-        </ul>
-        
-        <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Payment Information:</h3>
-        <ul className="list-disc pl-6 space-y-1">
-          <li>Payment information is processed by Stripe</li>
-          <li>We do not store credit card numbers</li>
-          <li>We receive confirmation of successful payments</li>
-        </ul>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">3. How We Use Your Information</h2>
-        <ul className="list-disc pl-6 space-y-1">
-          <li>Provide and improve the Service</li>
-          <li>Track your study progress and gamification features</li>
-          <li>Display your username on leaderboards</li>
-          <li>Send important updates about your account</li>
-          <li>Process payments and manage subscriptions</li>
-          <li>Prevent fraud and abuse</li>
-        </ul>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">4. Information Sharing</h2>
-        <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Public Information:</h3>
-        <p>Your username, level, tier, and study minutes are visible on public leaderboards. Your real name and email are never displayed publicly.</p>
-        
-        <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Third-Party Services:</h3>
-        <ul className="list-disc pl-6 mt-2 space-y-1">
-          <li><strong>Firebase:</strong> Database and authentication</li>
-          <li><strong>Stripe:</strong> Payment processing</li>
-          <li><strong>Anthropic/OpenAI:</strong> AI tutor features (Premium only)</li>
-        </ul>
-        
-        <p className="mt-4">We do not sell your personal information to third parties.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">5. Data Security</h2>
-        <p>We implement industry-standard security measures to protect your data:</p>
-        <ul className="list-disc pl-6 mt-2 space-y-1">
-          <li>Encrypted data transmission (HTTPS)</li>
-          <li>Secure authentication via Firebase</li>
-          <li>Regular security updates</li>
-          <li>Limited employee access to user data</li>
-        </ul>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">6. Your Rights</h2>
-        <p>You have the right to:</p>
-        <ul className="list-disc pl-6 mt-2 space-y-1">
-          <li>Access your personal data</li>
-          <li>Correct inaccurate data</li>
-          <li>Request deletion of your account</li>
-          <li>Opt out of promotional emails</li>
-          <li>Export your data</li>
-        </ul>
-        <p className="mt-4">To exercise these rights, contact us at trylearnbot@gmail.com</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">7. Data Retention</h2>
-        <p>We retain your data as long as your account is active. If you delete your account, we will delete your personal information within 30 days, except where required by law.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">8. Children's Privacy</h2>
-        <p>LearnBot is intended for users 13 years and older. We do not knowingly collect information from children under 13. If we learn we have collected such information, we will delete it immediately.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">9. Cookies and Tracking</h2>
-        <p>We use minimal cookies for:</p>
-        <ul className="list-disc pl-6 mt-2 space-y-1">
-          <li>Authentication (keeping you logged in)</li>
-          <li>Session management</li>
-          <li>Analytics (understanding how users use the app)</li>
-        </ul>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">10. Changes to Privacy Policy</h2>
-        <p>We may update this Privacy Policy from time to time. We will notify users of significant changes via email or through the Service.</p>
-      </section>
-      
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">11. Contact Us</h2>
-        <p>For privacy-related questions or concerns, contact:</p>
-        <p className="mt-2">
-          <strong>Alpha Software Group LLC</strong><br/>
-          Email: trylearnbot@gmail.com
-        </p>
-      </section>
-    </div>
-  </div>
-</div>)}
 
 ReactDOM.render(<LearnBot />, document.getElementById('root'));
   </script>
