@@ -654,19 +654,29 @@ useEffect(()=>{const unsubscribe=auth.onAuthStateChanged(async(firebaseUser)=>{i
 useEffect(() => {
   const urlParams = new URLSearchParams(window.location.search);
   const paymentStatus = urlParams.get('payment');
-  const sessionId = urlParams.get('session_id');
   
-  if (paymentStatus === 'success' && sessionId) {
-    // Only mark as pro if there's a valid Stripe session ID
-    console.log('Payment successful! Session ID:', sessionId);
+  if (paymentStatus === 'success' && user) {
+    // Payment successful - save to Firebase
+    console.log('Payment successful! Upgrading user to premium...');
     setIsPro(true);
+    
+    // Save to Firebase
+    db.collection('users').doc(user.uid).set({
+      isPro: true,
+      upgradeDate: new Date().toISOString()
+    }, { merge: true }).then(() => {
+      console.log('Premium status saved to Firebase');
+    }).catch(err => {
+      console.error('Error saving premium status:', err);
+    });
+    
     alert('🎉 Payment successful! Welcome to Premium!');
     window.history.replaceState({}, '', '/');
   } else if (paymentStatus === 'cancelled') {
     alert('Payment cancelled. You can upgrade anytime!');
     window.history.replaceState({}, '', '/');
   }
-}, []);
+}, [user]);
 
 
 async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());
