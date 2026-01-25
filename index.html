@@ -660,6 +660,23 @@ useEffect(()=>{const unsubscribe=auth.onAuthStateChanged(async(firebaseUser)=>{i
 useEffect(() => {
   const urlParams = new URLSearchParams(window.location.search);
   const paymentStatus = urlParams.get('payment');
+  const isPopup = urlParams.get('popup');
+  
+  // If this is a popup redirect from Stripe, close it and refresh parent
+  if (paymentStatus === 'success' && isPopup === 'true') {
+    console.log('Payment successful in popup - closing and refreshing parent...');
+    
+    if (window.opener && !window.opener.closed) {
+      // Tell parent to refresh and upgrade
+      window.opener.location.href = window.location.origin + '?payment=success';
+      window.close();
+      return;
+    } else {
+      // Fallback if opener not available
+      window.location.href = window.location.origin + '?payment=success';
+      return;
+    }
+  }
   
   if (paymentStatus === 'success') {
     // Payment successful - wait for user to load then upgrade
@@ -753,13 +770,13 @@ function startCheckout() {
   setPaymentProcessing(true);
   setPaymentError('');
   
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   const paymentLink = 'https://buy.stripe.com/9B64gs9BV17q4ucgAqawo00';
   
-  // Detect mobile device
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  
   if (isMobile) {
-    // Mobile: Direct redirect (popups suck on mobile)
+    // Mobile: Direct redirect
+    // Set a flag so we know to check for payment on return
+    localStorage.setItem('learnbot_payment_pending', Date.now().toString());
     window.location.href = paymentLink;
     return;
   }
@@ -787,7 +804,8 @@ function startCheckout() {
     if (popup.closed) {
       clearInterval(checkPopup);
       setPaymentProcessing(false);
-      // Page will handle ?payment=success from redirect
+      // Check if payment succeeded by looking at URL or reloading
+      window.location.reload();
     }
   }, 500);
 }
