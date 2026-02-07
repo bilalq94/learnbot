@@ -1262,23 +1262,38 @@ return(
             <span>⚔️</span> Your Skills
           </h2>
           
-          {skills.length === 0 ? (
+          {courses.length === 0 ? (
             <div className="text-center py-12 text-white opacity-75">
               <div className="text-5xl mb-4">🎯</div>
-              <p className="text-lg">No skills yet!</p>
-              <p className="text-sm mt-2">Complete a study session to start leveling up skills</p>
+              <p className="text-lg">No courses yet!</p>
+              <p className="text-sm mt-2">Add courses to start tracking your skills</p>
             </div>
           ) : (
             <div className="space-y-3">
-              {skills.sort((a, b) => b.level - a.level).map((skill, index) => {
+              {courses.map(course => {
+                // Find existing skill or create default Level 1
+                const existingSkill = skills.find(s => s.name === course.name);
+                const skill = existingSkill || {
+                  name: course.name,
+                  xp: 0,
+                  level: 1,
+                  lastStudied: null,
+                  streak: 0,
+                  icon: getSkillIcon(course.name)
+                };
+                
                 const xpForNextLevel = getSkillXpForLevel(skill.level);
-                const currentLevelXp = skill.xp - (skill.level - 1) * 100;
+                const currentLevelXp = skill.level === 1 ? skill.xp : skill.xp - (skill.level - 1) * 100;
                 const progress = (currentLevelXp / xpForNextLevel) * 100;
                 
                 return (
                   <div 
-                    key={skill.name}
-                    className="bg-gradient-to-r from-cyan-600 to-teal-600 rounded-xl p-4 hover:scale-102 transition-all shadow-lg"
+                    key={course.id}
+                    className={`rounded-xl p-4 hover:scale-102 transition-all shadow-lg ${
+                      existingSkill 
+                        ? 'bg-gradient-to-r from-cyan-600 to-teal-600' 
+                        : 'bg-gradient-to-r from-gray-500 to-gray-600 opacity-75'
+                    }`}
                   >
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
@@ -1291,7 +1306,12 @@ return(
                                 🔥 {skill.streak} day{skill.streak > 1 ? 's' : ''}
                               </span>
                             )}
-                            <span>Last: {new Date(skill.lastStudied).toLocaleDateString()}</span>
+                            {skill.lastStudied && (
+                              <span>Last: {new Date(skill.lastStudied).toLocaleDateString()}</span>
+                            )}
+                            {!existingSkill && (
+                              <span className="text-yellow-300">⭐ Not trained yet</span>
+                            )}
                           </div>
                         </div>
                       </div>
