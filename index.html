@@ -409,7 +409,7 @@ function StreakLostModal({ lostStreak, onClose }) {
 function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);
 
 // LEADERBOARD STATE
-const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);const[appMode,setAppMode]=useState('education');const[organization,setOrganization]=useState(null);const[isOrgAdmin,setIsOrgAdmin]=useState(false);const[showCreateOrg,setShowCreateOrg]=useState(false);const[showOnboardingWizard,setShowOnboardingWizard]=useState(false);const[onboardingData,setOnboardingData]=useState({orgName:'',orgType:'education',size:'',inviteMethod:'link'});const[onboardingStepNum,setOnboardingStepNum]=useState(1);const[inviteLink,setInviteLink]=useState('');const[orgInviteCode,setOrgInviteCode]=useState('');const[timerSound,setTimerSound]=useState(false);const[endSound,setEndSound]=useState(true);const[endTime,setEndTime]=useState(null);const[lofiEnabled,setLofiEnabled]=useState(false);const[lofiVolume,setLofiVolume]=useState(30);const[lofiStream,setLofiStream]=useState('lofi-girl');
+const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);const[appMode,setAppMode]=useState('education');const[organization,setOrganization]=useState(null);const[isOrgAdmin,setIsOrgAdmin]=useState(false);const[showCreateOrg,setShowCreateOrg]=useState(false);const[showOnboardingWizard,setShowOnboardingWizard]=useState(false);const[onboardingData,setOnboardingData]=useState({orgName:'',orgType:'education',size:'',inviteMethod:'link'});const[onboardingStepNum,setOnboardingStepNum]=useState(1);const[inviteLink,setInviteLink]=useState('');const[orgInviteCode,setOrgInviteCode]=useState('');const[timerSound,setTimerSound]=useState(false);const[endSound,setEndSound]=useState(true);const[endTime,setEndTime]=useState(null);const[lofiEnabled,setLofiEnabled]=useState(false);const[lofiVolume,setLofiVolume]=useState(30);const[lofiStream,setLofiStream]=useState('lofi-girl');const[showBreakGame,setShowBreakGame]=useState(false);const[gameActive,setGameActive]=useState(false);const[gameScore,setGameScore]=useState(0);const[gameTime,setGameTime]=useState(60);const[gameTargets,setGameTargets]=useState([]);const[gameHighScore,setGameHighScore]=useState(0);
 
 const timer=useRef(null);const level=Math.min(Math.floor(xp/100)+1,10);const levelXp=(xp%100);
 
@@ -768,6 +768,22 @@ useEffect(() => {
   loadAllClassrooms();
 }, [classrooms]);
 
+// Game timer
+useEffect(() => {
+  if (gameActive && gameTime > 0) {
+    const timer = setInterval(() => {
+      setGameTime(t => {
+        if (t <= 1) {
+          endBreakGame();
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }
+}, [gameActive, gameTime]);
+
 async function signup(){if(!name||!email||!pass)return;setError('');setLoading(true);try{const result=await auth.createUserWithEmailAndPassword(email,pass);const monday=getMonday();await db.collection('users').doc(result.user.uid).set({name,email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,goal:'',weeklyTarget:10,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday,onboardingCompleted:false});setUser({uid:result.user.uid,email,name,trialStartDate:new Date().toISOString()});setWeekStartDate(monday);setView('app');setShowUsernamePrompt(true)}catch(err){setError(err.message)}finally{setLoading(false)}}
 
 async function login(){if(!email||!pass)return;setError('');setLoading(true);try{const result=await auth.signInWithEmailAndPassword(email,pass);await loadUserData(result.user);setView('app')}catch(err){setError(err.code==='auth/user-not-found'?'No account found':err.message)}finally{setLoading(false)}}
@@ -919,6 +935,48 @@ function getLofiStreamUrl() {
   };
   // Remove autoplay - user must click play (browser requirement)
   return `https://www.youtube.com/embed/${streams[lofiStream]}?controls=1&loop=1&modestbranding=1&rel=0&enablejsapi=1`;
+}
+
+// Break Game Functions
+function startBreakGame() {
+  setShowBreakGame(true);
+  setGameActive(true);
+  setGameScore(0);
+  setGameTime(60);
+  setGameTargets([]);
+  spawnTarget();
+}
+
+function spawnTarget() {
+  const id = Date.now();
+  const x = Math.random() * 80 + 10;
+  const y = Math.random() * 70 + 10;
+  const size = Math.random() * 30 + 40;
+  
+  setGameTargets(prev => [...prev, { id, x, y, size }]);
+  
+  setTimeout(() => {
+    setGameTargets(prev => prev.filter(t => t.id !== id));
+  }, 2000);
+}
+
+function hitTarget(targetId) {
+  setGameTargets(prev => prev.filter(t => t.id !== targetId));
+  setGameScore(prev => prev + 10);
+  
+  const hit = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+  hit.play().catch(() => {});
+  
+  if (gameActive) {
+    setTimeout(spawnTarget, 500);
+  }
+}
+
+function endBreakGame() {
+  setGameActive(false);
+  if (gameScore > gameHighScore) {
+    setGameHighScore(gameScore);
+  }
 }
 
 // Organization Functions
@@ -2057,6 +2115,11 @@ return(
               </button>
             </div>
           )}
+          <div className="mt-4 text-center">
+            <button onClick={startBreakGame} className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all flex items-center gap-2 mx-auto">
+              <span>🎮</span> Take a Break!
+            </button>
+          </div>
         </div>
       </div>
     )}
@@ -2680,6 +2743,9 @@ return(
     
     {/* Onboarding Wizard */}
     {showOnboardingWizard&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50 p-4"><div className="bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"><div className="mb-6"><div className="flex justify-between items-center mb-4"><h2 className="text-3xl font-bold text-white">{appMode==='education'?'🏫 School Setup':'💼 Company Setup'}</h2><div className="text-white text-sm">Step {onboardingStepNum}/4</div></div><div className="flex gap-2 mb-4">{[1,2,3,4].map(step=><div key={step} className={`flex-1 h-2 rounded-full ${step<=onboardingStepNum?'bg-white':'bg-white bg-opacity-30'}`}/>)}</div></div>{onboardingStepNum===1&&<div><h3 className="text-2xl font-bold text-white mb-4">Create Your Organization</h3><div className="space-y-4"><input type="text" placeholder={appMode==='education'?"School or District Name":"Company Name"} value={onboardingData.orgName} onChange={e=>setOnboardingData({...onboardingData,orgName:e.target.value})} className="w-full px-4 py-3 rounded-lg text-lg"/><select value={onboardingData.size} onChange={e=>setOnboardingData({...onboardingData,size:e.target.value})} className="w-full px-4 py-3 rounded-lg text-lg"><option value="">Select Size...</option>{appMode==='education'?<><option value="1-50">1-50 students</option><option value="51-200">51-200 students</option><option value="201-500">201-500 students</option><option value="501+">500+ students</option></>:<><option value="1-10">1-10 employees</option><option value="11-50">11-50 employees</option><option value="51-200">51-200 employees</option><option value="201+">200+ employees</option></>}</select></div><div className="flex gap-3 mt-6"><button onClick={()=>setShowOnboardingWizard(false)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">Cancel</button><button onClick={createOrganization} disabled={!onboardingData.orgName.trim()} className="flex-1 bg-white text-purple-600 py-3 rounded-lg font-bold hover:scale-105 transition-all disabled:opacity-50">Next →</button></div></div>}{onboardingStepNum===2&&<div><h3 className="text-2xl font-bold text-white mb-4">Invite Your Team</h3><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6"><h4 className="text-white font-bold mb-3">Share Invite Link:</h4><div className="bg-white rounded-lg p-3 flex items-center justify-between mb-3"><input type="text" value={inviteLink} readOnly className="flex-1 bg-transparent text-sm"/><button onClick={()=>{navigator.clipboard.writeText(inviteLink);alert('Copied!')}} className="bg-teal-600 text-white px-3 py-1 rounded text-sm font-bold ml-2">Copy</button></div><p className="text-white text-sm opacity-75">Anyone with this link can join your organization</p></div><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6"><h4 className="text-white font-bold mb-3">Or Share Join Code:</h4><div className="bg-white rounded-lg p-4 text-center"><div className="text-3xl font-black tracking-wider">{organization?.inviteCode}</div></div><p className="text-white text-sm opacity-75 mt-2 text-center">{appMode==='education'?'Teachers and students':'Team members'} can join with this code</p></div><div className="flex gap-3"><button onClick={()=>setOnboardingStepNum(1)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">← Back</button><button onClick={()=>setOnboardingStepNum(3)} className="flex-1 bg-white text-purple-600 py-3 rounded-lg font-bold">Next →</button></div></div>}{onboardingStepNum===3&&<div><h3 className="text-2xl font-bold text-white mb-4">{appMode==='education'?'Create First Classroom (Optional)':'Create First Team (Optional)'}</h3><p className="text-white opacity-90 mb-6">You can skip this and let {appMode==='education'?'teachers':'managers'} create their own {appMode==='education'?'classrooms':'teams'}</p><div className="space-y-4"><input type="text" placeholder={appMode==='education'?"Classroom Name (e.g., AP Calculus)":"Team Name (e.g., Engineering)"} value={newClassroom.name} onChange={e=>setNewClassroom({...newClassroom,name:e.target.value})} className="w-full px-4 py-3 rounded-lg"/><input type="text" placeholder={appMode==='education'?"Subject":"Department"} value={newClassroom.subject} onChange={e=>setNewClassroom({...newClassroom,subject:e.target.value})} className="w-full px-4 py-3 rounded-lg"/></div><div className="flex gap-3 mt-6"><button onClick={()=>setOnboardingStepNum(2)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">← Back</button><button onClick={()=>{if(newClassroom.name.trim()){createClassroom()}setOnboardingStepNum(4)}} className="flex-1 bg-white text-purple-600 py-3 rounded-lg font-bold">{newClassroom.name.trim()?'Create & Continue':'Skip →'}</button></div></div>}{onboardingStepNum===4&&<div className="text-center"><div className="text-6xl mb-6">🎉</div><h3 className="text-3xl font-bold text-white mb-4">You're All Set!</h3><p className="text-white opacity-90 text-lg mb-8">Your organization is ready. {appMode==='education'?'Teachers and students':'Team members'} can now join and start {appMode==='education'?'studying':'focusing'} together!</p><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6 text-left"><h4 className="text-white font-bold mb-3">Quick Start Guide:</h4><ul className="text-white space-y-2 text-sm opacity-90"><li>✅ Share your invite link or code</li><li>✅ {appMode==='education'?'Teachers':'Managers'} can create {appMode==='education'?'classrooms':'teams'}</li><li>✅ Set {appMode==='education'?'class':'team'} goals and challenges</li><li>✅ Track progress on leaderboards</li><li>✅ All features free until Feb 28th!</li></ul></div><button onClick={()=>{setShowOnboardingWizard(false);setTab('classroom')}} className="w-full bg-white text-purple-600 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all">Start Using LearnBot 🚀</button></div>}</div></div>}
+    
+    {/* Break Game Modal */}
+    {showBreakGame&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50 p-4"><div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-8 max-w-4xl w-full h-[80vh] relative overflow-hidden"><button onClick={()=>{setShowBreakGame(false);setGameActive(false)}} className="absolute top-4 right-4 text-white opacity-75 hover:opacity-100 z-10"><Icon name="x" className="w-8 h-8"/></button>{!gameActive&&gameTime===60?<div className="text-center h-full flex flex-col items-center justify-center"><div className="text-6xl mb-6">🎮</div><h2 className="text-4xl font-bold text-white mb-4">Focus Trainer</h2><p className="text-white opacity-90 text-lg mb-8">Click the targets as fast as you can!<br/>60 seconds • Improve your reaction time</p>{gameHighScore>0&&<div className="bg-white bg-opacity-20 rounded-xl p-4 mb-6"><div className="text-white text-sm opacity-75">High Score</div><div className="text-yellow-300 text-3xl font-bold">{gameHighScore} points</div></div>}<button onClick={startBreakGame} className="bg-white text-purple-600 px-8 py-4 rounded-xl font-bold text-xl hover:scale-105 transition-all">Start Game 🚀</button></div>:<div className="h-full flex flex-col"><div className="flex justify-between items-center mb-4"><div className="text-white"><span className="text-4xl font-bold">{gameScore}</span><span className="text-lg opacity-75 ml-2">points</span></div><div className="text-white"><span className="text-4xl font-bold">{gameTime}</span><span className="text-lg opacity-75 ml-2">seconds</span></div></div><div className="flex-1 bg-white bg-opacity-10 rounded-xl relative overflow-hidden">{gameTargets.map(target=><div key={target.id} onClick={()=>hitTarget(target.id)} className="absolute bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full cursor-pointer hover:scale-110 transition-transform shadow-lg" style={{left:`${target.x}%`,top:`${target.y}%`,width:`${target.size}px`,height:`${target.size}px`}}/>)}{gameTime===0&&<div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75"><div className="text-center"><div className="text-6xl mb-4">🎉</div><div className="text-white text-4xl font-bold mb-2">Game Over!</div><div className="text-yellow-300 text-5xl font-black mb-6">{gameScore} points</div>{gameScore>gameHighScore&&<div className="text-green-400 text-xl mb-6">🏆 New High Score!</div>}<button onClick={startBreakGame} className="bg-white text-purple-600 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all mr-3">Play Again</button><button onClick={()=>setShowBreakGame(false)} className="bg-white bg-opacity-20 text-white px-6 py-3 rounded-xl font-bold hover:bg-opacity-30">Close</button></div></div>}</div></div>}</div></div>}
     
   </div>
 </div>
