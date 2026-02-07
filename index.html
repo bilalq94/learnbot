@@ -409,7 +409,7 @@ function StreakLostModal({ lostStreak, onClose }) {
 function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);
 
 // LEADERBOARD STATE
-const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);
+const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);
 
 const timer=useRef(null);const level=Math.min(Math.floor(xp/100)+1,10);const levelXp=(xp%100);
 
@@ -719,13 +719,13 @@ useEffect(() => {
 }, []);
 
 
-async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());
+async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());setSkills(data.skills||[]);setTotalLevel(data.totalLevel||0);
 
 if(!data.username){setShowUsernamePrompt(true)}else if(!data.onboardingCompleted){setShowOnboarding(true)}}}catch(err){console.error('Error loading user data:',err)}}
 
-async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
+async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
 
-useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes]);
+useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,skills,totalLevel]);
 
 async function signup(){if(!name||!email||!pass)return;setError('');setLoading(true);try{const result=await auth.createUserWithEmailAndPassword(email,pass);const monday=getMonday();await db.collection('users').doc(result.user.uid).set({name,email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,goal:'',weeklyTarget:10,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday,onboardingCompleted:false});setUser({uid:result.user.uid,email,name,trialStartDate:new Date().toISOString()});setWeekStartDate(monday);setView('app');setShowUsernamePrompt(true)}catch(err){setError(err.message)}finally{setLoading(false)}}
 
@@ -744,6 +744,81 @@ function isTrialActive(){
 
 const hasAccess=isPro||isTrialActive();
 
+// Skills System Functions
+function getSkillXpForLevel(level) {
+  // XP required to reach next level
+  return level * 100;
+}
+
+function getSkillLevel(skillXp) {
+  // Calculate level from XP (same as main level)
+  return Math.min(Math.floor(skillXp / 100) + 1, 99);
+}
+
+function updateSkillXp(courseName, xpToAdd) {
+  if (!courseName) return;
+  
+  setSkills(prevSkills => {
+    const existingSkillIndex = prevSkills.findIndex(s => s.name === courseName);
+    let newSkills;
+    
+    if (existingSkillIndex >= 0) {
+      // Update existing skill
+      newSkills = [...prevSkills];
+      const skill = newSkills[existingSkillIndex];
+      skill.xp += xpToAdd;
+      skill.level = getSkillLevel(skill.xp);
+      skill.lastStudied = new Date().toISOString().split('T')[0];
+      
+      // Update streak
+      const today = new Date().toISOString().split('T')[0];
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+      
+      if (skill.lastStudied === today) {
+        // Already studied today, keep streak
+      } else if (skill.lastStudied === yesterday) {
+        skill.streak += 1;
+      } else {
+        skill.streak = 1;
+      }
+      
+      newSkills[existingSkillIndex] = skill;
+    } else {
+      // Create new skill
+      const newSkill = {
+        name: courseName,
+        xp: xpToAdd,
+        level: getSkillLevel(xpToAdd),
+        lastStudied: new Date().toISOString().split('T')[0],
+        streak: 1,
+        icon: getSkillIcon(courseName)
+      };
+      newSkills = [...prevSkills, newSkill];
+    }
+    
+    // Calculate total level
+    const totalLvl = newSkills.reduce((sum, skill) => sum + skill.level, 0);
+    setTotalLevel(totalLvl);
+    
+    return newSkills;
+  });
+}
+
+function getSkillIcon(courseName) {
+  const name = courseName.toLowerCase();
+  if (name.includes('math') || name.includes('calc') || name.includes('algebra') || name.includes('geometry')) return '📐';
+  if (name.includes('program') || name.includes('code') || name.includes('cs') || name.includes('software')) return '💻';
+  if (name.includes('science') || name.includes('physics') || name.includes('chem') || name.includes('bio')) return '🧪';
+  if (name.includes('english') || name.includes('literature') || name.includes('writing')) return '📖';
+  if (name.includes('history') || name.includes('social')) return '📜';
+  if (name.includes('art') || name.includes('design')) return '🎨';
+  if (name.includes('music')) return '🎵';
+  if (name.includes('business') || name.includes('econ')) return '💼';
+  if (name.includes('language') || name.includes('spanish') || name.includes('french')) return '🌍';
+  if (name.includes('health') || name.includes('medical')) return '⚕️';
+  return '📚'; // Default book icon
+}
+
 useEffect(()=>{if(running&&time>0){timer.current=setInterval(()=>{setTime(t=>{if(t<=1){finish();return 0}return t-1})},1000)}else{clearInterval(timer.current)}return()=>clearInterval(timer.current)},[running,time]);
 
 function finish(){
@@ -753,6 +828,9 @@ function finish(){
   const newLevel=Math.min(Math.floor(newXp/100)+1,10);
   
   const streakInfo = updateStreak();
+  
+  // Add XP to skill (course-based)
+  updateSkillXp(selectedCourse, pts);
   
   if(newLevel===10&&level<10){
     setTimeout(()=>{setShowTierUp(true)},3500)
@@ -999,6 +1077,7 @@ return(
       <button onClick={()=>setTab('courses')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='courses'?'bg-white text-teal-600':'text-white'}`}>Courses</button>
       <button onClick={()=>setTab('deadlines')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='deadlines'?'bg-white text-teal-600':'text-white'}`}>Deadlines</button>
       <button onClick={()=>setTab('stats')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='stats'?'bg-white text-teal-600':'text-white'}`}>Stats</button>
+      <button onClick={()=>setTab('skills')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='skills'?'bg-white text-teal-600':'text-white'}`}>⚔️ Skills</button>
       <button onClick={()=>setTab('leaderboard')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='leaderboard'?'bg-white text-teal-600':'text-white'}`}>🏆</button>
       {!isPro&&<button onClick={()=>setShowPaywall(true)} className="px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 text-white flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-base"><Icon name="crown" className="w-3 h-3 md:w-4 md:h-4"/>Pro</button>}
     </div>
@@ -1165,6 +1244,101 @@ return(
         <h2 className="text-2xl font-bold text-white mb-6">Recent Sessions</h2>
         <div className="space-y-3">
           {sessions.length===0?<div className="text-center py-12"><Icon name="trophy" className="w-16 h-16 text-white opacity-40 mx-auto mb-4"/><p className="text-white opacity-70">No sessions yet!</p></div>:sessions.slice(-10).reverse().map((s,i)=><div key={i} className="bg-white bg-opacity-20 rounded-lg p-4 flex justify-between"><div><div className="text-white font-semibold">{s.course}</div><div className="text-white opacity-70 text-sm">{s.duration} min</div></div><div className="text-yellow-300 font-bold">+{s.xp} XP</div></div>)}
+        </div>
+      </div>
+    )}
+    {tab==='skills'&&(
+      <div className="space-y-4 md:space-y-6">
+        {/* Total Level Card */}
+        <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-2xl p-6 text-center shadow-2xl">
+          <div className="text-white text-sm opacity-90 mb-2">TOTAL LEVEL</div>
+          <div className="text-6xl font-black text-white mb-2">{totalLevel}</div>
+          <div className="text-white text-sm opacity-75">Sum of all skill levels</div>
+        </div>
+
+        {/* Skills Grid */}
+        <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <span>⚔️</span> Your Skills
+          </h2>
+          
+          {skills.length === 0 ? (
+            <div className="text-center py-12 text-white opacity-75">
+              <div className="text-5xl mb-4">🎯</div>
+              <p className="text-lg">No skills yet!</p>
+              <p className="text-sm mt-2">Complete a study session to start leveling up skills</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {skills.sort((a, b) => b.level - a.level).map((skill, index) => {
+                const xpForNextLevel = getSkillXpForLevel(skill.level);
+                const currentLevelXp = skill.xp - (skill.level - 1) * 100;
+                const progress = (currentLevelXp / xpForNextLevel) * 100;
+                
+                return (
+                  <div 
+                    key={skill.name}
+                    className="bg-gradient-to-r from-cyan-600 to-teal-600 rounded-xl p-4 hover:scale-102 transition-all shadow-lg"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <span className="text-3xl">{skill.icon}</span>
+                        <div>
+                          <div className="text-white font-bold text-lg">{skill.name}</div>
+                          <div className="text-white text-xs opacity-75 flex items-center gap-3">
+                            {skill.streak > 0 && (
+                              <span className="flex items-center gap-1">
+                                🔥 {skill.streak} day{skill.streak > 1 ? 's' : ''}
+                              </span>
+                            )}
+                            <span>Last: {new Date(skill.lastStudied).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-yellow-300 font-black text-2xl">Lvl {skill.level}</div>
+                        <div className="text-white text-xs opacity-75">{skill.xp} XP</div>
+                      </div>
+                    </div>
+                    
+                    {/* Progress Bar */}
+                    <div className="bg-white bg-opacity-20 rounded-full h-3 overflow-hidden">
+                      <div 
+                        className="bg-gradient-to-r from-yellow-400 to-orange-400 h-full rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(progress, 100)}%` }}
+                      />
+                    </div>
+                    <div className="text-white text-xs mt-1 opacity-75 text-right">
+                      {currentLevelXp}/{xpForNextLevel} XP to level {skill.level + 1}
+                    </div>
+                    
+                    {/* Milestones */}
+                    {skill.level >= 10 && (
+                      <div className="mt-3 flex flex-wrap gap-1">
+                        {skill.level >= 10 && <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">⭐ Level 10</span>}
+                        {skill.level >= 25 && <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded">💫 Level 25</span>}
+                        {skill.level >= 50 && <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded">🌟 Level 50</span>}
+                        {skill.level >= 75 && <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">✨ Level 75</span>}
+                        {skill.level >= 99 && <span className="bg-gradient-to-r from-yellow-400 to-orange-600 text-white text-xs px-2 py-1 rounded">👑 MAX LEVEL</span>}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        
+        {/* Info Card */}
+        <div className="bg-white bg-opacity-10 rounded-xl p-4 text-white text-sm">
+          <div className="font-bold mb-2">💡 How Skills Work:</div>
+          <ul className="space-y-1 opacity-75 text-xs">
+            <li>• Each course has its own skill</li>
+            <li>• Study to earn XP and level up skills</li>
+            <li>• Skills level independently up to 99</li>
+            <li>• Total Level = Sum of all skill levels</li>
+            <li>• Keep streaks alive by studying daily</li>
+          </ul>
         </div>
       </div>
     )}
@@ -1562,4 +1736,3 @@ ReactDOM.render(<LearnBot />, document.getElementById('root'));
   </script>
 </body>
 </html>
-
