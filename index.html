@@ -409,7 +409,7 @@ function StreakLostModal({ lostStreak, onClose }) {
 function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);
 
 // LEADERBOARD STATE
-const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);const[appMode,setAppMode]=useState('education');const[organization,setOrganization]=useState(null);const[isOrgAdmin,setIsOrgAdmin]=useState(false);const[showCreateOrg,setShowCreateOrg]=useState(false);const[showOnboardingWizard,setShowOnboardingWizard]=useState(false);const[onboardingData,setOnboardingData]=useState({orgName:'',orgType:'education',size:'',inviteMethod:'link'});const[onboardingStepNum,setOnboardingStepNum]=useState(1);const[inviteLink,setInviteLink]=useState('');const[orgInviteCode,setOrgInviteCode]=useState('');const[timerSound,setTimerSound]=useState(false);const[endSound,setEndSound]=useState(true);const[endTime,setEndTime]=useState(null);const[lofiEnabled,setLofiEnabled]=useState(false);const[lofiVolume,setLofiVolume]=useState(30);const[lofiStream,setLofiStream]=useState('lofi-girl');const[showBreakGame,setShowBreakGame]=useState(false);const[gameActive,setGameActive]=useState(false);const[gameScore,setGameScore]=useState(0);const[gameTime,setGameTime]=useState(60);const[gameTargets,setGameTargets]=useState([]);const[gameHighScore,setGameHighScore]=useState(0);const[themeMode,setThemeMode]=useState('dark');const[colorTheme,setColorTheme]=useState('cyan');const[fontFamily,setFontFamily]=useState('default');const[showCustomization,setShowCustomization]=useState(false);
+const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);const[appMode,setAppMode]=useState('education');const[organization,setOrganization]=useState(null);const[isOrgAdmin,setIsOrgAdmin]=useState(false);const[showCreateOrg,setShowCreateOrg]=useState(false);const[showOnboardingWizard,setShowOnboardingWizard]=useState(false);const[onboardingData,setOnboardingData]=useState({orgName:'',orgType:'education',size:'',inviteMethod:'link'});const[onboardingStepNum,setOnboardingStepNum]=useState(1);const[inviteLink,setInviteLink]=useState('');const[orgInviteCode,setOrgInviteCode]=useState('');const[timerSound,setTimerSound]=useState(false);const[endSound,setEndSound]=useState(true);const[endTime,setEndTime]=useState(null);const[lofiEnabled,setLofiEnabled]=useState(false);const[lofiVolume,setLofiVolume]=useState(30);const[lofiStream,setLofiStream]=useState('lofi-girl');const[showBreakGame,setShowBreakGame]=useState(false);const[gameActive,setGameActive]=useState(false);const[gameScore,setGameScore]=useState(0);const[gameTime,setGameTime]=useState(60);const[gameTargets,setGameTargets]=useState([]);const[gameHighScore,setGameHighScore]=useState(0);const[themeMode,setThemeMode]=useState('dark');const[colorTheme,setColorTheme]=useState('cyan');const[fontFamily,setFontFamily]=useState('default');const[showCustomization,setShowCustomization]=useState(false);const[showCalculator,setShowCalculator]=useState(false);const[calcDisplay,setCalcDisplay]=useState('0');const[calcPrevious,setCalcPrevious]=useState(null);const[calcOperation,setCalcOperation]=useState(null);const[stickyNotes,setStickyNotes]=useState([]);const[showNotesPanel,setShowNotesPanel]=useState(false);
 
 const timer=useRef(null);const level=Math.min(Math.floor(xp/100)+1,10);const levelXp=(xp%100);
 
@@ -1081,6 +1081,71 @@ function endBreakGame() {
   }
 }
 
+// Calculator Functions
+function calcNumber(num) {
+  if (calcDisplay === '0' || calcOperation) {
+    setCalcDisplay(num);
+    setCalcOperation(null);
+  } else {
+    setCalcDisplay(calcDisplay + num);
+  }
+}
+
+function calcOp(op) {
+  setCalcPrevious(parseFloat(calcDisplay));
+  setCalcOperation(op);
+}
+
+function calcEquals() {
+  if (calcPrevious !== null && calcOperation) {
+    const current = parseFloat(calcDisplay);
+    let result = 0;
+    switch(calcOperation) {
+      case '+': result = calcPrevious + current; break;
+      case '-': result = calcPrevious - current; break;
+      case '×': result = calcPrevious * current; break;
+      case '÷': result = current !== 0 ? calcPrevious / current : 'Error'; break;
+    }
+    setCalcDisplay(result.toString());
+    setCalcPrevious(null);
+    setCalcOperation(null);
+  }
+}
+
+function calcClear() {
+  setCalcDisplay('0');
+  setCalcPrevious(null);
+  setCalcOperation(null);
+}
+
+// Sticky Notes Functions
+function addStickyNote() {
+  const newNote = {
+    id: Date.now(),
+    text: '',
+    color: 'yellow',
+    x: 100,
+    y: 100
+  };
+  setStickyNotes([...stickyNotes, newNote]);
+}
+
+function updateNoteText(id, text) {
+  setStickyNotes(stickyNotes.map(note => 
+    note.id === id ? {...note, text} : note
+  ));
+}
+
+function deleteNote(id) {
+  setStickyNotes(stickyNotes.filter(note => note.id !== id));
+}
+
+function updateNoteColor(id, color) {
+  setStickyNotes(stickyNotes.map(note => 
+    note.id === id ? {...note, color} : note
+  ));
+}
+
 // Organization Functions
 async function startOnboarding() {
   setShowOnboardingWizard(true);
@@ -1447,9 +1512,9 @@ function getWeeklyHours(){const now=Date.now();const weekAgo=now-7*24*60*60*1000
 
 const prog=((duration*60-time)/(duration*60))*100;
 
-if(loading){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center"><div className="text-white text-2xl">Loading LearnBot...</div></div>)}
+if(loading){return(<div className={`min-h-screen ${getBgClass()} flex items-center justify-center`}><div className="text-white text-2xl">Loading LearnBot...</div></div>)}
 
-if(view==='landing'){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4 flex items-center justify-center relative overflow-hidden"><style>{`
+if(view==='landing'){return(<div className={`min-h-screen ${getBgClass()} p-4 flex items-center justify-center relative overflow-hidden`}><style>{`
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -1506,7 +1571,7 @@ if(view==='landing'){return(<div className="min-h-screen bg-gradient-to-br from-
 .neon-glow { animation: neon-glow 2s ease-in-out infinite; }
 `}</style><div className="absolute inset-0 overflow-hidden pointer-events-none"><div className="absolute top-20 left-10 text-2xl md:text-4xl opacity-20 float-animation" style={{animationDelay: '0s'}}>⚡</div><div className="absolute top-40 right-20 text-3xl md:text-5xl opacity-20 float-animation" style={{animationDelay: '0.5s'}}>🏆</div><div className="absolute bottom-32 left-20 text-2xl md:text-4xl opacity-20 float-animation" style={{animationDelay: '1s'}}>📚</div><div className="absolute bottom-20 right-10 text-3xl md:text-5xl opacity-20 float-animation" style={{animationDelay: '1.5s'}}>🎯</div></div><div className="max-w-4xl w-full relative z-10"><div className="text-center mb-8 md:mb-12"><div className="text-6xl md:text-8xl mb-4 md:mb-6 fade-in-1 float-animation">🤖</div><h1 className="text-4xl md:text-7xl font-black text-white mb-4 md:mb-6 fade-in-2 tracking-tight">LearnBot</h1><p className="text-2xl md:text-4xl font-bold text-white mb-2 md:mb-4 fade-in-3">Learning can be FUN!</p><p className="text-2xl md:text-4xl font-bold text-white mb-4 md:mb-8 fade-in-3">Start earning XP.</p><p className="text-base md:text-xl text-white max-w-2xl mx-auto leading-relaxed fade-in-4 px-4">Track your study sessions. Level up your focus. Watch your progress grow.</p></div><div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-4 md:p-8 mb-8 fade-in-5"><div className="bg-white bg-opacity-20 rounded-xl p-4 md:p-6"><h3 className="text-white font-bold text-xl md:text-2xl mb-4 md:mb-6 text-center">{isLogin?'Welcome Back!':'Get Started Free'}</h3>{!isLogin&&<input type="text" placeholder="Your name" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 mb-3 text-base md:text-lg"/>}<input type="email" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 mb-3 text-base md:text-lg"/><input type="password" placeholder="Password" value={pass} onChange={e=>setPass(e.target.value)} onKeyPress={e=>e.key==='Enter'&&(isLogin?login():signup())} className="w-full bg-white rounded-lg px-4 py-3 mb-4 text-base md:text-lg"/>{error&&<p className="text-red-200 text-sm mb-3 bg-red-500 bg-opacity-30 p-2 rounded">{error}</p>}<button onClick={isLogin?login:signup} disabled={(isLogin?(!email||!pass):(!name||!email||!pass))||loading} className="w-full bg-slate-900 text-cyan-400 py-4 md:py-5 rounded-xl font-black text-lg md:text-2xl hover:scale-105 transition-all disabled:opacity-50 border-2 border-cyan-400 neon-glow relative overflow-hidden"><span className="relative z-10">{loading?(isLogin?'Logging in...':'Creating Account...'):(isLogin?'Log In →':'⚡ Start Earning XP →')}</span></button><button onClick={()=>{setIsLogin(!isLogin);setError('')}} className="w-full text-white text-sm mt-4 hover:underline opacity-90 hover:opacity-100 transition-opacity">{isLogin?"Don't have an account? Sign up":'Already have an account? Log in'}</button></div></div><div className="mt-8 text-center text-white text-xs opacity-75"><div className="mb-2">LearnBot - Powered by <strong>🐺 Alpha Software Group LLC</strong></div><div className="mb-2">© 2026 Alpha Software Group LLC. All rights reserved.</div><div className="flex justify-center gap-4"><a href="mailto:trylearnbot@gmail.com" className="hover:text-cyan-200">Contact</a><button onClick={()=>setView('terms')} className="hover:text-cyan-200">Terms</button><button onClick={()=>setView('privacy')} className="hover:text-cyan-200">Privacy</button></div></div></div></div>)}
 
-if(view==='terms'){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4 md:p-8">
+if(view==='terms'){return(<div className={`min-h-screen ${getBgClass()} p-4 md:p-8`}>
   <div className="max-w-4xl mx-auto bg-white rounded-2xl p-6 md:p-12">
     <button onClick={()=>setView(user?'app':'landing')} className="mb-6 text-cyan-600 hover:text-cyan-700 font-semibold flex items-center gap-2">
       ← Back to {user?'Dashboard':'Home'}
@@ -1535,7 +1600,7 @@ if(view==='terms'){return(<div className="min-h-screen bg-gradient-to-br from-cy
   </div>
 </div>)}
 
-if(view==='privacy'){return(<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4 md:p-8">
+if(view==='privacy'){return(<div className={`min-h-screen ${getBgClass()} p-4 md:p-8`}>
   <div className="max-w-4xl mx-auto bg-white rounded-2xl p-6 md:p-12">
     <button onClick={()=>setView(user?'app':'landing')} className="mb-6 text-cyan-600 hover:text-cyan-700 font-semibold flex items-center gap-2">
       ← Back to {user?'Dashboard':'Home'}
@@ -1978,7 +2043,7 @@ function ClassroomDetail() {
 }
 
 return(
-<div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4">
+<div className={`min-h-screen ${getBgClass()} ${getFontClass()} p-4`}>
   <div className="max-w-4xl mx-auto">
     {isTrialActive()&&!isPro&&(
       <div className="bg-gradient-to-r from-green-400 to-teal-400 text-white text-center py-3 px-4 rounded-xl mb-6 shadow-lg">
@@ -2208,7 +2273,7 @@ return(
             </div>
           </div>
           <div className="flex gap-4 justify-center flex-wrap">
-            {!running?<button onClick={()=>{if(selectedCourse)setRunning(true)}} disabled={!selectedCourse} className="bg-teal-500 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 disabled:opacity-50"><Icon name="play"/>Start</button>:(<><button onClick={()=>setRunning(false)} className="bg-yellow-400 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2"><Icon name="pause"/>Pause</button><button onClick={()=>{setRunning(false);setTime(duration*60);setSelectedCourse('')}} className="bg-red-400 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2"><Icon name="square"/>Stop</button></>)}
+            {!running?<button onClick={()=>{if(selectedCourse)setRunning(true)}} disabled={!selectedCourse} className={`${getThemeColors().accent} text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 disabled:opacity-50`}><Icon name="play"/>Start</button>:(<><button onClick={()=>setRunning(false)} className="bg-yellow-400 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2"><Icon name="pause"/>Pause</button><button onClick={()=>{setRunning(false);setTime(duration*60);setSelectedCourse('')}} className="bg-red-400 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2"><Icon name="square"/>Stop</button></>)}
           </div>
           {!lofiEnabled&&(
             <div className="mt-6 text-center">
@@ -2230,7 +2295,7 @@ return(
         <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2"><Icon name="book"/>Courses</h2>
         <div className="flex gap-2 mb-6">
           <input type="text" placeholder="Add course" value={newCourse} onChange={e=>setNewCourse(e.target.value)} onKeyPress={e=>e.key==='Enter'&&addCourse()} className="flex-1 bg-white rounded-lg px-4 py-2"/>
-          <button onClick={addCourse} className="bg-teal-500 text-white px-4 py-2 rounded-lg"><Icon name="plus" className="w-5 h-5"/></button>
+          <button onClick={addCourse} className={`${getThemeColors().accent} text-white px-4 py-2 rounded-lg`}><Icon name="plus" className="w-5 h-5"/></button>
         </div>
         {!isPro&&<p className="text-white text-sm mb-4">Free: {courses.length}/2 courses</p>}
         <div className="space-y-3">
@@ -2851,6 +2916,15 @@ return(
     
     {/* Customization Modal */}
     {showCustomization&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50 p-4"><div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"><div className="flex justify-between items-center mb-6"><h2 className="text-3xl font-bold text-white">🎨 Customize Appearance</h2><button onClick={()=>setShowCustomization(false)} className="text-white opacity-75 hover:opacity-100"><Icon name="x" className="w-8 h-8"/></button></div><div className="space-y-6"><div className="bg-white bg-opacity-20 rounded-xl p-6"><h3 className="text-white font-bold mb-4 text-xl">Theme Mode</h3><div className="grid grid-cols-2 gap-3"><button onClick={()=>setThemeMode('dark')} className={`p-4 rounded-lg font-semibold transition-all ${themeMode==='dark'?'bg-white text-purple-600':'bg-white bg-opacity-20 text-white'}`}><div className="text-3xl mb-2">🌙</div>Dark Mode</button><button onClick={()=>setThemeMode('light')} className={`p-4 rounded-lg font-semibold transition-all ${themeMode==='light'?'bg-white text-purple-600':'bg-white bg-opacity-20 text-white'}`}><div className="text-3xl mb-2">☀️</div>Light Mode</button></div></div><div className="bg-white bg-opacity-20 rounded-xl p-6"><h3 className="text-white font-bold mb-4 text-xl">Color Theme</h3><div className="grid grid-cols-3 gap-3">{[{name:'cyan',label:'Cyan',gradient:'from-cyan-500 to-blue-600',emoji:'💙'},{name:'purple',label:'Purple',gradient:'from-purple-500 to-pink-600',emoji:'💜'},{name:'orange',label:'Orange',gradient:'from-orange-500 to-red-600',emoji:'🧡'},{name:'green',label:'Green',gradient:'from-green-500 to-emerald-600',emoji:'💚'},{name:'blue',label:'Blue',gradient:'from-blue-500 to-indigo-600',emoji:'💙'}].map(theme=><button key={theme.name} onClick={()=>setColorTheme(theme.name)} className={`p-4 rounded-lg font-semibold transition-all ${colorTheme===theme.name?'bg-white text-purple-600 ring-4 ring-white':'bg-white bg-opacity-20 text-white'}`}><div className={`w-full h-12 rounded-lg mb-2 bg-gradient-to-r ${theme.gradient}`}/>{theme.emoji} {theme.label}</button>)}</div></div><div className="bg-white bg-opacity-20 rounded-xl p-6"><h3 className="text-white font-bold mb-4 text-xl">Font Style</h3><div className="grid grid-cols-2 gap-3">{[{name:'default',label:'Default',sample:'Aa'},{name:'dyslexic',label:'Dyslexic-Friendly',sample:'Aa'},{name:'serif',label:'Serif',sample:'Aa'},{name:'mono',label:'Monospace',sample:'Aa'}].map(font=><button key={font.name} onClick={()=>setFontFamily(font.name)} className={`p-4 rounded-lg font-semibold transition-all ${fontFamily===font.name?'bg-white text-purple-600':'bg-white bg-opacity-20 text-white'} ${font.name==='serif'?'font-serif':font.name==='mono'?'font-mono':'font-sans'}`}><div className="text-3xl mb-1">{font.sample}</div>{font.label}</button>)}</div></div></div><button onClick={()=>setShowCustomization(false)} className="w-full bg-white text-purple-600 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all mt-6">Done ✨</button></div></div>}
+    
+    {/* Calculator Modal */}
+    {showCalculator&&<div className="fixed bottom-4 right-4 bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 shadow-2xl z-50 w-80"><div className="flex justify-between items-center mb-4"><h3 className="text-white font-bold text-lg">🧮 Calculator</h3><button onClick={()=>setShowCalculator(false)} className="text-white opacity-75 hover:opacity-100"><Icon name="x" className="w-6 h-6"/></button></div><div className="bg-black rounded-lg p-4 mb-4"><div className="text-white text-right text-3xl font-mono">{calcDisplay}</div></div><div className="grid grid-cols-4 gap-2">{['7','8','9','÷'].map(btn=><button key={btn} onClick={()=>['÷','×','-','+'].includes(btn)?calcOp(btn):calcNumber(btn)} className="bg-gray-700 hover:bg-gray-600 text-white text-xl font-bold py-4 rounded-lg transition-colors">{btn}</button>)}{['4','5','6','×'].map(btn=><button key={btn} onClick={()=>['÷','×','-','+'].includes(btn)?calcOp(btn):calcNumber(btn)} className="bg-gray-700 hover:bg-gray-600 text-white text-xl font-bold py-4 rounded-lg transition-colors">{btn}</button>)}{['1','2','3','-'].map(btn=><button key={btn} onClick={()=>['÷','×','-','+'].includes(btn)?calcOp(btn):calcNumber(btn)} className="bg-gray-700 hover:bg-gray-600 text-white text-xl font-bold py-4 rounded-lg transition-colors">{btn}</button>)}<button onClick={calcClear} className="bg-red-600 hover:bg-red-700 text-white text-xl font-bold py-4 rounded-lg transition-colors">C</button><button onClick={()=>calcNumber('0')} className="bg-gray-700 hover:bg-gray-600 text-white text-xl font-bold py-4 rounded-lg transition-colors">0</button><button onClick={calcEquals} className="bg-green-600 hover:bg-green-700 text-white text-xl font-bold py-4 rounded-lg transition-colors col-span-2">=</button>{['+'].map(btn=><button key={btn} onClick={()=>calcOp(btn)} className="hidden"></button>)}</div></div>}
+    
+    {/* Sticky Notes Panel */}
+    {showNotesPanel&&<div className="fixed right-4 top-20 bg-white rounded-2xl p-4 shadow-2xl z-40 w-80 max-h-[70vh] overflow-y-auto"><div className="flex justify-between items-center mb-4"><h3 className="font-bold text-lg">📝 Sticky Notes</h3><button onClick={()=>setShowNotesPanel(false)} className="opacity-75 hover:opacity-100"><Icon name="x" className="w-6 h-6"/></button></div><button onClick={addStickyNote} className="w-full bg-yellow-400 text-gray-900 py-3 rounded-lg font-bold mb-4 hover:bg-yellow-500 transition-colors">+ New Note</button><div className="space-y-3">{stickyNotes.length===0?<p className="text-gray-500 text-center py-8">No notes yet!</p>:stickyNotes.map(note=><div key={note.id} className={`p-3 rounded-lg ${note.color==='yellow'?'bg-yellow-100':note.color==='pink'?'bg-pink-100':note.color==='blue'?'bg-blue-100':'bg-green-100'}`}><textarea value={note.text} onChange={e=>updateNoteText(note.id,e.target.value)} placeholder="Type your note..." className="w-full bg-transparent border-none resize-none text-sm mb-2 focus:outline-none" rows="3"/><div className="flex justify-between items-center"><div className="flex gap-1">{['yellow','pink','blue','green'].map(color=><button key={color} onClick={()=>updateNoteColor(note.id,color)} className={`w-6 h-6 rounded-full ${color==='yellow'?'bg-yellow-400':color==='pink'?'bg-pink-400':color==='blue'?'bg-blue-400':'bg-green-400'} ${note.color===color?'ring-2 ring-gray-900':''}`}/>)}</div><button onClick={()=>deleteNote(note.id)} className="text-red-500 text-sm font-bold">Delete</button></div></div>)}</div></div>}
+    
+    {/* Floating Tool Buttons */}
+    {view==='app'&&<div className="fixed bottom-6 right-6 flex flex-col gap-3 z-30"><button onClick={()=>setShowCalculator(!showCalculator)} className={`${showCalculator?'bg-green-600':'bg-gray-800'} text-white w-14 h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-2xl`}>🧮</button><button onClick={()=>setShowNotesPanel(!showNotesPanel)} className={`${showNotesPanel?'bg-yellow-500':'bg-gray-800'} text-white w-14 h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-2xl`}>📝</button></div>}
     
   </div>
 </div>
