@@ -736,7 +736,7 @@ if(data.organizationId){const orgDoc=await db.collection('organizations').doc(da
 
 if(!data.username){setShowUsernamePrompt(true)}else if(!data.onboardingCompleted){setShowOnboarding(true)}}}catch(err){console.error('Error loading user data:',err)}}
 
-async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,classrooms,isTeacher,teachingClasses,appMode,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
+async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,classrooms,isTeacher,teachingClasses,appMode,organizationId:organization?.id||null,isOrgAdmin,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
 
 useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,skills,totalLevel]);
 
@@ -965,6 +965,8 @@ async function createOrganization() {
       isTeacher: true
     });
     
+    // Update local state
+    setUser(prev => ({...prev, organizationId: orgRef.id, isOrgAdmin: true, isTeacher: true}));
     setOrganization({
       id: orgRef.id,
       name: onboardingData.orgName,
@@ -1018,6 +1020,8 @@ async function joinOrganization(code) {
       organizationId: orgId
     });
     
+    // Update local state
+    setUser(prev => ({...prev, organizationId: orgId}));
     setOrganization({id: orgId, ...orgData});
     alert(`✅ Joined ${orgData.name}!`);
     return true;
@@ -2102,6 +2106,23 @@ return(
       <div className="space-y-4 md:space-y-6">
         {!selectedClassroom ? (
           <>
+            {/* Organization Banner */}
+            {organization && (
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-4 mb-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-white text-sm opacity-75">{organization.type==='education'?'School':'Company'}</div>
+                    <div className="text-white font-bold text-xl">{organization.name}</div>
+                  </div>
+                  {isOrgAdmin && (
+                    <span className="bg-yellow-400 text-purple-800 px-3 py-1 rounded font-bold text-sm">
+                      ADMIN
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+            
             {/* Header */}
             <div className="flex justify-between items-center">
               <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
