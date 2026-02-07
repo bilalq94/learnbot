@@ -409,7 +409,7 @@ function StreakLostModal({ lostStreak, onClose }) {
 function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);
 
 // LEADERBOARD STATE
-const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);
+const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);const[appMode,setAppMode]=useState('education');const[organization,setOrganization]=useState(null);const[isOrgAdmin,setIsOrgAdmin]=useState(false);const[showCreateOrg,setShowCreateOrg]=useState(false);const[showOnboardingWizard,setShowOnboardingWizard]=useState(false);const[onboardingData,setOnboardingData]=useState({orgName:'',orgType:'education',size:'',inviteMethod:'link'});const[onboardingStepNum,setOnboardingStepNum]=useState(1);const[inviteLink,setInviteLink]=useState('');const[orgInviteCode,setOrgInviteCode]=useState('');
 
 const timer=useRef(null);const level=Math.min(Math.floor(xp/100)+1,10);const levelXp=(xp%100);
 
@@ -661,6 +661,18 @@ useEffect(() => {
   const urlParams = new URLSearchParams(window.location.search);
   const paymentStatus = urlParams.get('payment');
   const isPopup = urlParams.get('popup');
+  const orgInvite = urlParams.get('orgInvite');
+  
+  // Check for org invite
+  if (orgInvite && user && !organization) {
+    setOrgInviteCode(orgInvite);
+    setTimeout(() => {
+      if (confirm(`Join organization with code ${orgInvite}?`)) {
+        joinOrganization(orgInvite);
+      }
+      window.history.replaceState({}, '', '/');
+    }, 1000);
+  }
   
   // If this is a popup redirect from Stripe, close it and refresh parent
   if (paymentStatus === 'success' && isPopup === 'true') {
@@ -716,14 +728,15 @@ useEffect(() => {
     alert('Payment cancelled. You can upgrade anytime!');
     window.history.replaceState({}, '', '/');
   }
-}, []);
+}, [user, organization]);
 
 
-async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());setSkills(data.skills||[]);setTotalLevel(data.totalLevel||0);setClassrooms(data.classrooms||[]);setIsTeacher(data.isTeacher||false);setTeachingClasses(data.teachingClasses||[]);
+async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());setSkills(data.skills||[]);setTotalLevel(data.totalLevel||0);setClassrooms(data.classrooms||[]);setIsTeacher(data.isTeacher||false);setTeachingClasses(data.teachingClasses||[]);setAppMode(data.appMode||'education');setIsOrgAdmin(data.isOrgAdmin||false);
+if(data.organizationId){const orgDoc=await db.collection('organizations').doc(data.organizationId).get();if(orgDoc.exists){setOrganization({id:orgDoc.id,...orgDoc.data()})}}
 
 if(!data.username){setShowUsernamePrompt(true)}else if(!data.onboardingCompleted){setShowOnboarding(true)}}}catch(err){console.error('Error loading user data:',err)}}
 
-async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,classrooms,isTeacher,teachingClasses,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
+async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,classrooms,isTeacher,teachingClasses,appMode,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
 
 useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,skills,totalLevel]);
 
@@ -855,6 +868,165 @@ function generateJoinCode() {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return code;
+}
+
+// Terminology based on app mode
+function getTerminology(term) {
+  const terms = {
+    education: {
+      classroom: 'Classroom',
+      classrooms: 'Classrooms',
+      teacher: 'Teacher',
+      teachers: 'Teachers',
+      student: 'Student',
+      students: 'Students',
+      study: 'Study',
+      session: 'Study Session',
+      sessions: 'Study Sessions',
+      goal: 'Class Goal',
+      challenge: 'Challenge',
+      leaderboard: 'Class Leaderboard'
+    },
+    enterprise: {
+      classroom: 'Team',
+      classrooms: 'Teams',
+      teacher: 'Manager',
+      teachers: 'Managers',
+      student: 'Employee',
+      students: 'Employees',
+      study: 'Focus',
+      session: 'Work Session',
+      sessions: 'Work Sessions',
+      goal: 'Team Goal',
+      challenge: 'Sprint',
+      leaderboard: 'Team Leaderboard'
+    }
+  };
+  
+  return terms[appMode][term] || term;
+}
+
+function getModeEmoji() {
+  return appMode === 'education' ? '🏫' : '💼';
+}
+
+// Organization Functions
+async function startOnboarding() {
+  setShowOnboardingWizard(true);
+  setOnboardingStepNum(1);
+  setOnboardingData({
+    orgName: '',
+    orgType: appMode,
+    size: '',
+    inviteMethod: 'link',
+    emails: ''
+  });
+}
+
+async function createOrganization() {
+  if (!onboardingData.orgName.trim()) {
+    alert('Please enter an organization name');
+    return;
+  }
+  
+  try {
+    const inviteCode = generateJoinCode();
+    const orgRef = db.collection('organizations').doc();
+    
+    await orgRef.set({
+      id: orgRef.id,
+      name: onboardingData.orgName.trim(),
+      type: onboardingData.orgType,
+      size: onboardingData.size,
+      adminId: user.uid,
+      adminName: name,
+      memberIds: [user.uid],
+      members: [{
+        uid: user.uid,
+        name: name,
+        email: user.email,
+        role: 'admin',
+        joinedAt: new Date().toISOString()
+      }],
+      inviteCode: inviteCode,
+      inviteLink: `${window.location.origin}?orgInvite=${inviteCode}`,
+      createdAt: new Date().toISOString(),
+      stats: {
+        totalMembers: 1,
+        totalTeams: 0,
+        totalStudyTime: 0
+      }
+    });
+    
+    // Update user
+    await db.collection('users').doc(user.uid).update({
+      organizationId: orgRef.id,
+      isOrgAdmin: true,
+      isTeacher: true
+    });
+    
+    setOrganization({
+      id: orgRef.id,
+      name: onboardingData.orgName,
+      type: onboardingData.orgType,
+      inviteCode: inviteCode,
+      inviteLink: `${window.location.origin}?orgInvite=${inviteCode}`
+    });
+    setIsOrgAdmin(true);
+    setIsTeacher(true);
+    setInviteLink(`${window.location.origin}?orgInvite=${inviteCode}`);
+    
+    // Move to next step
+    setOnboardingStepNum(2);
+    
+  } catch (err) {
+    console.error('Error creating organization:', err);
+    alert('Failed to create organization. Please try again.');
+  }
+}
+
+async function joinOrganization(code) {
+  try {
+    const orgsSnapshot = await db.collection('organizations')
+      .where('inviteCode', '==', code.trim().toUpperCase())
+      .limit(1)
+      .get();
+    
+    if (orgsSnapshot.empty) {
+      alert('❌ Invalid invite code');
+      return false;
+    }
+    
+    const orgDoc = orgsSnapshot.docs[0];
+    const orgId = orgDoc.id;
+    const orgData = orgDoc.data();
+    
+    // Add user to org
+    await db.collection('organizations').doc(orgId).update({
+      memberIds: firebase.firestore.FieldValue.arrayUnion(user.uid),
+      members: firebase.firestore.FieldValue.arrayUnion({
+        uid: user.uid,
+        name: name,
+        email: user.email,
+        role: orgData.type === 'education' ? 'student' : 'employee',
+        joinedAt: new Date().toISOString()
+      })
+    });
+    
+    // Update user
+    await db.collection('users').doc(user.uid).update({
+      organizationId: orgId
+    });
+    
+    setOrganization({id: orgId, ...orgData});
+    alert(`✅ Joined ${orgData.name}!`);
+    return true;
+    
+  } catch (err) {
+    console.error('Error joining organization:', err);
+    alert('Failed to join organization');
+    return false;
+  }
 }
 
 async function createClassroom() {
@@ -1225,6 +1397,11 @@ function ClassroomsList() {
 function ClassroomDetail() {
   const [loading, setLoading] = useState(true);
   const [classroom, setClassroom] = useState(null);
+  const [classLeaderboard, setClassLeaderboard] = useState([]);
+  const [showAddGoal, setShowAddGoal] = useState(false);
+  const [showAddChallenge, setShowAddChallenge] = useState(false);
+  const [newGoal, setNewGoal] = useState({title:'', target:100, deadline:''});
+  const [newChallenge, setNewChallenge] = useState({title:'', description:'', deadline:''});
   
   useEffect(() => {
     async function load() {
@@ -1232,7 +1409,22 @@ function ClassroomDetail() {
       try {
         const doc = await db.collection('classrooms').doc(selectedClassroom).get();
         if (doc.exists) {
-          setClassroom(doc.data());
+          const classroomData = doc.data();
+          setClassroom(classroomData);
+          
+          // Load student data for leaderboard
+          if (classroomData.studentIds && classroomData.studentIds.length > 0) {
+            const studentPromises = classroomData.studentIds.map(uid => 
+              db.collection('users').doc(uid).get()
+            );
+            const studentDocs = await Promise.all(studentPromises);
+            const studentData = studentDocs
+              .map(doc => doc.exists ? {uid: doc.id, ...doc.data()} : null)
+              .filter(Boolean)
+              .sort((a, b) => (b.totalMinutes || 0) - (a.totalMinutes || 0));
+            
+            setClassLeaderboard(studentData);
+          }
         }
         setLoading(false);
       } catch (err) {
@@ -1242,6 +1434,66 @@ function ClassroomDetail() {
     }
     load();
   }, [selectedClassroom]);
+  
+  async function addGoal() {
+    if (!newGoal.title.trim() || !newGoal.target) {
+      alert('Please fill in all fields');
+      return;
+    }
+    
+    try {
+      const goal = {
+        id: Date.now().toString(),
+        title: newGoal.title,
+        target: parseInt(newGoal.target),
+        current: 0,
+        deadline: newGoal.deadline,
+        createdAt: new Date().toISOString()
+      };
+      
+      await db.collection('classrooms').doc(selectedClassroom).update({
+        goals: firebase.firestore.FieldValue.arrayUnion(goal)
+      });
+      
+      setClassroom(prev => ({...prev, goals: [...(prev.goals || []), goal]}));
+      setShowAddGoal(false);
+      setNewGoal({title:'', target:100, deadline:''});
+      alert('✅ Goal added!');
+    } catch (err) {
+      console.error('Error adding goal:', err);
+      alert('Failed to add goal');
+    }
+  }
+  
+  async function addChallenge() {
+    if (!newChallenge.title.trim()) {
+      alert('Please enter a challenge title');
+      return;
+    }
+    
+    try {
+      const challenge = {
+        id: Date.now().toString(),
+        title: newChallenge.title,
+        description: newChallenge.description,
+        deadline: newChallenge.deadline,
+        completedBy: [],
+        createdAt: new Date().toISOString()
+      };
+      
+      await db.collection('classrooms').doc(selectedClassroom).update({
+        challenges: firebase.firestore.FieldValue.arrayUnion(challenge)
+      });
+      
+      setClassroom(prev => ({...prev, challenges: [...(prev.challenges || []), challenge]}));
+      setShowAddChallenge(false);
+      setNewChallenge({title:'', description:'', deadline:''});
+      alert('✅ Challenge created!');
+    } catch (err) {
+      console.error('Error adding challenge:', err);
+      alert('Failed to create challenge');
+    }
+  }
   
   if (loading) {
     return <div className="text-white text-center py-12">Loading...</div>;
@@ -1291,37 +1543,224 @@ function ClassroomDetail() {
         </div>
       </div>
       
-      {/* Students List */}
+      {/* Class Goals */}
       <div className="bg-white bg-opacity-20 rounded-2xl p-6">
-        <h3 className="text-white font-bold text-xl mb-4">👥 Students</h3>
-        {classroom.students && classroom.students.length > 0 ? (
-          <div className="space-y-2">
-            {classroom.students.map((student, index) => (
-              <div 
-                key={student.uid}
-                className="bg-white bg-opacity-10 rounded-lg p-3 flex items-center justify-between"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">👤</span>
-                  <div>
-                    <div className="text-white font-semibold">{student.name}</div>
-                    <div className="text-white opacity-75 text-xs">
-                      @{student.username || 'student'}
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-white font-bold text-xl">🎯 Class Goals</h3>
+          {isTeacherHere && (
+            <button 
+              onClick={()=>setShowAddGoal(true)}
+              className="bg-white text-teal-600 px-3 py-1 rounded-lg font-semibold text-sm hover:scale-105 transition-all"
+            >
+              + Add Goal
+            </button>
+          )}
+        </div>
+        {classroom.goals && classroom.goals.length > 0 ? (
+          <div className="space-y-3">
+            {classroom.goals.map(goal => {
+              const progress = Math.min((goal.current / goal.target) * 100, 100);
+              return (
+                <div key={goal.id} className="bg-white bg-opacity-10 rounded-lg p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="text-white font-semibold">{goal.title}</div>
+                    <div className="text-white text-sm opacity-75">
+                      {goal.current}/{goal.target} hours
                     </div>
                   </div>
+                  <div className="bg-white bg-opacity-20 rounded-full h-3 overflow-hidden mb-2">
+                    <div 
+                      className="bg-gradient-to-r from-yellow-400 to-orange-400 h-full rounded-full transition-all"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                  {goal.deadline && (
+                    <div className="text-white opacity-75 text-xs">
+                      Due: {new Date(goal.deadline).toLocaleDateString()}
+                    </div>
+                  )}
                 </div>
-                <div className="text-white opacity-75 text-sm">
-                  Joined {new Date(student.joinedAt).toLocaleDateString()}
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-white opacity-75 text-center py-6 text-sm">
+            {isTeacherHere ? 'Create your first class goal!' : 'No goals yet'}
+          </div>
+        )}
+      </div>
+      
+      {/* Active Challenges */}
+      <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-white font-bold text-xl">⚡ Challenges</h3>
+          {isTeacherHere && (
+            <button 
+              onClick={()=>setShowAddChallenge(true)}
+              className="bg-white text-teal-600 px-3 py-1 rounded-lg font-semibold text-sm hover:scale-105 transition-all"
+            >
+              + Add Challenge
+            </button>
+          )}
+        </div>
+        {classroom.challenges && classroom.challenges.length > 0 ? (
+          <div className="space-y-3">
+            {classroom.challenges.map(challenge => (
+              <div key={challenge.id} className="bg-white bg-opacity-10 rounded-lg p-4">
+                <div className="text-white font-semibold mb-1">{challenge.title}</div>
+                {challenge.description && (
+                  <div className="text-white opacity-75 text-sm mb-2">{challenge.description}</div>
+                )}
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-white opacity-75">
+                    {challenge.completedBy?.length || 0}/{classroom.students?.length || 0} completed
+                  </span>
+                  {challenge.deadline && (
+                    <span className="text-white opacity-75">
+                      Due: {new Date(challenge.deadline).toLocaleDateString()}
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-white opacity-75 text-center py-8">
-            No students yet. Share the join code!
+          <div className="text-white opacity-75 text-center py-6 text-sm">
+            {isTeacherHere ? 'Create your first challenge!' : 'No active challenges'}
           </div>
         )}
       </div>
+      
+      {/* Class Leaderboard */}
+      <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+        <h3 className="text-white font-bold text-xl mb-4">🏆 Class Leaderboard</h3>
+        {classLeaderboard.length > 0 ? (
+          <div className="space-y-2">
+            {classLeaderboard.map((student, index) => (
+              <div 
+                key={student.uid}
+                className={`rounded-lg p-3 flex items-center justify-between ${
+                  index === 0 ? 'bg-gradient-to-r from-yellow-400 to-orange-400' :
+                  index === 1 ? 'bg-gradient-to-r from-gray-300 to-gray-400' :
+                  index === 2 ? 'bg-gradient-to-r from-orange-600 to-orange-700' :
+                  'bg-white bg-opacity-10'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl font-bold text-white">
+                    {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
+                  </span>
+                  <div>
+                    <div className={`font-semibold ${index < 3 ? 'text-white' : 'text-white'}`}>
+                      {student.name}
+                    </div>
+                    <div className={`text-xs ${index < 3 ? 'text-white opacity-90' : 'text-white opacity-75'}`}>
+                      Level {student.tier > 0 ? Math.min(Math.floor(student.xp/100)+1,10) : Math.min(Math.floor(student.xp/100)+1,10)} • {student.totalMinutes || 0} min studied
+                    </div>
+                  </div>
+                </div>
+                <div className={`text-right ${index < 3 ? 'text-white' : 'text-white opacity-75'}`}>
+                  <div className="font-bold">{student.xp || 0} XP</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-white opacity-75 text-center py-6 text-sm">
+            No students have started studying yet
+          </div>
+        )}
+      </div>
+      
+      {/* Add Goal Modal */}
+      {showAddGoal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4">
+          <div className="bg-gradient-to-br from-cyan-600 to-teal-600 rounded-2xl p-6 max-w-md w-full">
+            <h3 className="text-2xl font-bold text-white mb-4">🎯 Create Class Goal</h3>
+            <div className="space-y-3">
+              <input 
+                type="text"
+                placeholder="Goal title (e.g., Study 100 hours)"
+                value={newGoal.title}
+                onChange={e=>setNewGoal({...newGoal, title:e.target.value})}
+                className="w-full px-4 py-2 rounded-lg"
+              />
+              <input 
+                type="number"
+                placeholder="Target (hours)"
+                value={newGoal.target}
+                onChange={e=>setNewGoal({...newGoal, target:e.target.value})}
+                className="w-full px-4 py-2 rounded-lg"
+              />
+              <input 
+                type="date"
+                value={newGoal.deadline}
+                onChange={e=>setNewGoal({...newGoal, deadline:e.target.value})}
+                className="w-full px-4 py-2 rounded-lg"
+              />
+            </div>
+            <div className="flex gap-3 mt-4">
+              <button 
+                onClick={()=>setShowAddGoal(false)}
+                className="flex-1 bg-white bg-opacity-20 text-white py-2 rounded-lg font-semibold"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={addGoal}
+                className="flex-1 bg-white text-teal-600 py-2 rounded-lg font-semibold"
+              >
+                Create Goal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Add Challenge Modal */}
+      {showAddChallenge && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4">
+          <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-6 max-w-md w-full">
+            <h3 className="text-2xl font-bold text-white mb-4">⚡ Create Challenge</h3>
+            <div className="space-y-3">
+              <input 
+                type="text"
+                placeholder="Challenge title"
+                value={newChallenge.title}
+                onChange={e=>setNewChallenge({...newChallenge, title:e.target.value})}
+                className="w-full px-4 py-2 rounded-lg"
+              />
+              <textarea 
+                placeholder="Description (optional)"
+                value={newChallenge.description}
+                onChange={e=>setNewChallenge({...newChallenge, description:e.target.value})}
+                className="w-full px-4 py-2 rounded-lg resize-none"
+                rows="2"
+              />
+              <input 
+                type="date"
+                value={newChallenge.deadline}
+                onChange={e=>setNewChallenge({...newChallenge, deadline:e.target.value})}
+                className="w-full px-4 py-2 rounded-lg"
+              />
+            </div>
+            <div className="flex gap-3 mt-4">
+              <button 
+                onClick={()=>setShowAddChallenge(false)}
+                className="flex-1 bg-white bg-opacity-20 text-white py-2 rounded-lg font-semibold"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={addChallenge}
+                className="flex-1 bg-white text-purple-600 py-2 rounded-lg font-semibold"
+              >
+                Create Challenge
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1374,7 +1813,7 @@ return(
       <button onClick={()=>setTab('deadlines')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='deadlines'?'bg-white text-teal-600':'text-white'}`}>Deadlines</button>
       <button onClick={()=>setTab('stats')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='stats'?'bg-white text-teal-600':'text-white'}`}>Stats</button>
       <button onClick={()=>setTab('skills')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='skills'?'bg-white text-teal-600':'text-white'}`}>⚔️ Skills</button>
-      <button onClick={()=>setTab('classroom')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='classroom'?'bg-white text-teal-600':'text-white'}`}>🏫 Class</button>
+      <button onClick={()=>setTab('classroom')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='classroom'?'bg-white text-teal-600':'text-white'}`}>{getModeEmoji()} {appMode==='education'?'Class':'Teams'}</button>
       <button onClick={()=>setTab('leaderboard')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='leaderboard'?'bg-white text-teal-600':'text-white'}`}>🏆</button>
       {!isPro&&<button onClick={()=>setShowPaywall(true)} className="px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 text-white flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-base"><Icon name="crown" className="w-3 h-3 md:w-4 md:h-4"/>Pro</button>}
     </div>
@@ -1666,20 +2105,20 @@ return(
             {/* Header */}
             <div className="flex justify-between items-center">
               <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
-                🏫 Classrooms
+                {getModeEmoji()} {getTerminology('classrooms')}
               </h2>
               <div className="flex gap-2">
                 <button 
                   onClick={()=>setShowJoinClassroom(true)} 
                   className="px-4 py-2 bg-white text-teal-600 rounded-lg font-semibold text-sm hover:scale-105 transition-all"
                 >
-                  Join Class
+                  Join {getTerminology('classroom')}
                 </button>
                 <button 
                   onClick={()=>setShowCreateClassroom(true)} 
                   className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold text-sm hover:scale-105 transition-all"
                 >
-                  + Create Class
+                  + Create {getTerminology('classroom')}
                 </button>
               </div>
             </div>
@@ -1688,21 +2127,22 @@ return(
             {classrooms.length === 0 ? (
               <div className="bg-white bg-opacity-20 rounded-2xl p-8 text-center">
                 <div className="text-6xl mb-4">🎓</div>
-                <h3 className="text-white text-xl font-bold mb-2">No Classrooms Yet</h3>
-                <p className="text-white opacity-75 mb-6">Join a classroom or create one to get started!</p>
-                <div className="flex gap-4 justify-center">
+                <h3 className="text-white text-xl font-bold mb-2">No {getTerminology('classrooms')} Yet</h3>
+                <p className="text-white opacity-75 mb-6">{!organization?`Set up your ${appMode==='education'?'school':'company'} organization first!`:`Join a ${getTerminology('classroom').toLowerCase()} or create one to get started!`}</p>
+                <div className="flex gap-4 justify-center flex-wrap">
+                  {!organization&&<button onClick={startOnboarding} className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-400 text-white rounded-lg font-bold hover:scale-105 transition-all">🚀 Set Up Organization</button>}
                   <button 
                     onClick={()=>setShowJoinClassroom(true)}
                     className="px-6 py-3 bg-white text-teal-600 rounded-lg font-bold"
                   >
                     Join with Code
                   </button>
-                  <button 
+                  {organization&&<button 
                     onClick={()=>setShowCreateClassroom(true)}
                     className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-bold"
                   >
-                    Create Classroom
-                  </button>
+                    Create {getTerminology('classroom')}
+                  </button>}
                 </div>
               </div>
             ) : (
@@ -1906,7 +2346,7 @@ return(
     <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
   </svg>
   Edit Profile
-</button></div><div className="bg-white bg-opacity-20 rounded-xl p-4"><h3 className="text-white font-bold mb-3 flex items-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>Notifications</h3><div className="space-y-3"><div className="flex items-center justify-between bg-white bg-opacity-10 p-3 rounded-lg"><div className="flex items-center gap-2"><span className="text-white text-sm font-semibold">📧 Email Reminders</span></div><button onClick={()=>setEmailReminders(!emailReminders)} className={`relative w-12 h-6 rounded-full transition-colors ${emailReminders?'bg-green-400':'bg-white bg-opacity-30'}`}><div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${emailReminders?'translate-x-7':'translate-x-1'}`}/></button></div><div className="flex items-center justify-between bg-white bg-opacity-10 p-3 rounded-lg opacity-50"><div className="flex items-center gap-2"><span className="text-white text-sm font-semibold">📱 SMS Reminders</span><span className="text-xs bg-white bg-opacity-20 px-2 py-0.5 rounded">Soon</span></div><button disabled className="relative w-12 h-6 rounded-full bg-white bg-opacity-30 cursor-not-allowed"><div className="absolute top-1 left-1 w-4 h-4 bg-white rounded-full"/></button></div></div></div><div className="bg-white bg-opacity-20 rounded-xl p-4"><h3 className="text-white font-bold mb-3 flex items-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>Settings</h3><div className="space-y-3 text-white text-sm"><div><label className="opacity-75 block mb-1">Weekly Study Goal:</label><div className="flex items-center gap-2"><input type="range" min="0" max="40" value={weeklyTarget} onChange={e=>setWeeklyTarget(parseInt(e.target.value))} className="flex-1 h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer"/><span className="font-bold">{weeklyTarget}h</span></div></div><div><label className="opacity-75 block mb-1">Main Goal:</label><input type="text" value={goal} onChange={e=>setGoal(e.target.value)} placeholder="e.g., Pass my finals" className="w-full bg-white bg-opacity-20 rounded-lg px-3 py-2 text-white placeholder-white placeholder-opacity-50"/></div></div></div>{!isPro&&<button onClick={()=>{setShowMenu(false);setShowPaywall(true)}} className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:scale-105 transition-all shadow-lg"><Icon name="crown" className="w-5 h-5"/>Upgrade - $5 Lifetime</button>}<button onClick={logout} className="w-full bg-white bg-opacity-20 text-white py-4 rounded-xl font-bold hover:bg-opacity-30 transition-colors flex items-center justify-center gap-2"><Icon name="logout" className="w-5 h-5"/>Log Out</button></div></div></div></div>}
+</button></div><div className="bg-white bg-opacity-20 rounded-xl p-4"><h3 className="text-white font-bold mb-3 flex items-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>Notifications</h3><div className="space-y-3"><div className="flex items-center justify-between bg-white bg-opacity-10 p-3 rounded-lg"><div className="flex items-center gap-2"><span className="text-white text-sm font-semibold">📧 Email Reminders</span></div><button onClick={()=>setEmailReminders(!emailReminders)} className={`relative w-12 h-6 rounded-full transition-colors ${emailReminders?'bg-green-400':'bg-white bg-opacity-30'}`}><div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${emailReminders?'translate-x-7':'translate-x-1'}`}/></button></div><div className="flex items-center justify-between bg-white bg-opacity-10 p-3 rounded-lg opacity-50"><div className="flex items-center gap-2"><span className="text-white text-sm font-semibold">📱 SMS Reminders</span><span className="text-xs bg-white bg-opacity-20 px-2 py-0.5 rounded">Soon</span></div><button disabled className="relative w-12 h-6 rounded-full bg-white bg-opacity-30 cursor-not-allowed"><div className="absolute top-1 left-1 w-4 h-4 bg-white rounded-full"/></button></div></div></div><div className="bg-white bg-opacity-20 rounded-xl p-4"><h3 className="text-white font-bold mb-3 flex items-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>Settings</h3><div className="space-y-3 text-white text-sm"><div><label className="opacity-75 block mb-1">Weekly Study Goal:</label><div className="flex items-center gap-2"><input type="range" min="0" max="40" value={weeklyTarget} onChange={e=>setWeeklyTarget(parseInt(e.target.value))} className="flex-1 h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer"/><span className="font-bold">{weeklyTarget}h</span></div></div><div><label className="opacity-75 block mb-1">Main Goal:</label><input type="text" value={goal} onChange={e=>setGoal(e.target.value)} placeholder="e.g., Pass my finals" className="w-full bg-white bg-opacity-20 rounded-lg px-3 py-2 text-white placeholder-white placeholder-opacity-50"/></div><div><label className="opacity-75 block mb-2">App Mode:</label><div className="flex gap-2"><button onClick={()=>setAppMode('education')} className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-all ${appMode==='education'?'bg-white text-teal-600':'bg-white bg-opacity-20 text-white'}`}>🏫 Education</button><button onClick={()=>setAppMode('enterprise')} className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-all ${appMode==='enterprise'?'bg-white text-teal-600':'bg-white bg-opacity-20 text-white'}`}>💼 Enterprise</button></div><p className="text-xs opacity-75 mt-2">{appMode==='education'?'For students & teachers':'For teams & managers'}</p></div></div></div>{!isPro&&<button onClick={()=>{setShowMenu(false);setShowPaywall(true)}} className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:scale-105 transition-all shadow-lg"><Icon name="crown" className="w-5 h-5"/>Upgrade - $5 Lifetime</button>}<button onClick={logout} className="w-full bg-white bg-opacity-20 text-white py-4 rounded-xl font-bold hover:bg-opacity-30 transition-colors flex items-center justify-center gap-2"><Icon name="logout" className="w-5 h-5"/>Log Out</button></div></div></div></div>}
     {showUsernamePrompt&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4">
       <div className="bg-gradient-to-br from-cyan-600 to-teal-700 rounded-2xl p-8 max-w-md w-full">
         <div className="text-center mb-6">
@@ -2112,10 +2552,13 @@ return(
     {showPaywall&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-cyan-600 to-teal-700 rounded-2xl p-8 max-w-md w-full relative overflow-hidden"><div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400 rounded-full blur-3xl opacity-20"></div><div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-400 rounded-full blur-3xl opacity-20"></div><div className="relative z-10"><div className="text-center mb-6"><div className="text-6xl mb-4">👑</div><h2 className="text-3xl font-bold text-white mb-2">Upgrade to Premium</h2><p className="text-white opacity-90">{isTrialActive() ? 'Lock in lifetime access!' : 'Your trial has ended'}</p></div><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6"><div className="text-white mb-4"><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Unlimited courses</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Access to new features</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Premium access for lifetime</span></div></div><div className="text-center"><div className="text-5xl font-bold text-yellow-300 mb-1">$5</div><div className="text-white text-sm opacity-75">One-time payment • Lifetime access</div></div></div>{paymentError&&<div className="bg-red-500 bg-opacity-20 border border-red-300 text-white p-3 rounded-lg mb-4 text-sm">{paymentError}</div>}<button onClick={()=>setShowPaywall(false)} className="w-full bg-white text-teal-600 py-4 rounded-xl font-bold text-lg mb-3 hover:scale-105 transition-all shadow-lg">All Premium features free until Feb 28th ✨</button><button onClick={()=>setShowPaywall(false)} disabled={paymentProcessing} className="w-full text-white text-sm opacity-75 hover:opacity-100 disabled:opacity-50">Close</button></div></div></div>}
     
     {/* Create Classroom Modal */}
-    {showCreateClassroom&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-8 max-w-md w-full"><h2 className="text-3xl font-bold text-white mb-6 text-center">🏫 Create Classroom</h2><div className="space-y-4"><input type="text" placeholder="Classroom Name *" value={newClassroom.name} onChange={e=>setNewClassroom({...newClassroom,name:e.target.value})} className="w-full px-4 py-3 rounded-lg text-lg" /><input type="text" placeholder="Subject (e.g., Math, Science)" value={newClassroom.subject} onChange={e=>setNewClassroom({...newClassroom,subject:e.target.value})} className="w-full px-4 py-3 rounded-lg" /><textarea placeholder="Description (optional)" value={newClassroom.description} onChange={e=>setNewClassroom({...newClassroom,description:e.target.value})} className="w-full px-4 py-3 rounded-lg resize-none" rows="3"></textarea></div><div className="flex gap-3 mt-6"><button onClick={()=>setShowCreateClassroom(false)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">Cancel</button><button onClick={createClassroom} className="flex-1 bg-white text-purple-600 py-3 rounded-lg font-bold hover:scale-105 transition-all">Create 🎉</button></div></div></div>}
+    {showCreateClassroom&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-8 max-w-md w-full"><h2 className="text-3xl font-bold text-white mb-6 text-center">{getModeEmoji()} Create {getTerminology('classroom')}</h2><div className="space-y-4"><input type="text" placeholder={`${getTerminology('classroom')} Name *`} value={newClassroom.name} onChange={e=>setNewClassroom({...newClassroom,name:e.target.value})} className="w-full px-4 py-3 rounded-lg text-lg" /><input type="text" placeholder={appMode==='education'?"Subject (e.g., Math, Science)":"Department (e.g., Engineering, Sales)"} value={newClassroom.subject} onChange={e=>setNewClassroom({...newClassroom,subject:e.target.value})} className="w-full px-4 py-3 rounded-lg" /><textarea placeholder="Description (optional)" value={newClassroom.description} onChange={e=>setNewClassroom({...newClassroom,description:e.target.value})} className="w-full px-4 py-3 rounded-lg resize-none" rows="3"></textarea></div><div className="flex gap-3 mt-6"><button onClick={()=>setShowCreateClassroom(false)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">Cancel</button><button onClick={createClassroom} className="flex-1 bg-white text-purple-600 py-3 rounded-lg font-bold hover:scale-105 transition-all">Create 🎉</button></div></div></div>}
     
     {/* Join Classroom Modal */}
-    {showJoinClassroom&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-cyan-600 to-teal-600 rounded-2xl p-8 max-w-md w-full"><h2 className="text-3xl font-bold text-white mb-6 text-center">🎓 Join Classroom</h2><p className="text-white opacity-90 text-center mb-6">Enter the 6-character join code from your teacher</p><input type="text" placeholder="Enter Join Code" value={joinCode} onChange={e=>setJoinCode(e.target.value.toUpperCase())} maxLength="6" className="w-full px-4 py-4 rounded-lg text-2xl text-center font-bold tracking-widest mb-6" /><div className="flex gap-3"><button onClick={()=>setShowJoinClassroom(false)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">Cancel</button><button onClick={joinClassroom} disabled={joinCode.length!==6} className="flex-1 bg-white text-teal-600 py-3 rounded-lg font-bold hover:scale-105 transition-all disabled:opacity-50">Join Class 🚀</button></div></div></div>}
+    {showJoinClassroom&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-cyan-600 to-teal-600 rounded-2xl p-8 max-w-md w-full"><h2 className="text-3xl font-bold text-white mb-6 text-center">🎓 Join {getTerminology('classroom')}</h2><p className="text-white opacity-90 text-center mb-6">Enter the 6-character join code from your {getTerminology('teacher').toLowerCase()}</p><input type="text" placeholder="Enter Join Code" value={joinCode} onChange={e=>setJoinCode(e.target.value.toUpperCase())} maxLength="6" className="w-full px-4 py-4 rounded-lg text-2xl text-center font-bold tracking-widest mb-6" /><div className="flex gap-3"><button onClick={()=>setShowJoinClassroom(false)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">Cancel</button><button onClick={joinClassroom} disabled={joinCode.length!==6} className="flex-1 bg-white text-teal-600 py-3 rounded-lg font-bold hover:scale-105 transition-all disabled:opacity-50">Join {getTerminology('classroom')} 🚀</button></div></div></div>}
+    
+    {/* Onboarding Wizard */}
+    {showOnboardingWizard&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50 p-4"><div className="bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"><div className="mb-6"><div className="flex justify-between items-center mb-4"><h2 className="text-3xl font-bold text-white">{appMode==='education'?'🏫 School Setup':'💼 Company Setup'}</h2><div className="text-white text-sm">Step {onboardingStepNum}/4</div></div><div className="flex gap-2 mb-4">{[1,2,3,4].map(step=><div key={step} className={`flex-1 h-2 rounded-full ${step<=onboardingStepNum?'bg-white':'bg-white bg-opacity-30'}`}/>)}</div></div>{onboardingStepNum===1&&<div><h3 className="text-2xl font-bold text-white mb-4">Create Your Organization</h3><div className="space-y-4"><input type="text" placeholder={appMode==='education'?"School or District Name":"Company Name"} value={onboardingData.orgName} onChange={e=>setOnboardingData({...onboardingData,orgName:e.target.value})} className="w-full px-4 py-3 rounded-lg text-lg"/><select value={onboardingData.size} onChange={e=>setOnboardingData({...onboardingData,size:e.target.value})} className="w-full px-4 py-3 rounded-lg text-lg"><option value="">Select Size...</option>{appMode==='education'?<><option value="1-50">1-50 students</option><option value="51-200">51-200 students</option><option value="201-500">201-500 students</option><option value="501+">500+ students</option></>:<><option value="1-10">1-10 employees</option><option value="11-50">11-50 employees</option><option value="51-200">51-200 employees</option><option value="201+">200+ employees</option></>}</select></div><div className="flex gap-3 mt-6"><button onClick={()=>setShowOnboardingWizard(false)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">Cancel</button><button onClick={createOrganization} disabled={!onboardingData.orgName.trim()} className="flex-1 bg-white text-purple-600 py-3 rounded-lg font-bold hover:scale-105 transition-all disabled:opacity-50">Next →</button></div></div>}{onboardingStepNum===2&&<div><h3 className="text-2xl font-bold text-white mb-4">Invite Your Team</h3><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6"><h4 className="text-white font-bold mb-3">Share Invite Link:</h4><div className="bg-white rounded-lg p-3 flex items-center justify-between mb-3"><input type="text" value={inviteLink} readOnly className="flex-1 bg-transparent text-sm"/><button onClick={()=>{navigator.clipboard.writeText(inviteLink);alert('Copied!')}} className="bg-teal-600 text-white px-3 py-1 rounded text-sm font-bold ml-2">Copy</button></div><p className="text-white text-sm opacity-75">Anyone with this link can join your organization</p></div><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6"><h4 className="text-white font-bold mb-3">Or Share Join Code:</h4><div className="bg-white rounded-lg p-4 text-center"><div className="text-3xl font-black tracking-wider">{organization?.inviteCode}</div></div><p className="text-white text-sm opacity-75 mt-2 text-center">{appMode==='education'?'Teachers and students':'Team members'} can join with this code</p></div><div className="flex gap-3"><button onClick={()=>setOnboardingStepNum(1)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">← Back</button><button onClick={()=>setOnboardingStepNum(3)} className="flex-1 bg-white text-purple-600 py-3 rounded-lg font-bold">Next →</button></div></div>}{onboardingStepNum===3&&<div><h3 className="text-2xl font-bold text-white mb-4">{appMode==='education'?'Create First Classroom (Optional)':'Create First Team (Optional)'}</h3><p className="text-white opacity-90 mb-6">You can skip this and let {appMode==='education'?'teachers':'managers'} create their own {appMode==='education'?'classrooms':'teams'}</p><div className="space-y-4"><input type="text" placeholder={appMode==='education'?"Classroom Name (e.g., AP Calculus)":"Team Name (e.g., Engineering)"} value={newClassroom.name} onChange={e=>setNewClassroom({...newClassroom,name:e.target.value})} className="w-full px-4 py-3 rounded-lg"/><input type="text" placeholder={appMode==='education'?"Subject":"Department"} value={newClassroom.subject} onChange={e=>setNewClassroom({...newClassroom,subject:e.target.value})} className="w-full px-4 py-3 rounded-lg"/></div><div className="flex gap-3 mt-6"><button onClick={()=>setOnboardingStepNum(2)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">← Back</button><button onClick={()=>{if(newClassroom.name.trim()){createClassroom()}setOnboardingStepNum(4)}} className="flex-1 bg-white text-purple-600 py-3 rounded-lg font-bold">{newClassroom.name.trim()?'Create & Continue':'Skip →'}</button></div></div>}{onboardingStepNum===4&&<div className="text-center"><div className="text-6xl mb-6">🎉</div><h3 className="text-3xl font-bold text-white mb-4">You're All Set!</h3><p className="text-white opacity-90 text-lg mb-8">Your organization is ready. {appMode==='education'?'Teachers and students':'Team members'} can now join and start {appMode==='education'?'studying':'focusing'} together!</p><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6 text-left"><h4 className="text-white font-bold mb-3">Quick Start Guide:</h4><ul className="text-white space-y-2 text-sm opacity-90"><li>✅ Share your invite link or code</li><li>✅ {appMode==='education'?'Teachers':'Managers'} can create {appMode==='education'?'classrooms':'teams'}</li><li>✅ Set {appMode==='education'?'class':'team'} goals and challenges</li><li>✅ Track progress on leaderboards</li><li>✅ All features free until Feb 28th!</li></ul></div><button onClick={()=>{setShowOnboardingWizard(false);setTab('classroom')}} className="w-full bg-white text-purple-600 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all">Start Using LearnBot 🚀</button></div>}</div></div>}
     
   </div>
 </div>
