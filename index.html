@@ -409,7 +409,7 @@ function StreakLostModal({ lostStreak, onClose }) {
 function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);
 
 // LEADERBOARD STATE
-const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);
+const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);
 
 const timer=useRef(null);const level=Math.min(Math.floor(xp/100)+1,10);const levelXp=(xp%100);
 
@@ -719,11 +719,11 @@ useEffect(() => {
 }, []);
 
 
-async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());setSkills(data.skills||[]);setTotalLevel(data.totalLevel||0);
+async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());setSkills(data.skills||[]);setTotalLevel(data.totalLevel||0);setClassrooms(data.classrooms||[]);setIsTeacher(data.isTeacher||false);setTeachingClasses(data.teachingClasses||[]);
 
 if(!data.username){setShowUsernamePrompt(true)}else if(!data.onboardingCompleted){setShowOnboarding(true)}}}catch(err){console.error('Error loading user data:',err)}}
 
-async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
+async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,classrooms,isTeacher,teachingClasses,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
 
 useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,skills,totalLevel]);
 
@@ -817,6 +817,123 @@ function getSkillIcon(courseName) {
   if (name.includes('language') || name.includes('spanish') || name.includes('french')) return '🌍';
   if (name.includes('health') || name.includes('medical')) return '⚕️';
   return '📚'; // Default book icon
+}
+
+// Classroom Functions
+function generateJoinCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude confusing chars
+  let code = '';
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+async function createClassroom() {
+  if (!newClassroom.name.trim()) {
+    alert('Please enter a classroom name');
+    return;
+  }
+  
+  try {
+    const joinCode = generateJoinCode();
+    const classroomRef = db.collection('classrooms').doc();
+    
+    await classroomRef.set({
+      id: classroomRef.id,
+      name: newClassroom.name.trim(),
+      subject: newClassroom.subject.trim() || 'General',
+      description: newClassroom.description.trim(),
+      joinCode: joinCode,
+      teacherId: user.uid,
+      teacherName: name,
+      studentIds: [],
+      students: [],
+      goals: [],
+      challenges: [],
+      createdAt: new Date().toISOString(),
+      stats: {
+        totalMinutes: 0,
+        avgLevel: 0,
+        memberCount: 0
+      }
+    });
+    
+    // Update user
+    setIsTeacher(true);
+    setTeachingClasses(prev => [...prev, classroomRef.id]);
+    setClassrooms(prev => [...prev, classroomRef.id]);
+    
+    alert(`✅ Classroom created! Join code: ${joinCode}`);
+    setShowCreateClassroom(false);
+    setNewClassroom({name:'',subject:'',description:''});
+    
+  } catch (err) {
+    console.error('Error creating classroom:', err);
+    alert('Failed to create classroom. Please try again.');
+  }
+}
+
+async function joinClassroom() {
+  if (!joinCode.trim()) {
+    alert('Please enter a join code');
+    return;
+  }
+  
+  try {
+    const classroomsSnapshot = await db.collection('classrooms')
+      .where('joinCode', '==', joinCode.trim().toUpperCase())
+      .limit(1)
+      .get();
+    
+    if (classroomsSnapshot.empty) {
+      alert('❌ Invalid join code. Please check and try again.');
+      return;
+    }
+    
+    const classroomDoc = classroomsSnapshot.docs[0];
+    const classroomId = classroomDoc.id;
+    const classroomData = classroomDoc.data();
+    
+    // Check if already joined
+    if (classrooms.includes(classroomId)) {
+      alert('You\'re already in this classroom!');
+      return;
+    }
+    
+    // Add student to classroom
+    await db.collection('classrooms').doc(classroomId).update({
+      studentIds: firebase.firestore.FieldValue.arrayUnion(user.uid),
+      students: firebase.firestore.FieldValue.arrayUnion({
+        uid: user.uid,
+        name: name,
+        username: username,
+        joinedAt: new Date().toISOString()
+      })
+    });
+    
+    // Update user
+    setClassrooms(prev => [...prev, classroomId]);
+    
+    alert(`✅ Joined ${classroomData.name}!`);
+    setShowJoinClassroom(false);
+    setJoinCode('');
+    
+  } catch (err) {
+    console.error('Error joining classroom:', err);
+    alert('Failed to join classroom. Please try again.');
+  }
+}
+
+async function loadClassroomData(classroomId) {
+  try {
+    const classroomDoc = await db.collection('classrooms').doc(classroomId).get();
+    if (classroomDoc.exists) {
+      setClassroomData(classroomDoc.data());
+    }
+  } catch (err) {
+    console.error('Error loading classroom:', err);
+  }
 }
 
 useEffect(()=>{if(running&&time>0){timer.current=setInterval(()=>{setTime(t=>{if(t<=1){finish();return 0}return t-1})},1000)}else{clearInterval(timer.current)}return()=>clearInterval(timer.current)},[running,time]);
@@ -1078,6 +1195,7 @@ return(
       <button onClick={()=>setTab('deadlines')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='deadlines'?'bg-white text-teal-600':'text-white'}`}>Deadlines</button>
       <button onClick={()=>setTab('stats')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='stats'?'bg-white text-teal-600':'text-white'}`}>Stats</button>
       <button onClick={()=>setTab('skills')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='skills'?'bg-white text-teal-600':'text-white'}`}>⚔️ Skills</button>
+      <button onClick={()=>setTab('classroom')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='classroom'?'bg-white text-teal-600':'text-white'}`}>🏫 Class</button>
       <button onClick={()=>setTab('leaderboard')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='leaderboard'?'bg-white text-teal-600':'text-white'}`}>🏆</button>
       {!isPro&&<button onClick={()=>setShowPaywall(true)} className="px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 text-white flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-base"><Icon name="crown" className="w-3 h-3 md:w-4 md:h-4"/>Pro</button>}
     </div>
@@ -1358,6 +1476,89 @@ return(
             <li>• Skills level independently up to 99</li>
             <li>• Total Level = Sum of all skill levels</li>
             <li>• Keep streaks alive by studying daily</li>
+          </ul>
+        </div>
+      </div>
+    )}
+    {tab==='classroom'&&(
+      <div className="space-y-4 md:space-y-6">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
+            🏫 Classrooms
+          </h2>
+          <div className="flex gap-2">
+            <button 
+              onClick={()=>setShowJoinClassroom(true)} 
+              className="px-4 py-2 bg-white text-teal-600 rounded-lg font-semibold text-sm hover:scale-105 transition-all"
+            >
+              Join Class
+            </button>
+            <button 
+              onClick={()=>setShowCreateClassroom(true)} 
+              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold text-sm hover:scale-105 transition-all"
+            >
+              + Create Class
+            </button>
+          </div>
+        </div>
+
+        {/* My Classrooms */}
+        {classrooms.length === 0 ? (
+          <div className="bg-white bg-opacity-20 rounded-2xl p-8 text-center">
+            <div className="text-6xl mb-4">🎓</div>
+            <h3 className="text-white text-xl font-bold mb-2">No Classrooms Yet</h3>
+            <p className="text-white opacity-75 mb-6">Join a classroom or create one to get started!</p>
+            <div className="flex gap-4 justify-center">
+              <button 
+                onClick={()=>setShowJoinClassroom(true)}
+                className="px-6 py-3 bg-white text-teal-600 rounded-lg font-bold"
+              >
+                Join with Code
+              </button>
+              <button 
+                onClick={()=>setShowCreateClassroom(true)}
+                className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-bold"
+              >
+                Create Classroom
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {classrooms.map((classroomId, index) => (
+              <div 
+                key={classroomId}
+                className="bg-gradient-to-r from-cyan-600 to-teal-600 rounded-xl p-6 hover:scale-102 transition-all cursor-pointer shadow-lg"
+                onClick={()=>{setSelectedClassroom(classroomId);loadClassroomData(classroomId);}}
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="text-white font-bold text-lg">Loading...</h3>
+                    <p className="text-white opacity-75 text-sm">Classroom {index + 1}</p>
+                  </div>
+                  {teachingClasses.includes(classroomId) && (
+                    <span className="bg-yellow-400 text-teal-800 px-2 py-1 rounded text-xs font-bold">
+                      TEACHER
+                    </span>
+                  )}
+                </div>
+                <div className="text-white text-sm opacity-75">
+                  Click to view details
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Info */}
+        <div className="bg-white bg-opacity-10 rounded-xl p-4 text-white text-sm">
+          <div className="font-bold mb-2">📚 About Classrooms:</div>
+          <ul className="space-y-1 opacity-75 text-xs">
+            <li>• Join a classroom to study with classmates</li>
+            <li>• Teachers can track class progress and set goals</li>
+            <li>• Compete on class leaderboards</li>
+            <li>• Contribute to class-wide study challenges</li>
           </ul>
         </div>
       </div>
@@ -1747,6 +1948,12 @@ return(
       </div>
     </div></div></div>}
     {showPaywall&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-cyan-600 to-teal-700 rounded-2xl p-8 max-w-md w-full relative overflow-hidden"><div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400 rounded-full blur-3xl opacity-20"></div><div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-400 rounded-full blur-3xl opacity-20"></div><div className="relative z-10"><div className="text-center mb-6"><div className="text-6xl mb-4">👑</div><h2 className="text-3xl font-bold text-white mb-2">Upgrade to Premium</h2><p className="text-white opacity-90">{isTrialActive() ? 'Lock in lifetime access!' : 'Your trial has ended'}</p></div><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6"><div className="text-white mb-4"><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Unlimited courses</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Access to new features</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Premium access for lifetime</span></div></div><div className="text-center"><div className="text-5xl font-bold text-yellow-300 mb-1">$5</div><div className="text-white text-sm opacity-75">One-time payment • Lifetime access</div></div></div>{paymentError&&<div className="bg-red-500 bg-opacity-20 border border-red-300 text-white p-3 rounded-lg mb-4 text-sm">{paymentError}</div>}<button onClick={()=>setShowPaywall(false)} className="w-full bg-white text-teal-600 py-4 rounded-xl font-bold text-lg mb-3 hover:scale-105 transition-all shadow-lg">All Premium features free until Feb 28th ✨</button><button onClick={()=>setShowPaywall(false)} disabled={paymentProcessing} className="w-full text-white text-sm opacity-75 hover:opacity-100 disabled:opacity-50">Close</button></div></div></div>}
+    
+    {/* Create Classroom Modal */}
+    {showCreateClassroom&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-8 max-w-md w-full"><h2 className="text-3xl font-bold text-white mb-6 text-center">🏫 Create Classroom</h2><div className="space-y-4"><input type="text" placeholder="Classroom Name *" value={newClassroom.name} onChange={e=>setNewClassroom({...newClassroom,name:e.target.value})} className="w-full px-4 py-3 rounded-lg text-lg" /><input type="text" placeholder="Subject (e.g., Math, Science)" value={newClassroom.subject} onChange={e=>setNewClassroom({...newClassroom,subject:e.target.value})} className="w-full px-4 py-3 rounded-lg" /><textarea placeholder="Description (optional)" value={newClassroom.description} onChange={e=>setNewClassroom({...newClassroom,description:e.target.value})} className="w-full px-4 py-3 rounded-lg resize-none" rows="3"></textarea></div><div className="flex gap-3 mt-6"><button onClick={()=>setShowCreateClassroom(false)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">Cancel</button><button onClick={createClassroom} className="flex-1 bg-white text-purple-600 py-3 rounded-lg font-bold hover:scale-105 transition-all">Create 🎉</button></div></div></div>}
+    
+    {/* Join Classroom Modal */}
+    {showJoinClassroom&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-cyan-600 to-teal-600 rounded-2xl p-8 max-w-md w-full"><h2 className="text-3xl font-bold text-white mb-6 text-center">🎓 Join Classroom</h2><p className="text-white opacity-90 text-center mb-6">Enter the 6-character join code from your teacher</p><input type="text" placeholder="Enter Join Code" value={joinCode} onChange={e=>setJoinCode(e.target.value.toUpperCase())} maxLength="6" className="w-full px-4 py-4 rounded-lg text-2xl text-center font-bold tracking-widest mb-6" /><div className="flex gap-3"><button onClick={()=>setShowJoinClassroom(false)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">Cancel</button><button onClick={joinClassroom} disabled={joinCode.length!==6} className="flex-1 bg-white text-teal-600 py-3 rounded-lg font-bold hover:scale-105 transition-all disabled:opacity-50">Join Class 🚀</button></div></div></div>}
     
   </div>
 </div>
