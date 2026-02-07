@@ -727,6 +727,34 @@ async function saveUserData(){if(!user)return;try{const monday=getMonday();await
 
 useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,skills,totalLevel]);
 
+// Load classroom data when classrooms change
+useEffect(() => {
+  async function loadAllClassrooms() {
+    if (classrooms.length === 0) return;
+    
+    try {
+      const classroomPromises = classrooms.map(id => 
+        db.collection('classrooms').doc(id).get()
+      );
+      
+      const docs = await Promise.all(classroomPromises);
+      const data = docs.map(doc => doc.exists ? doc.data() : null).filter(Boolean);
+      
+      // Store in a map for easy lookup
+      const classroomMap = {};
+      data.forEach(classroom => {
+        classroomMap[classroom.id] = classroom;
+      });
+      
+      window.classroomCache = classroomMap;
+    } catch (err) {
+      console.error('Error loading classrooms:', err);
+    }
+  }
+  
+  loadAllClassrooms();
+}, [classrooms]);
+
 async function signup(){if(!name||!email||!pass)return;setError('');setLoading(true);try{const result=await auth.createUserWithEmailAndPassword(email,pass);const monday=getMonday();await db.collection('users').doc(result.user.uid).set({name,email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,goal:'',weeklyTarget:10,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday,onboardingCompleted:false});setUser({uid:result.user.uid,email,name,trialStartDate:new Date().toISOString()});setWeekStartDate(monday);setView('app');setShowUsernamePrompt(true)}catch(err){setError(err.message)}finally{setLoading(false)}}
 
 async function login(){if(!email||!pass)return;setError('');setLoading(true);try{const result=await auth.signInWithEmailAndPassword(email,pass);await loadUserData(result.user);setView('app')}catch(err){setError(err.code==='auth/user-not-found'?'No account found':err.message)}finally{setLoading(false)}}
@@ -1147,6 +1175,157 @@ if(view==='privacy'){return(<div className="min-h-screen bg-gradient-to-br from-
   </div>
 </div>)}
 
+// Classroom Components
+function ClassroomsList() {
+  const [classroomDataList, setClassroomDataList] = useState([]);
+  
+  useEffect(() => {
+    async function loadClassrooms() {
+      try {
+        const promises = classrooms.map(id => db.collection('classrooms').doc(id).get());
+        const docs = await Promise.all(promises);
+        const data = docs.map(doc => doc.exists ? doc.data() : null).filter(Boolean);
+        setClassroomDataList(data);
+      } catch (err) {
+        console.error('Error loading classrooms:', err);
+      }
+    }
+    loadClassrooms();
+  }, [classrooms]);
+  
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {classroomDataList.map(classroom => (
+        <div 
+          key={classroom.id}
+          className="bg-gradient-to-r from-cyan-600 to-teal-600 rounded-xl p-6 hover:scale-102 transition-all cursor-pointer shadow-lg"
+          onClick={()=>{setSelectedClassroom(classroom.id);loadClassroomData(classroom.id);}}
+        >
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h3 className="text-white font-bold text-lg">{classroom.name}</h3>
+              <p className="text-white opacity-75 text-sm">{classroom.subject}</p>
+            </div>
+            {teachingClasses.includes(classroom.id) && (
+              <span className="bg-yellow-400 text-teal-800 px-2 py-1 rounded text-xs font-bold">
+                TEACHER
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-4 text-white text-sm">
+            <span>👥 {classroom.students?.length || 0} students</span>
+            <span>📚 Join Code: {classroom.joinCode}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ClassroomDetail() {
+  const [loading, setLoading] = useState(true);
+  const [classroom, setClassroom] = useState(null);
+  
+  useEffect(() => {
+    async function load() {
+      if (!selectedClassroom) return;
+      try {
+        const doc = await db.collection('classrooms').doc(selectedClassroom).get();
+        if (doc.exists) {
+          setClassroom(doc.data());
+        }
+        setLoading(false);
+      } catch (err) {
+        console.error('Error loading classroom:', err);
+        setLoading(false);
+      }
+    }
+    load();
+  }, [selectedClassroom]);
+  
+  if (loading) {
+    return <div className="text-white text-center py-12">Loading...</div>;
+  }
+  
+  if (!classroom) {
+    return <div className="text-white text-center py-12">Classroom not found</div>;
+  }
+  
+  const isTeacherHere = classroom.teacherId === user?.uid;
+  
+  return (
+    <div className="space-y-6">
+      {/* Back Button */}
+      <button 
+        onClick={()=>setSelectedClassroom(null)}
+        className="text-white flex items-center gap-2 hover:opacity-75"
+      >
+        ← Back to Classrooms
+      </button>
+      
+      {/* Classroom Header */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6">
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <h2 className="text-3xl font-bold text-white mb-2">{classroom.name}</h2>
+            <p className="text-white opacity-90">{classroom.subject}</p>
+            {classroom.description && (
+              <p className="text-white opacity-75 text-sm mt-2">{classroom.description}</p>
+            )}
+          </div>
+          {isTeacherHere && (
+            <span className="bg-yellow-400 text-purple-800 px-3 py-1 rounded font-bold">
+              TEACHER
+            </span>
+          )}
+        </div>
+        <div className="flex gap-4 text-white">
+          <div className="bg-white bg-opacity-20 px-4 py-2 rounded-lg">
+            <div className="text-2xl font-bold">{classroom.students?.length || 0}</div>
+            <div className="text-xs opacity-75">Students</div>
+          </div>
+          <div className="bg-white bg-opacity-20 px-4 py-2 rounded-lg">
+            <div className="text-2xl font-bold">{classroom.joinCode}</div>
+            <div className="text-xs opacity-75">Join Code</div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Students List */}
+      <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+        <h3 className="text-white font-bold text-xl mb-4">👥 Students</h3>
+        {classroom.students && classroom.students.length > 0 ? (
+          <div className="space-y-2">
+            {classroom.students.map((student, index) => (
+              <div 
+                key={student.uid}
+                className="bg-white bg-opacity-10 rounded-lg p-3 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">👤</span>
+                  <div>
+                    <div className="text-white font-semibold">{student.name}</div>
+                    <div className="text-white opacity-75 text-xs">
+                      @{student.username || 'student'}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-white opacity-75 text-sm">
+                  Joined {new Date(student.joinedAt).toLocaleDateString()}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-white opacity-75 text-center py-8">
+            No students yet. Share the join code!
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 return(
 <div className="min-h-screen bg-gradient-to-br from-cyan-500 to-blue-600 p-4">
   <div className="max-w-4xl mx-auto">
@@ -1482,85 +1661,68 @@ return(
     )}
     {tab==='classroom'&&(
       <div className="space-y-4 md:space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
-            🏫 Classrooms
-          </h2>
-          <div className="flex gap-2">
-            <button 
-              onClick={()=>setShowJoinClassroom(true)} 
-              className="px-4 py-2 bg-white text-teal-600 rounded-lg font-semibold text-sm hover:scale-105 transition-all"
-            >
-              Join Class
-            </button>
-            <button 
-              onClick={()=>setShowCreateClassroom(true)} 
-              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold text-sm hover:scale-105 transition-all"
-            >
-              + Create Class
-            </button>
-          </div>
-        </div>
-
-        {/* My Classrooms */}
-        {classrooms.length === 0 ? (
-          <div className="bg-white bg-opacity-20 rounded-2xl p-8 text-center">
-            <div className="text-6xl mb-4">🎓</div>
-            <h3 className="text-white text-xl font-bold mb-2">No Classrooms Yet</h3>
-            <p className="text-white opacity-75 mb-6">Join a classroom or create one to get started!</p>
-            <div className="flex gap-4 justify-center">
-              <button 
-                onClick={()=>setShowJoinClassroom(true)}
-                className="px-6 py-3 bg-white text-teal-600 rounded-lg font-bold"
-              >
-                Join with Code
-              </button>
-              <button 
-                onClick={()=>setShowCreateClassroom(true)}
-                className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-bold"
-              >
-                Create Classroom
-              </button>
+        {!selectedClassroom ? (
+          <>
+            {/* Header */}
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
+                🏫 Classrooms
+              </h2>
+              <div className="flex gap-2">
+                <button 
+                  onClick={()=>setShowJoinClassroom(true)} 
+                  className="px-4 py-2 bg-white text-teal-600 rounded-lg font-semibold text-sm hover:scale-105 transition-all"
+                >
+                  Join Class
+                </button>
+                <button 
+                  onClick={()=>setShowCreateClassroom(true)} 
+                  className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold text-sm hover:scale-105 transition-all"
+                >
+                  + Create Class
+                </button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {classrooms.map((classroomId, index) => (
-              <div 
-                key={classroomId}
-                className="bg-gradient-to-r from-cyan-600 to-teal-600 rounded-xl p-6 hover:scale-102 transition-all cursor-pointer shadow-lg"
-                onClick={()=>{setSelectedClassroom(classroomId);loadClassroomData(classroomId);}}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-white font-bold text-lg">Loading...</h3>
-                    <p className="text-white opacity-75 text-sm">Classroom {index + 1}</p>
-                  </div>
-                  {teachingClasses.includes(classroomId) && (
-                    <span className="bg-yellow-400 text-teal-800 px-2 py-1 rounded text-xs font-bold">
-                      TEACHER
-                    </span>
-                  )}
-                </div>
-                <div className="text-white text-sm opacity-75">
-                  Click to view details
+
+            {/* My Classrooms */}
+            {classrooms.length === 0 ? (
+              <div className="bg-white bg-opacity-20 rounded-2xl p-8 text-center">
+                <div className="text-6xl mb-4">🎓</div>
+                <h3 className="text-white text-xl font-bold mb-2">No Classrooms Yet</h3>
+                <p className="text-white opacity-75 mb-6">Join a classroom or create one to get started!</p>
+                <div className="flex gap-4 justify-center">
+                  <button 
+                    onClick={()=>setShowJoinClassroom(true)}
+                    className="px-6 py-3 bg-white text-teal-600 rounded-lg font-bold"
+                  >
+                    Join with Code
+                  </button>
+                  <button 
+                    onClick={()=>setShowCreateClassroom(true)}
+                    className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-bold"
+                  >
+                    Create Classroom
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            ) : (
+              <ClassroomsList />
+            )}
 
-        {/* Info */}
-        <div className="bg-white bg-opacity-10 rounded-xl p-4 text-white text-sm">
-          <div className="font-bold mb-2">📚 About Classrooms:</div>
-          <ul className="space-y-1 opacity-75 text-xs">
-            <li>• Join a classroom to study with classmates</li>
-            <li>• Teachers can track class progress and set goals</li>
-            <li>• Compete on class leaderboards</li>
-            <li>• Contribute to class-wide study challenges</li>
-          </ul>
-        </div>
+            {/* Info */}
+            <div className="bg-white bg-opacity-10 rounded-xl p-4 text-white text-sm">
+              <div className="font-bold mb-2">📚 About Classrooms:</div>
+              <ul className="space-y-1 opacity-75 text-xs">
+                <li>• Join a classroom to study with classmates</li>
+                <li>• Teachers can track class progress and set goals</li>
+                <li>• Compete on class leaderboards</li>
+                <li>• Contribute to class-wide study challenges</li>
+              </ul>
+            </div>
+          </>
+        ) : (
+          <ClassroomDetail />
+        )}
       </div>
     )}
     {tab==='leaderboard'&&(
