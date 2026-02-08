@@ -72,6 +72,20 @@ function CompletionAlert({ earnedXp, onClose, course, duration, level, totalXp, 
     setShow(true);
     playCompletionSound();
     
+    // Browser notification (works even when tab is minimized)
+    if (Notification.permission === 'granted') {
+      new Notification('⏰ Study Session Complete!', {
+        body: `${duration} min on ${course} - +${earnedXp} XP earned!`,
+        icon: '/icon.png',
+        badge: '/badge.png',
+        requireInteraction: false,
+        tag: 'timer-complete'
+      });
+    } else if (Notification.permission === 'default') {
+      // Request permission on first timer completion
+      Notification.requestPermission();
+    }
+    
     const dur = 1000;
     const steps = 30;
     const increment = earnedXp / steps;
@@ -406,7 +420,7 @@ function StreakLostModal({ lostStreak, onClose }) {
   );
 }
 
-function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);
+function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);const[startTime,setStartTime]=useState(null);
 
 // LEADERBOARD STATE
 const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);const[appMode,setAppMode]=useState('education');const[organization,setOrganization]=useState(null);const[isOrgAdmin,setIsOrgAdmin]=useState(false);const[showCreateOrg,setShowCreateOrg]=useState(false);const[showOnboardingWizard,setShowOnboardingWizard]=useState(false);const[onboardingData,setOnboardingData]=useState({orgName:'',orgType:'education',size:'',inviteMethod:'link'});const[onboardingStepNum,setOnboardingStepNum]=useState(1);const[inviteLink,setInviteLink]=useState('');const[orgInviteCode,setOrgInviteCode]=useState('');const[timerSound,setTimerSound]=useState(false);const[endSound,setEndSound]=useState(true);const[endTime,setEndTime]=useState(null);const[lofiEnabled,setLofiEnabled]=useState(false);const[lofiVolume,setLofiVolume]=useState(30);const[lofiStream,setLofiStream]=useState('lofi-girl');const[showBreakGame,setShowBreakGame]=useState(false);const[gameActive,setGameActive]=useState(false);const[gameScore,setGameScore]=useState(0);const[gameTime,setGameTime]=useState(60);const[gameTargets,setGameTargets]=useState([]);const[gameHighScore,setGameHighScore]=useState(0);const[themeMode,setThemeMode]=useState('dark');const[colorTheme,setColorTheme]=useState('cyan');const[fontFamily,setFontFamily]=useState('default');const[showCustomization,setShowCustomization]=useState(false);const[showCalculator,setShowCalculator]=useState(false);const[calcDisplay,setCalcDisplay]=useState('0');const[calcPrevious,setCalcPrevious]=useState(null);const[calcOperation,setCalcOperation]=useState(null);const[stickyNotes,setStickyNotes]=useState([]);const[showNotesPanel,setShowNotesPanel]=useState(false);const[showChess,setShowChess]=useState(false);const[chessBoard,setChessBoard]=useState(null);const[selectedPiece,setSelectedPiece]=useState(null);const[currentTurn,setCurrentTurn]=useState('white');const[gameStatus,setGameStatus]=useState('playing');const[showFeedback,setShowFeedback]=useState(false);const[feedbackType,setFeedbackType]=useState('feature');const[feedbackText,setFeedbackText]=useState('');const[feedbackSubmitting,setFeedbackSubmitting]=useState(false);const[showPasswordReset,setShowPasswordReset]=useState(false);const[resetEmail,setResetEmail]=useState('');const[resetSent,setResetSent]=useState(false);
@@ -1562,47 +1576,81 @@ async function loadClassroomData(classroomId) {
 }
 
 useEffect(()=>{
-  if(running&&time>0){
-    // Calculate end time when timer starts
-    if(!endTime){
-      setEndTime(Date.now()+time*1000);
+  if(running){
+    // Set start time for free mode
+    if(!startTime){
+      setStartTime(Date.now());
     }
     
-    timer.current=setInterval(()=>{
-      const now=Date.now();
-      const remaining=Math.ceil((endTime-now)/1000);
-      
-      if(remaining<=0){
-        finish();
-        setEndTime(null);
-        setTime(0);
-        
-        // Play end sound
-        if(endSound){
-          const audio=new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2J1fPTgjMGHm7A7+OZURE');
-          audio.play().catch(()=>{});
-        }
-      }else{
-        setTime(remaining);
+    // Free mode: count UP
+    if(duration===0){
+      timer.current=setInterval(()=>{
+        const elapsed=Math.floor((Date.now()-startTime)/1000);
+        setTime(elapsed);
         
         // Play tick sound
-        if(timerSound&&remaining%1===0){
+        if(timerSound&&elapsed%1===0){
           const tick=new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
           tick.volume=0.1;
           tick.play().catch(()=>{});
         }
+      },100);
+    }
+    // Pomodoro mode: count DOWN
+    else if(time>0){
+      // Calculate end time when timer starts
+      if(!endTime){
+        setEndTime(Date.now()+time*1000);
       }
-    },100); // Update every 100ms for accuracy
+      
+      timer.current=setInterval(()=>{
+        const now=Date.now();
+        const remaining=Math.ceil((endTime-now)/1000);
+        
+        if(remaining<=0){
+          finish();
+          setEndTime(null);
+          setTime(0);
+          
+          // Play end sound
+          if(endSound){
+            const audio=new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2J1fPTgjMGHm7A7+OZURE');
+            audio.play().catch(()=>{});
+          }
+        }else{
+          setTime(remaining);
+          
+          // Play tick sound
+          if(timerSound&&remaining%1===0){
+            const tick=new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+            tick.volume=0.1;
+            tick.play().catch(()=>{});
+          }
+        }
+      },100); // Update every 100ms for accuracy
+    }
   }else{
     clearInterval(timer.current);
     setEndTime(null);
   }
   return()=>{clearInterval(timer.current)};
-},[running,endTime,endSound,timerSound]);
+},[running,endTime,endSound,timerSound,duration,startTime]);
 
 function finish(){
   setRunning(false);
-  const pts=10+duration;
+  
+  // Calculate actual duration
+  let actualDuration;
+  if(duration===0){
+    // Free mode: calculate from start time
+    actualDuration=Math.floor(time/60); // time is in seconds for free mode
+  }else{
+    // Pomodoro mode: use set duration
+    actualDuration=duration;
+  }
+  
+  // XP calculation: 1 XP per minute + 10 bonus
+  const pts=actualDuration+10;
   const newXp=xp+pts;
   const newLevel=Math.min(Math.floor(newXp/100)+1,10);
   
@@ -1615,11 +1663,19 @@ function finish(){
     setTimeout(()=>{setShowTierUp(true)},3500)
   }
   
-  const s={course:selectedCourse,duration,xp:pts,time:Date.now()};
+  const s={course:selectedCourse,duration:actualDuration,xp:pts,time:Date.now()};
   setSessions(prev=>[...prev,s]);
   setXp(prev=>prev+pts);
   setEarnedXp(pts);
   setShowDone(true);
+  
+  // Reset for next session
+  setStartTime(null);
+  if(duration===0){
+    setTime(0);
+  }else{
+    setTime(duration*60);
+  }
 }
 
 function addCourse(){if(!hasAccess&&courses.length>=2){setShowPaywall(true);return}if(newCourse.trim()){setCourses(prev=>[...prev,{id:Date.now(),name:newCourse.trim()}]);setNewCourse('')}}
@@ -2456,11 +2512,49 @@ return(
         
         {/* Timer */}
         <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+          {/* Timer Mode Toggle */}
+          <div className="flex gap-2 mb-4 justify-center">
+            <button 
+              onClick={() => setDuration(25)}
+              className={`px-4 py-2 rounded-lg font-semibold ${duration !== 0 ? 'bg-teal-600 text-white' : 'bg-white bg-opacity-30 text-white'}`}
+            >
+              📚 Pomodoro
+            </button>
+            <button 
+              onClick={() => setDuration(0)}
+              className={`px-4 py-2 rounded-lg font-semibold ${duration === 0 ? 'bg-teal-600 text-white' : 'bg-white bg-opacity-30 text-white'}`}
+            >
+              ⏱️ Free Mode
+            </button>
+          </div>
+          
+          {/* Sound Settings - Right on timer page */}
+          <div className="flex gap-4 mb-4 justify-center items-center text-white text-sm">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={endSound} 
+                onChange={e => setEndSound(e.target.checked)}
+                className="w-4 h-4"
+              />
+              <span>🔔 Completion Sound</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={timerSound} 
+                onChange={e => setTimerSound(e.target.checked)}
+                className="w-4 h-4"
+              />
+              <span>🎵 Tick Sound</span>
+            </label>
+          </div>
+          
           <select value={selectedCourse} onChange={e=>setSelectedCourse(e.target.value)} disabled={running} className="w-full bg-white bg-opacity-30 text-white rounded-lg px-4 py-3 mb-6">
             <option value="">Select course...</option>
             {courses.map(c=><option key={c.id} value={c.name}>{c.name}</option>)}
           </select>
-          {!running&&time===duration*60&&(
+          {!running&&time===(duration===0?0:duration*60)&&duration!==0&&(
             <div className="flex gap-3 mb-6 justify-center flex-wrap">
               {[5,15,25,45,60].map(d=><button key={d} onClick={()=>{setDuration(d);setTime(d*60)}} className={`px-6 py-2 rounded-lg font-semibold ${duration===d?'bg-teal-600 text-white':'bg-white bg-opacity-30 text-white'}`}>{d}m</button>)}
             </div>
@@ -2478,7 +2572,7 @@ return(
             </div>
           </div>
           <div className="flex gap-4 justify-center flex-wrap">
-            {!running?<button onClick={()=>{if(selectedCourse)setRunning(true)}} disabled={!selectedCourse} className={`${getThemeColors().accent} text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 disabled:opacity-50`}><Icon name="play"/>Start</button>:(<><button onClick={()=>setRunning(false)} className="bg-yellow-400 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2"><Icon name="pause"/>Pause</button><button onClick={()=>{setRunning(false);setTime(duration*60);setSelectedCourse('')}} className="bg-red-400 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2"><Icon name="square"/>Stop</button></>)}
+            {!running?<button onClick={()=>{if(selectedCourse){setRunning(true);if(duration===0)setTime(0)}}} disabled={!selectedCourse} className={`${getThemeColors().accent} text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 disabled:opacity-50`}><Icon name="play"/>Start</button>:(<><button onClick={()=>setRunning(false)} className="bg-yellow-400 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2"><Icon name="pause"/>Pause</button><button onClick={()=>{if(duration===0){finish()}else{setRunning(false);setTime(duration*60);setSelectedCourse('')}}} className="bg-red-400 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2"><Icon name="square"/>{duration===0?'Finish':'Stop'}</button></>)}
           </div>
           {!lofiEnabled&&(
             <div className="mt-6 text-center">
