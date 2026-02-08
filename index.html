@@ -2748,41 +2748,351 @@ return(
       </div>
     )}
     {tab==='stats'&&(
-      <div className="bg-white bg-opacity-20 rounded-2xl p-6">
-        <h2 className="text-2xl font-bold text-white mb-6">Recent Sessions</h2>
-        <div className="space-y-3">
-          {sessions.length===0?<div className="text-center py-12"><Icon name="trophy" className="w-16 h-16 text-white opacity-40 mx-auto mb-4"/><p className="text-white opacity-70">No sessions yet!</p></div>:sessions.slice(-10).reverse().map((s,i)=><div key={i} className="bg-white bg-opacity-20 rounded-lg p-4 flex justify-between"><div><div className="text-white font-semibold">{s.course}</div><div className="text-white opacity-70 text-sm">{s.duration} min</div></div><div className="text-yellow-300 font-bold">+{s.xp} XP</div></div>)}
+      <div className="space-y-4">
+        {/* Header */}
+        <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+          <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+            <span>📊</span> Analytics Dashboard
+          </h2>
+          <p className="text-white text-opacity-75 text-sm">Your study patterns and insights</p>
         </div>
+        
+        {sessions.length===0?(
+          <div className="bg-white bg-opacity-20 rounded-2xl p-12 text-center">
+            <div className="text-6xl mb-4 opacity-40">📈</div>
+            <p className="text-white opacity-70 text-lg mb-2">No data yet!</p>
+            <p className="text-white opacity-50 text-sm">Complete sessions to see your analytics</p>
+          </div>
+        ):(
+          <>
+            {/* Key Metrics Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4">
+                <div className="text-white text-opacity-75 text-xs mb-1">TOTAL TIME</div>
+                <div className="text-3xl font-black text-white">{Math.floor(sessions.reduce((sum,s)=>sum+s.duration,0)/60)}h</div>
+                <div className="text-white text-opacity-75 text-xs">{sessions.reduce((sum,s)=>sum+s.duration,0)%60}m</div>
+              </div>
+              
+              <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-4">
+                <div className="text-white text-opacity-75 text-xs mb-1">AVG SESSION</div>
+                <div className="text-3xl font-black text-white">{Math.round(sessions.reduce((sum,s)=>sum+s.duration,0)/sessions.length)}</div>
+                <div className="text-white text-opacity-75 text-xs">minutes</div>
+              </div>
+              
+              <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4">
+                <div className="text-white text-opacity-75 text-xs mb-1">TOTAL NOTES</div>
+                <div className="text-3xl font-black text-white">{sessions.reduce((sum,s)=>sum+(s.notesCreated||0),0)}</div>
+                <div className="text-white text-opacity-75 text-xs">created</div>
+              </div>
+              
+              <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-4">
+                <div className="text-white text-opacity-75 text-xs mb-1">AVG FOCUS</div>
+                <div className="text-3xl font-black text-white">{Math.round(sessions.reduce((sum,s)=>sum+(s.focusScore||100),0)/sessions.length)}</div>
+                <div className="text-white text-opacity-75 text-xs">percent</div>
+              </div>
+            </div>
+            
+            {/* Course Breakdown */}
+            <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+              <h3 className="text-xl font-bold text-white mb-4">📚 Time by Course</h3>
+              <div className="space-y-3">
+                {Object.entries(sessions.reduce((acc,s)=>{
+                  acc[s.course]=(acc[s.course]||0)+s.duration;
+                  return acc;
+                },{}))
+                .sort((a,b)=>b[1]-a[1])
+                .map(([course,mins])=>{
+                  const maxMins=Math.max(...Object.values(sessions.reduce((acc,s)=>{
+                    acc[s.course]=(acc[s.course]||0)+s.duration;
+                    return acc;
+                  },{})));
+                  const percentage=(mins/maxMins)*100;
+                  
+                  return(
+                    <div key={course}>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-white font-semibold">{course}</span>
+                        <span className="text-white text-opacity-75 text-sm">{mins} min ({Math.round(mins/sessions.reduce((sum,s)=>sum+s.duration,0)*100)}%)</span>
+                      </div>
+                      <div className="w-full bg-white bg-opacity-20 rounded-full h-3">
+                        <div 
+                          className="bg-gradient-to-r from-teal-400 to-cyan-500 h-3 rounded-full transition-all duration-500"
+                          style={{width:`${percentage}%`}}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {/* This Week vs Last Week */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+                <h3 className="text-lg font-bold text-white mb-4">📅 This Week</h3>
+                <div className="space-y-3">
+                  {(() => {
+                    const weekStart = Date.now() - (7 * 24 * 60 * 60 * 1000);
+                    const thisWeekSessions = sessions.filter(s => s.time >= weekStart);
+                    const totalMinutes = thisWeekSessions.reduce((sum, s) => sum + s.duration, 0);
+                    const totalNotes = thisWeekSessions.reduce((sum, s) => sum + (s.notesCreated || 0), 0);
+                    
+                    return (
+                      <>
+                        <div className="flex justify-between">
+                          <span className="text-white text-opacity-75">Sessions</span>
+                          <span className="text-white font-bold">{thisWeekSessions.length}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-white text-opacity-75">Total Time</span>
+                          <span className="text-white font-bold">{totalMinutes} min</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-white text-opacity-75">Notes</span>
+                          <span className="text-white font-bold">{totalNotes}</span>
+                        </div>
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
+              
+              <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+                <h3 className="text-lg font-bold text-white mb-4">⚡ Best Streak</h3>
+                <div className="text-center">
+                  <div className="text-5xl font-black text-white mb-2">{longestStreak}</div>
+                  <div className="text-white text-opacity-75">days in a row</div>
+                  <div className="mt-4">
+                    <span className="text-white text-opacity-75 text-sm">Current: </span>
+                    <span className="text-white font-bold text-lg">{streak} days 🔥</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Study Patterns */}
+            <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+              <h3 className="text-xl font-bold text-white mb-4">🎯 Insights</h3>
+              <div className="space-y-3">
+                {sessions.length >= 5 && (
+                  <>
+                    <div className="bg-white bg-opacity-10 rounded-lg p-4">
+                      <div className="text-white font-semibold mb-1">Most productive course</div>
+                      <div className="text-white text-opacity-75 text-sm">
+                        {Object.entries(sessions.reduce((acc,s)=>{
+                          acc[s.course]=(acc[s.course]||0)+s.duration;
+                          return acc;
+                        },{})).sort((a,b)=>b[1]-a[1])[0][0]} - {Object.entries(sessions.reduce((acc,s)=>{
+                          acc[s.course]=(acc[s.course]||0)+s.duration;
+                          return acc;
+                        },{})).sort((a,b)=>b[1]-a[1])[0][1]} minutes total
+                      </div>
+                    </div>
+                    
+                    {sessions.filter(s=>s.goal).length > 0 && (
+                      <div className="bg-white bg-opacity-10 rounded-lg p-4">
+                        <div className="text-white font-semibold mb-1">Goal completion rate</div>
+                        <div className="text-white text-opacity-75 text-sm">
+                          {Math.round((sessions.filter(s=>s.goal).length/sessions.length)*100)}% of sessions have clear goals
+                        </div>
+                      </div>
+                    )}
+                    
+                    {sessions.reduce((sum,s)=>sum+(s.notesCreated||0),0) > 0 && (
+                      <div className="bg-white bg-opacity-10 rounded-lg p-4">
+                        <div className="text-white font-semibold mb-1">Note-taking habits</div>
+                        <div className="text-white text-opacity-75 text-sm">
+                          Average {Math.round(sessions.reduce((sum,s)=>sum+(s.notesCreated||0),0)/sessions.filter(s=>s.notesCreated>0).length)} notes per active session
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+                
+                {sessions.length < 5 && (
+                  <div className="text-center py-6 text-white text-opacity-75 text-sm">
+                    Complete 5+ sessions to unlock insights
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     )}
     {tab==='sessions'&&(
       <div className="space-y-4">
+        {/* Progress Hero */}
+        <div className="bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 rounded-2xl p-8 text-center">
+          <div className="text-6xl mb-3">🎯</div>
+          <h2 className="text-3xl font-bold text-white mb-2">Your Journey</h2>
+          <p className="text-white text-opacity-90 text-lg mb-4">
+            {sessions.length} {sessions.length===1?'session':'sessions'} completed
+          </p>
+          {sessions.length>0&&(
+            <div className="flex justify-center gap-6 mt-6">
+              <div>
+                <div className="text-3xl font-black text-white">{Math.floor(sessions.reduce((sum,s)=>sum+s.duration,0)/60)}h</div>
+                <div className="text-white text-opacity-75 text-sm">total time</div>
+              </div>
+              <div>
+                <div className="text-3xl font-black text-white">{sessions.reduce((sum,s)=>sum+(s.notesCreated||0),0)}</div>
+                <div className="text-white text-opacity-75 text-sm">notes</div>
+              </div>
+              <div>
+                <div className="text-3xl font-black text-white">{sessions.reduce((sum,s)=>sum+s.xp,0)}</div>
+                <div className="text-white text-opacity-75 text-sm">XP earned</div>
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* Milestones */}
+        {sessions.length>0&&(
+          <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <span>🏆</span> Milestones
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {/* First Session */}
+              <div className={`rounded-xl p-4 text-center ${sessions.length>=1?'bg-gradient-to-br from-green-500 to-green-600':'bg-white bg-opacity-10'}`}>
+                <div className="text-3xl mb-1">{sessions.length>=1?'✅':'⭕'}</div>
+                <div className={`text-sm font-semibold ${sessions.length>=1?'text-white':'text-white text-opacity-50'}`}>First Session</div>
+              </div>
+              
+              {/* 5 Sessions */}
+              <div className={`rounded-xl p-4 text-center ${sessions.length>=5?'bg-gradient-to-br from-blue-500 to-blue-600':'bg-white bg-opacity-10'}`}>
+                <div className="text-3xl mb-1">{sessions.length>=5?'✅':'⭕'}</div>
+                <div className={`text-sm font-semibold ${sessions.length>=5?'text-white':'text-white text-opacity-50'}`}>5 Sessions</div>
+              </div>
+              
+              {/* 10 Hours */}
+              <div className={`rounded-xl p-4 text-center ${sessions.reduce((sum,s)=>sum+s.duration,0)>=600?'bg-gradient-to-br from-purple-500 to-purple-600':'bg-white bg-opacity-10'}`}>
+                <div className="text-3xl mb-1">{sessions.reduce((sum,s)=>sum+s.duration,0)>=600?'✅':'⭕'}</div>
+                <div className={`text-sm font-semibold ${sessions.reduce((sum,s)=>sum+s.duration,0)>=600?'text-white':'text-white text-opacity-50'}`}>10 Hours</div>
+              </div>
+              
+              {/* 50 Notes */}
+              <div className={`rounded-xl p-4 text-center ${sessions.reduce((sum,s)=>sum+(s.notesCreated||0),0)>=50?'bg-gradient-to-br from-yellow-500 to-orange-500':'bg-white bg-opacity-10'}`}>
+                <div className="text-3xl mb-1">{sessions.reduce((sum,s)=>sum+(s.notesCreated||0),0)>=50?'✅':'⭕'}</div>
+                <div className={`text-sm font-semibold ${sessions.reduce((sum,s)=>sum+(s.notesCreated||0),0)>=50?'text-white':'text-white text-opacity-50'}`}>50 Notes</div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Session Timeline */}
         <div className="bg-white bg-opacity-20 rounded-2xl p-6">
-          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-            <span>📚</span> Session History
-          </h2>
+          <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+            <span>📖</span> Your Story
+          </h3>
           
           {sessions.length===0?(
             <div className="text-center py-12">
-              <div className="text-6xl mb-4 opacity-40">📖</div>
-              <p className="text-white opacity-70 text-lg mb-2">No sessions yet!</p>
-              <p className="text-white opacity-50 text-sm">Start a study session to see your history here</p>
+              <div className="text-6xl mb-4 opacity-40">✨</div>
+              <p className="text-white opacity-70 text-lg mb-2">Your journey starts here</p>
+              <p className="text-white opacity-50 text-sm">Complete your first session to begin</p>
             </div>
           ):(
-            <div className="space-y-4">
+            <div className="space-y-6">
               {sessions.slice().reverse().map((session,i)=>{
                 const date=new Date(session.time);
                 const isToday=date.toDateString()===new Date().toDateString();
                 const isYesterday=date.toDateString()===new Date(Date.now()-86400000).toDateString();
                 const dateLabel=isToday?'Today':isYesterday?'Yesterday':date.toLocaleDateString();
                 
+                // Check if this is a milestone session
+                const sessionNumber = sessions.length - i;
+                const isMilestone = sessionNumber === 1 || sessionNumber === 5 || sessionNumber === 10 || sessionNumber === 25 || sessionNumber === 50 || sessionNumber === 100;
+                
                 return(
-                  <div key={session.id||i} className="bg-gradient-to-r from-teal-500 to-cyan-600 rounded-xl p-6 hover:scale-102 transition-all cursor-pointer">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-xl font-bold text-white mb-1">{session.course}</h3>
-                        <p className="text-white text-opacity-75 text-sm">{dateLabel} • {date.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</p>
+                  <div key={session.id||i} className="relative">
+                    {/* Timeline dot */}
+                    <div className="absolute left-0 top-0 w-4 h-4 bg-teal-400 rounded-full border-4 border-teal-900"></div>
+                    {i < sessions.length - 1 && (
+                      <div className="absolute left-2 top-4 w-0.5 h-full bg-white bg-opacity-20"></div>
+                    )}
+                    
+                    {/* Session Card */}
+                    <div className="ml-8 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-xl p-6 hover:scale-102 transition-all">
+                      {isMilestone && (
+                        <div className="mb-3">
+                          <span className="bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-xs font-bold">
+                            🏆 Milestone: Session #{sessionNumber}
+                          </span>
+                        </div>
+                      )}
+                      
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <h4 className="text-xl font-bold text-white mb-1">{session.course}</h4>
+                          <p className="text-white text-opacity-75 text-sm">{dateLabel} • {date.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</p>
+                        </div>
+                        <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                          <span className="text-yellow-300 font-bold text-sm">+{session.xp} XP</span>
+                        </div>
                       </div>
+                      
+                      {session.goal&&(
+                        <div className="bg-white bg-opacity-20 rounded-lg p-3 mb-3">
+                          <div className="flex items-start gap-2">
+                            <span className="text-white text-xl">🎯</span>
+                            <div className="flex-1">
+                              <div className="text-white text-opacity-75 text-xs mb-1">GOAL</div>
+                              <div className="text-white font-medium">"{session.goal}"</div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="flex flex-wrap gap-2">
+                        <div className="bg-white bg-opacity-20 px-3 py-1.5 rounded-lg flex items-center gap-1">
+                          <span className="text-white text-sm">⏱️</span>
+                          <span className="text-white text-sm font-medium">{session.duration} min</span>
+                        </div>
+                        {session.notesCreated>0&&(
+                          <div className="bg-white bg-opacity-20 px-3 py-1.5 rounded-lg flex items-center gap-1">
+                            <span className="text-white text-sm">📝</span>
+                            <span className="text-white text-sm font-medium">{session.notesCreated} notes</span>
+                          </div>
+                        )}
+                        {session.focusScore&&(
+                          <div className="bg-white bg-opacity-20 px-3 py-1.5 rounded-lg flex items-center gap-1">
+                            <span className="text-white text-sm">⚡</span>
+                            <span className="text-white text-sm font-medium">{session.focusScore}%</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        
+        {/* Next Milestone */}
+        {sessions.length>0&&sessions.length<100&&(
+          <div className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl p-6 text-center">
+            <div className="text-4xl mb-3">🎯</div>
+            <h3 className="text-xl font-bold text-white mb-2">Next Milestone</h3>
+            <p className="text-white text-opacity-90 mb-4">
+              {sessions.length<5?`${5-sessions.length} more sessions to reach 5!`:
+               sessions.length<10?`${10-sessions.length} more sessions to reach 10!`:
+               sessions.length<25?`${25-sessions.length} more sessions to reach 25!`:
+               sessions.length<50?`${50-sessions.length} more sessions to reach 50!`:
+               `${100-sessions.length} more sessions to reach 100!`}
+            </p>
+            <div className="w-full bg-white bg-opacity-30 rounded-full h-4">
+              <div 
+                className="bg-white h-4 rounded-full transition-all duration-500"
+                style={{width:`${(sessions.length/(sessions.length<5?5:sessions.length<10?10:sessions.length<25?25:sessions.length<50?50:100))*100}%`}}
+              ></div>
+            </div>
+          </div>
+        )}
+      </div>
+    )}
                       <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full">
                         <span className="text-yellow-300 font-bold">+{session.xp} XP</span>
                       </div>
@@ -2816,23 +3126,6 @@ return(
             </div>
           )}
         </div>
-        
-        {/* Session Stats */}
-        {sessions.length>0&&(
-          <div className="bg-white bg-opacity-20 rounded-2xl p-6">
-            <h3 className="text-xl font-bold text-white mb-4">Quick Stats</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white">{sessions.length}</div>
-                <div className="text-white text-opacity-75 text-sm">Total Sessions</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white">{sessions.reduce((sum,s)=>sum+(s.notesCreated||0),0)}</div>
-                <div className="text-white text-opacity-75 text-sm">Notes Created</div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     )}
     {tab==='skills'&&(
