@@ -409,7 +409,7 @@ function StreakLostModal({ lostStreak, onClose }) {
 function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);
 
 // LEADERBOARD STATE
-const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);const[appMode,setAppMode]=useState('education');const[organization,setOrganization]=useState(null);const[isOrgAdmin,setIsOrgAdmin]=useState(false);const[showCreateOrg,setShowCreateOrg]=useState(false);const[showOnboardingWizard,setShowOnboardingWizard]=useState(false);const[onboardingData,setOnboardingData]=useState({orgName:'',orgType:'education',size:'',inviteMethod:'link'});const[onboardingStepNum,setOnboardingStepNum]=useState(1);const[inviteLink,setInviteLink]=useState('');const[orgInviteCode,setOrgInviteCode]=useState('');const[timerSound,setTimerSound]=useState(false);const[endSound,setEndSound]=useState(true);const[endTime,setEndTime]=useState(null);const[lofiEnabled,setLofiEnabled]=useState(false);const[lofiVolume,setLofiVolume]=useState(30);const[lofiStream,setLofiStream]=useState('lofi-girl');const[showBreakGame,setShowBreakGame]=useState(false);const[gameActive,setGameActive]=useState(false);const[gameScore,setGameScore]=useState(0);const[gameTime,setGameTime]=useState(60);const[gameTargets,setGameTargets]=useState([]);const[gameHighScore,setGameHighScore]=useState(0);const[themeMode,setThemeMode]=useState('dark');const[colorTheme,setColorTheme]=useState('cyan');const[fontFamily,setFontFamily]=useState('default');const[showCustomization,setShowCustomization]=useState(false);const[showCalculator,setShowCalculator]=useState(false);const[calcDisplay,setCalcDisplay]=useState('0');const[calcPrevious,setCalcPrevious]=useState(null);const[calcOperation,setCalcOperation]=useState(null);const[stickyNotes,setStickyNotes]=useState([]);const[showNotesPanel,setShowNotesPanel]=useState(false);
+const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);const[appMode,setAppMode]=useState('education');const[organization,setOrganization]=useState(null);const[isOrgAdmin,setIsOrgAdmin]=useState(false);const[showCreateOrg,setShowCreateOrg]=useState(false);const[showOnboardingWizard,setShowOnboardingWizard]=useState(false);const[onboardingData,setOnboardingData]=useState({orgName:'',orgType:'education',size:'',inviteMethod:'link'});const[onboardingStepNum,setOnboardingStepNum]=useState(1);const[inviteLink,setInviteLink]=useState('');const[orgInviteCode,setOrgInviteCode]=useState('');const[timerSound,setTimerSound]=useState(false);const[endSound,setEndSound]=useState(true);const[endTime,setEndTime]=useState(null);const[lofiEnabled,setLofiEnabled]=useState(false);const[lofiVolume,setLofiVolume]=useState(30);const[lofiStream,setLofiStream]=useState('lofi-girl');const[showBreakGame,setShowBreakGame]=useState(false);const[gameActive,setGameActive]=useState(false);const[gameScore,setGameScore]=useState(0);const[gameTime,setGameTime]=useState(60);const[gameTargets,setGameTargets]=useState([]);const[gameHighScore,setGameHighScore]=useState(0);const[themeMode,setThemeMode]=useState('dark');const[colorTheme,setColorTheme]=useState('cyan');const[fontFamily,setFontFamily]=useState('default');const[showCustomization,setShowCustomization]=useState(false);const[showCalculator,setShowCalculator]=useState(false);const[calcDisplay,setCalcDisplay]=useState('0');const[calcPrevious,setCalcPrevious]=useState(null);const[calcOperation,setCalcOperation]=useState(null);const[stickyNotes,setStickyNotes]=useState([]);const[showNotesPanel,setShowNotesPanel]=useState(false);const[showChess,setShowChess]=useState(false);const[chessBoard,setChessBoard]=useState(null);const[selectedPiece,setSelectedPiece]=useState(null);const[currentTurn,setCurrentTurn]=useState('white');const[gameStatus,setGameStatus]=useState('playing');
 
 const timer=useRef(null);const level=Math.min(Math.floor(xp/100)+1,10);const levelXp=(xp%100);
 
@@ -1144,6 +1144,129 @@ function updateNoteColor(id, color) {
   setStickyNotes(stickyNotes.map(note => 
     note.id === id ? {...note, color} : note
   ));
+}
+
+// Chess Functions
+function initChessBoard() {
+  return [
+    [{type:'r',color:'black'},{type:'n',color:'black'},{type:'b',color:'black'},{type:'q',color:'black'},{type:'k',color:'black'},{type:'b',color:'black'},{type:'n',color:'black'},{type:'r',color:'black'}],
+    [{type:'p',color:'black'},{type:'p',color:'black'},{type:'p',color:'black'},{type:'p',color:'black'},{type:'p',color:'black'},{type:'p',color:'black'},{type:'p',color:'black'},{type:'p',color:'black'}],
+    [null,null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null,null],
+    [{type:'p',color:'white'},{type:'p',color:'white'},{type:'p',color:'white'},{type:'p',color:'white'},{type:'p',color:'white'},{type:'p',color:'white'},{type:'p',color:'white'},{type:'p',color:'white'}],
+    [{type:'r',color:'white'},{type:'n',color:'white'},{type:'b',color:'white'},{type:'q',color:'white'},{type:'k',color:'white'},{type:'b',color:'white'},{type:'n',color:'white'},{type:'r',color:'white'}]
+  ];
+}
+
+function startChess() {
+  setChessBoard(initChessBoard());
+  setCurrentTurn('white');
+  setGameStatus('playing');
+  setSelectedPiece(null);
+}
+
+function getPieceSymbol(piece) {
+  if(!piece)return'';
+  const symbols={
+    white:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},
+    black:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}
+  };
+  return symbols[piece.color][piece.type];
+}
+
+function isValidMove(board,fromRow,fromCol,toRow,toCol){
+  const piece=board[fromRow][fromCol];
+  if(!piece)return false;
+  const target=board[toRow][toCol];
+  if(target&&target.color===piece.color)return false;
+  const rowDiff=toRow-fromRow;
+  const colDiff=toCol-fromCol;
+  
+  if(piece.type==='p'){
+    const dir=piece.color==='white'?-1:1;
+    if(colDiff===0&&!target){
+      if(rowDiff===dir)return true;
+      if((piece.color==='white'&&fromRow===6)||(piece.color==='black'&&fromRow===1)){
+        if(rowDiff===dir*2&&!board[fromRow+dir][fromCol])return true;
+      }
+    }
+    if(Math.abs(colDiff)===1&&rowDiff===dir&&target)return true;
+    return false;
+  }
+  if(piece.type==='r')return rowDiff===0||colDiff===0;
+  if(piece.type==='n')return(Math.abs(rowDiff)===2&&Math.abs(colDiff)===1)||(Math.abs(rowDiff)===1&&Math.abs(colDiff)===2);
+  if(piece.type==='b')return Math.abs(rowDiff)===Math.abs(colDiff);
+  if(piece.type==='q')return rowDiff===0||colDiff===0||Math.abs(rowDiff)===Math.abs(colDiff);
+  if(piece.type==='k')return Math.abs(rowDiff)<=1&&Math.abs(colDiff)<=1;
+  return false;
+}
+
+function makeMove(fromRow,fromCol,toRow,toCol){
+  if(currentTurn!=='white'||gameStatus!=='playing')return;
+  if(!isValidMove(chessBoard,fromRow,fromCol,toRow,toCol))return;
+  
+  const newBoard=chessBoard.map(row=>[...row]);
+  newBoard[toRow][toCol]=newBoard[fromRow][fromCol];
+  newBoard[fromRow][fromCol]=null;
+  setChessBoard(newBoard);
+  setSelectedPiece(null);
+  setCurrentTurn('black');
+  
+  setTimeout(()=>computerMove(newBoard),500);
+}
+
+function computerMove(board){
+  const moves=[];
+  for(let r=0;r<8;r++){
+    for(let c=0;c<8;c++){
+      const piece=board[r][c];
+      if(piece&&piece.color==='black'){
+        for(let tr=0;tr<8;tr++){
+          for(let tc=0;tc<8;tc++){
+            if(isValidMove(board,r,c,tr,tc)){
+              moves.push({from:[r,c],to:[tr,tc]});
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  if(moves.length===0){
+    setGameStatus('white-wins');
+    return;
+  }
+  
+  const move=moves[Math.floor(Math.random()*moves.length)];
+  const newBoard=board.map(row=>[...row]);
+  newBoard[move.to[0]][move.to[1]]=newBoard[move.from[0]][move.from[1]];
+  newBoard[move.from[0]][move.from[1]]=null;
+  
+  if(newBoard[move.to[0]][move.to[1]]?.type==='k'){
+    setGameStatus('black-wins');
+  }
+  
+  setChessBoard(newBoard);
+  setCurrentTurn('white');
+}
+
+function handleSquareClick(row,col){
+  if(gameStatus!=='playing'||currentTurn!=='white')return;
+  
+  if(selectedPiece){
+    if(selectedPiece.row===row&&selectedPiece.col===col){
+      setSelectedPiece(null);
+    }else{
+      makeMove(selectedPiece.row,selectedPiece.col,row,col);
+    }
+  }else{
+    const piece=chessBoard[row][col];
+    if(piece&&piece.color==='white'){
+      setSelectedPiece({row,col});
+    }
+  }
 }
 
 // Organization Functions
@@ -2924,7 +3047,10 @@ return(
     {showNotesPanel&&<div className="fixed right-4 top-20 bg-white rounded-2xl p-4 shadow-2xl z-40 w-80 max-h-[70vh] overflow-y-auto"><div className="flex justify-between items-center mb-4"><h3 className="font-bold text-lg">📝 Sticky Notes</h3><button onClick={()=>setShowNotesPanel(false)} className="opacity-75 hover:opacity-100"><Icon name="x" className="w-6 h-6"/></button></div><button onClick={addStickyNote} className="w-full bg-yellow-400 text-gray-900 py-3 rounded-lg font-bold mb-4 hover:bg-yellow-500 transition-colors">+ New Note</button><div className="space-y-3">{stickyNotes.length===0?<p className="text-gray-500 text-center py-8">No notes yet!</p>:stickyNotes.map(note=><div key={note.id} className={`p-3 rounded-lg ${note.color==='yellow'?'bg-yellow-100':note.color==='pink'?'bg-pink-100':note.color==='blue'?'bg-blue-100':'bg-green-100'}`}><textarea value={note.text} onChange={e=>updateNoteText(note.id,e.target.value)} placeholder="Type your note..." className="w-full bg-transparent border-none resize-none text-sm mb-2 focus:outline-none" rows="3"/><div className="flex justify-between items-center"><div className="flex gap-1">{['yellow','pink','blue','green'].map(color=><button key={color} onClick={()=>updateNoteColor(note.id,color)} className={`w-6 h-6 rounded-full ${color==='yellow'?'bg-yellow-400':color==='pink'?'bg-pink-400':color==='blue'?'bg-blue-400':'bg-green-400'} ${note.color===color?'ring-2 ring-gray-900':''}`}/>)}</div><button onClick={()=>deleteNote(note.id)} className="text-red-500 text-sm font-bold">Delete</button></div></div>)}</div></div>}
     
     {/* Floating Tool Buttons */}
-    {view==='app'&&<div className="fixed bottom-6 right-6 flex flex-col gap-3 z-30"><button onClick={()=>setShowCalculator(!showCalculator)} className={`${showCalculator?'bg-green-600':'bg-gray-800'} text-white w-14 h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-2xl`}>🧮</button><button onClick={()=>setShowNotesPanel(!showNotesPanel)} className={`${showNotesPanel?'bg-yellow-500':'bg-gray-800'} text-white w-14 h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-2xl`}>📝</button></div>}
+    {view==='app'&&<div className="fixed bottom-6 right-6 flex flex-col gap-3 z-30"><button onClick={()=>setShowCalculator(!showCalculator)} className={`${showCalculator?'bg-green-600':'bg-gray-800'} text-white w-14 h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-2xl`}>🧮</button><button onClick={()=>setShowNotesPanel(!showNotesPanel)} className={`${showNotesPanel?'bg-yellow-500':'bg-gray-800'} text-white w-14 h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-2xl`}>📝</button><button onClick={()=>{setShowChess(true);if(!chessBoard)startChess()}} className="bg-gray-800 text-white w-14 h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-2xl">♟️</button></div>}
+    
+    {/* Chess Game Modal */}
+    {showChess&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50 p-4"><div className="bg-gradient-to-br from-amber-900 to-amber-700 rounded-2xl p-6 max-w-2xl w-full"><div className="flex justify-between items-center mb-4"><h2 className="text-3xl font-bold text-white">♟️ Chess</h2><button onClick={()=>setShowChess(false)} className="text-white opacity-75 hover:opacity-100"><Icon name="x" className="w-8 h-8"/></button></div>{gameStatus!=='playing'&&<div className="bg-white bg-opacity-20 rounded-xl p-4 mb-4 text-center"><div className="text-white text-2xl font-bold">{gameStatus==='white-wins'?'🎉 You Win!':gameStatus==='black-wins'?'😔 Computer Wins':'Game Over'}</div><button onClick={startChess} className="mt-3 bg-white text-amber-900 px-6 py-2 rounded-lg font-bold hover:scale-105 transition-all">New Game</button></div>}<div className="bg-white bg-opacity-10 rounded-xl p-2 mb-4"><div className="grid grid-cols-8 gap-0">{chessBoard?.map((row,r)=>row.map((piece,c)=><div key={`${r}-${c}`} onClick={()=>handleSquareClick(r,c)} className={`aspect-square flex items-center justify-center text-4xl cursor-pointer transition-all ${(r+c)%2===0?'bg-amber-200':'bg-amber-800'} ${selectedPiece?.row===r&&selectedPiece?.col===c?'ring-4 ring-yellow-400':''} hover:opacity-80`}>{getPieceSymbol(piece)}</div>))}</div></div><div className="flex justify-between items-center text-white"><div><span className="font-bold">Your Turn:</span> {currentTurn==='white'?'✅':'⏳'}</div><button onClick={startChess} className="bg-white text-amber-900 px-4 py-2 rounded-lg font-bold hover:scale-105 transition-all text-sm">Reset Game</button></div></div></div>}
     
   </div>
 </div>
