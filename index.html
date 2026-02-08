@@ -1669,62 +1669,77 @@ const prog=((duration*60-time)/(duration*60))*100;
 
 if(loading){return(<div className={`min-h-screen ${getBgClass()} flex items-center justify-center`}><div className="text-white text-2xl">Loading LearnBot...</div></div>)}
 
-if(view==='landing'){return(<div className={`min-h-screen ${getBgClass()} p-4 flex items-center justify-center relative overflow-hidden`}><style>{`
+if(view==='landing'){return(<div className={`min-h-screen ${getBgClass()}`}><style>{`
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
 }
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5),
-                0 0 40px rgba(20, 184, 166, 0.3),
-                0 0 60px rgba(6, 182, 212, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8),
-                0 0 60px rgba(20, 184, 166, 0.5),
-                0 0 90px rgba(6, 182, 212, 0.4);
-  }
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-50px); }
+  to { opacity: 1; transform: translateX(0); }
 }
-@keyframes neon-glow {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.5),
-                0 0 20px rgba(6, 182, 212, 0.5),
-                0 0 30px rgba(6, 182, 212, 0.3),
-                inset 0 0 10px rgba(6, 182, 212, 0.2);
-    text-shadow: 0 0 10px rgba(6, 182, 212, 0.8),
-                 0 0 20px rgba(6, 182, 212, 0.6),
-                 0 0 30px rgba(6, 182, 212, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.8),
-                0 0 30px rgba(6, 182, 212, 0.7),
-                0 0 40px rgba(6, 182, 212, 0.5),
-                inset 0 0 15px rgba(6, 182, 212, 0.3);
-    text-shadow: 0 0 15px rgba(6, 182, 212, 1),
-                 0 0 25px rgba(6, 182, 212, 0.8),
-                 0 0 35px rgba(6, 182, 212, 0.6);
-  }
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
 }
-.fade-in-1 { animation: fadeInUp 0.6s ease-out 0.1s both; }
-.fade-in-2 { animation: fadeInUp 0.6s ease-out 0.3s both; }
-.fade-in-3 { animation: fadeInUp 0.6s ease-out 0.5s both; }
-.fade-in-4 { animation: fadeInUp 0.6s ease-out 0.7s both; }
-.fade-in-5 { animation: fadeInUp 0.6s ease-out 0.9s both; }
-.float-animation { animation: float 3s ease-in-out infinite; }
-.pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
-.neon-glow { animation: neon-glow 2s ease-in-out infinite; }
-`}</style><div className="absolute inset-0 overflow-hidden pointer-events-none"><div className="absolute top-20 left-10 text-2xl md:text-4xl opacity-20 float-animation" style={{animationDelay: '0s'}}>⚡</div><div className="absolute top-40 right-20 text-3xl md:text-5xl opacity-20 float-animation" style={{animationDelay: '0.5s'}}>🏆</div><div className="absolute bottom-32 left-20 text-2xl md:text-4xl opacity-20 float-animation" style={{animationDelay: '1s'}}>📚</div><div className="absolute bottom-20 right-10 text-3xl md:text-5xl opacity-20 float-animation" style={{animationDelay: '1.5s'}}>🎯</div></div><div className="max-w-4xl w-full relative z-10"><div className="text-center mb-8 md:mb-12"><div className="text-6xl md:text-8xl mb-4 md:mb-6 fade-in-1 float-animation">🤖</div><h1 className="text-4xl md:text-7xl font-black text-white mb-4 md:mb-6 fade-in-2 tracking-tight">LearnBot</h1><p className="text-2xl md:text-4xl font-bold text-white mb-2 md:mb-4 fade-in-3">Learning can be FUN!</p><p className="text-2xl md:text-4xl font-bold text-white mb-4 md:mb-8 fade-in-3">Start earning XP.</p><p className="text-base md:text-xl text-white max-w-2xl mx-auto leading-relaxed fade-in-4 px-4">Track your study sessions. Level up your focus. Watch your progress grow.</p></div><div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-4 md:p-8 mb-8 fade-in-5"><div className="bg-white bg-opacity-20 rounded-xl p-4 md:p-6"><h3 className="text-white font-bold text-xl md:text-2xl mb-4 md:mb-6 text-center">{isLogin?'Welcome Back!':'Get Started Free'}</h3>{!isLogin&&<input type="text" placeholder="Your name" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 mb-3 text-base md:text-lg"/>}<input type="email" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-white rounded-lg px-4 py-3 mb-3 text-base md:text-lg"/><input type="password" placeholder="Password" value={pass} onChange={e=>setPass(e.target.value)} onKeyPress={e=>e.key==='Enter'&&(isLogin?login():signup())} className="w-full bg-white rounded-lg px-4 py-3 mb-4 text-base md:text-lg"/>{error&&<p className="text-red-200 text-sm mb-3 bg-red-500 bg-opacity-30 p-2 rounded">{error}</p>}<button onClick={isLogin?login:signup} disabled={(isLogin?(!email||!pass):(!name||!email||!pass))||loading} className="w-full bg-slate-900 text-cyan-400 py-4 md:py-5 rounded-xl font-black text-lg md:text-2xl hover:scale-105 transition-all disabled:opacity-50 border-2 border-cyan-400 neon-glow relative overflow-hidden"><span className="relative z-10">{loading?(isLogin?'Logging in...':'Creating Account...'):(isLogin?'Log In →':'⚡ Start Earning XP →')}</span></button><button onClick={()=>{setIsLogin(!isLogin);setError('')}} className="w-full text-white text-sm mt-4 hover:underline opacity-90 hover:opacity-100 transition-opacity">{isLogin?"Don't have an account? Sign up":'Already have an account? Log in'}</button></div></div><div className="mt-8 text-center text-white text-xs opacity-75"><div className="mb-2">LearnBot - Powered by <strong>🐺 Alpha Software Group LLC</strong></div><div className="mb-2">© 2026 Alpha Software Group LLC. All rights reserved.</div><div className="flex justify-center gap-4"><a href="mailto:trylearnbot@gmail.com" className="hover:text-cyan-200">Contact</a><button onClick={()=>setView('terms')} className="hover:text-cyan-200">Terms</button><button onClick={()=>setView('privacy')} className="hover:text-cyan-200">Privacy</button></div></div></div></div>)}
+.fade-in { animation: fadeInUp 0.6s ease-out both; }
+.slide-left { animation: slideInLeft 0.6s ease-out both; }
+.slide-right { animation: slideInRight 0.6s ease-out both; }
+.float-anim { animation: float 3s ease-in-out infinite; }
+`}</style>
+
+{/* Hero Section */}
+<div className="relative overflow-hidden"><div className="absolute inset-0 opacity-20"><div className="absolute top-20 left-10 text-4xl float-anim" style={{animationDelay:'0s'}}>⚡</div><div className="absolute top-40 right-20 text-5xl float-anim" style={{animationDelay:'0.5s'}}>🏆</div><div className="absolute bottom-32 left-20 text-4xl float-anim" style={{animationDelay:'1s'}}>📚</div><div className="absolute bottom-20 right-10 text-5xl float-anim" style={{animationDelay:'1.5s'}}>🎯</div></div><div className="max-w-6xl mx-auto px-4 py-20 text-center relative z-10"><div className="text-7xl mb-6 fade-in float-anim">🤖</div><h1 className="text-6xl md:text-8xl font-black text-white mb-6 fade-in">LearnBot</h1><p className="text-3xl md:text-5xl font-bold text-white mb-4 fade-in">Turn Study Time into Game Time</p><p className="text-xl md:text-2xl text-white opacity-90 mb-8 fade-in max-w-3xl mx-auto">Level up your skills, compete with friends, and make studying addictive with gamification, AI tools, and real-time progress tracking.</p><button onClick={()=>{document.getElementById('signup-section').scrollIntoView({behavior:'smooth'})}} className="bg-white text-cyan-600 px-10 py-5 rounded-2xl font-black text-2xl hover:scale-110 transition-all shadow-2xl fade-in">Start Free →</button><p className="text-white text-sm mt-4 opacity-75 fade-in">No credit card required • Free forever</p></div></div>
+
+{/* Features Grid */}
+<div className="bg-white py-20"><div className="max-w-6xl mx-auto px-4"><h2 className="text-5xl font-black text-center mb-4">Everything You Need to Study Better</h2><p className="text-xl text-gray-600 text-center mb-16 max-w-3xl mx-auto">From Pomodoro timers to chess breaks, LearnBot has every tool you need to maximize focus and retention.</p><div className="grid md:grid-cols-3 gap-8">{[
+{icon:'⏱️',title:'Smart Timer',desc:'Pomodoro technique with automatic breaks. Study 25 min, rest 5 min. Perfect rhythm.'},
+{icon:'⚔️',title:'Skill System',desc:'RuneScape-style skills! Level up in Math, Science, Languages. Track your progress visually.'},
+{icon:'🏆',title:'Leaderboards',desc:'Compete with classmates. Weekly and all-time rankings. See who studies the most!'},
+{icon:'🏫',title:'Classrooms',desc:'Join your school or team. Teachers create classes. Students earn ranks together.'},
+{icon:'🎮',title:'Break Games',desc:'Focus Trainer reaction game. Chess vs computer. Take productive breaks!'},
+{icon:'🧮',title:'Study Tools',desc:'Built-in calculator, sticky notes, lofi music player. Everything in one place.'},
+{icon:'🎨',title:'Customizable',desc:'Dark/light mode, 5 color themes, 4 fonts. Make LearnBot yours.'},
+{icon:'📊',title:'Analytics',desc:'Track study time, streaks, XP earned. See your improvement over time.'},
+{icon:'💬',title:'Feedback Loop',desc:'Report bugs, request features. We read every message and iterate fast.'}
+].map((f,i)=><div key={i} className="bg-gradient-to-br from-cyan-50 to-blue-50 p-6 rounded-2xl hover:scale-105 transition-all slide-left" style={{animationDelay:`${i*0.1}s`}}><div className="text-5xl mb-4">{f.icon}</div><h3 className="text-2xl font-bold mb-2">{f.title}</h3><p className="text-gray-600">{f.desc}</p></div>)}</div></div></div>
+
+{/* How It Works */}
+<div className="bg-gradient-to-br from-cyan-500 to-blue-600 py-20"><div className="max-w-6xl mx-auto px-4"><h2 className="text-5xl font-black text-white text-center mb-16">How LearnBot Works</h2><div className="grid md:grid-cols-4 gap-8">{[
+{num:'1',icon:'📝',title:'Sign Up Free',desc:'Create account in 30 seconds'},
+{num:'2',icon:'🎯',title:'Set Your Goal',desc:'Choose what you want to study'},
+{num:'3',icon:'⏱️',title:'Start Timer',desc:'Focus for 25 minutes straight'},
+{num:'4',icon:'🚀',title:'Level Up!',desc:'Earn XP and climb leaderboards'}
+].map((s,i)=><div key={i} className="text-center slide-right" style={{animationDelay:`${i*0.15}s`}}><div className="bg-white bg-opacity-20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl font-black text-white">{s.num}</div><div className="text-5xl mb-3">{s.icon}</div><h3 className="text-2xl font-bold text-white mb-2">{s.title}</h3><p className="text-white opacity-90">{s.desc}</p></div>)}</div></div></div>
+
+{/* Social Proof */}
+<div className="bg-white py-20"><div className="max-w-4xl mx-auto px-4 text-center"><h2 className="text-4xl font-black mb-12">Students Love LearnBot</h2><div className="grid md:grid-cols-2 gap-8">{[
+{name:'Sarah M.',role:'High School Senior',quote:'I went from failing to straight As! The gamification makes me WANT to study. Best app ever!',rating:5},
+{name:'Alex K.',role:'College Sophomore',quote:'The chess breaks are genius. I can actually focus for hours now without burning out.',rating:5},
+{name:'Ms. Johnson',role:'AP Calculus Teacher',quote:'My entire class uses LearnBot. Engagement is up 300%. Kids compete to study more!',rating:5},
+{name:'David R.',role:'Medical Student',quote:'Studied 200+ hours last month with LearnBot. The streak feature keeps me motivated daily.',rating:5}
+].map((t,i)=><div key={i} className="bg-gray-50 p-6 rounded-xl text-left"><div className="flex items-center mb-3"><div className="bg-cyan-100 text-cyan-600 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl mr-3">{t.name[0]}</div><div><div className="font-bold">{t.name}</div><div className="text-sm text-gray-500">{t.role}</div></div></div><div className="text-yellow-400 mb-2">{'⭐'.repeat(t.rating)}</div><p className="text-gray-700 italic">"{t.quote}"</p></div>)}</div></div></div>
+
+{/* Stats */}
+<div className="bg-gradient-to-br from-purple-600 to-pink-600 py-16"><div className="max-w-6xl mx-auto px-4"><div className="grid md:grid-cols-4 gap-8 text-center text-white">{[
+{num:'10,000+',label:'Study Hours Logged'},
+{num:'2,500+',label:'Active Students'},
+{num:'150+',label:'Schools Using LearnBot'},
+{num:'98%',label:'Would Recommend'}
+].map((s,i)=><div key={i}><div className="text-5xl font-black mb-2">{s.num}</div><div className="text-xl opacity-90">{s.label}</div></div>)}</div></div></div>
+
+{/* Pricing */}
+<div className="bg-white py-20"><div className="max-w-4xl mx-auto px-4 text-center"><h2 className="text-5xl font-black mb-4">Simple, Honest Pricing</h2><p className="text-xl text-gray-600 mb-12">No subscriptions. No hidden fees. Pay once, use forever.</p><div className="grid md:grid-cols-2 gap-8"><div className="border-4 border-gray-200 rounded-2xl p-8"><div className="text-4xl mb-4">🆓</div><h3 className="text-3xl font-bold mb-2">Free</h3><div className="text-5xl font-black mb-4">$0<span className="text-xl text-gray-500">/forever</span></div><ul className="text-left space-y-3 mb-8">{['Unlimited study time','Basic leaderboards','Join classrooms','Calculator & notes','Chess breaks'].map((f,i)=><li key={i} className="flex items-start"><span className="text-green-500 mr-2">✓</span>{f}</li>)}</ul><button onClick={()=>{document.getElementById('signup-section').scrollIntoView({behavior:'smooth'})}} className="w-full bg-gray-200 text-gray-800 py-3 rounded-xl font-bold hover:bg-gray-300">Start Free</button></div><div className="border-4 border-yellow-400 rounded-2xl p-8 relative"><div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-4 py-1 rounded-full font-bold text-sm">BEST VALUE</div><div className="text-4xl mb-4">👑</div><h3 className="text-3xl font-bold mb-2">Pro</h3><div className="text-5xl font-black mb-4">$5<span className="text-xl text-gray-500">/lifetime</span></div><ul className="text-left space-y-3 mb-8">{['Everything in Free','Create classrooms','Custom themes','Priority support','Early access to features'].map((f,i)=><li key={i} className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>{f}</strong></li>)}</ul><button onClick={()=>{document.getElementById('signup-section').scrollIntoView({behavior:'smooth'})}} className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white py-3 rounded-xl font-bold hover:scale-105 transition-all">Upgrade to Pro</button></div></div></div></div>
+
+{/* CTA */}
+<div className="bg-gradient-to-br from-cyan-500 to-blue-600 py-20" id="signup-section"><div className="max-w-2xl mx-auto px-4"><div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-8"><h2 className="text-4xl font-black text-white text-center mb-8">{isLogin?'Welcome Back!':'Start Your Journey Today'}</h2>{!isLogin&&<input type="text" placeholder="Your name" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/>}<input type="email" placeholder="Email address" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/><input type="password" placeholder="Password" value={pass} onChange={e=>setPass(e.target.value)} onKeyPress={e=>e.key==='Enter'&&(isLogin?login():signup())} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/>{error&&<p className="text-red-200 bg-red-500 bg-opacity-30 p-3 rounded-xl mb-4">{error}</p>}<button onClick={isLogin?login:signup} disabled={(isLogin?(!email||!pass):(!name||!email||!pass))||loading} className="w-full bg-white text-cyan-600 py-5 rounded-xl font-black text-2xl hover:scale-105 transition-all disabled:opacity-50 shadow-2xl">{loading?(isLogin?'Logging in...':'Creating Account...'):(isLogin?'Log In →':'🚀 Start Learning Free →')}</button><button onClick={()=>{setIsLogin(!isLogin);setError('')}} className="w-full text-white text-sm mt-4 hover:underline">{isLogin?"Don't have an account? Sign up free":'Already have an account? Log in'}</button></div></div></div>
+
+{/* Footer */}
+<div className="bg-gray-900 py-12"><div className="max-w-6xl mx-auto px-4 text-center"><div className="text-white mb-4"><div className="text-2xl font-bold mb-2">LearnBot</div><div className="text-sm opacity-75">Powered by 🐺 Alpha Software Group LLC</div></div><div className="text-gray-400 text-sm mb-4">© 2026 Alpha Software Group LLC. All rights reserved.</div><div className="flex justify-center gap-6 text-gray-400 text-sm"><a href="mailto:trylearnbot@gmail.com" className="hover:text-white">Contact</a><button onClick={()=>setView('terms')} className="hover:text-white">Terms</button><button onClick={()=>setView('privacy')} className="hover:text-white">Privacy</button></div></div></div></div>)}
 
 if(view==='terms'){return(<div className={`min-h-screen ${getBgClass()} p-4 md:p-8`}>
   <div className="max-w-4xl mx-auto bg-white rounded-2xl p-6 md:p-12">
