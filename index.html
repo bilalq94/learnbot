@@ -63,6 +63,89 @@ const Icon = ({ name, className = "w-6 h-6" }) => {
   );
 };
 
+// Session Summary Card Component
+function SessionSummaryCard({ session, onClose, onViewHistory }) {
+  const [show, setShow] = useState(false);
+  
+  useEffect(() => {
+    setShow(true);
+  }, []);
+  
+  const handleClose = () => {
+    setShow(false);
+    setTimeout(onClose, 300);
+  };
+  
+  return (
+    <div className={`fixed inset-0 flex items-center justify-center bg-black transition-opacity duration-300 z-50 p-4 ${show ? 'bg-opacity-70' : 'bg-opacity-0'}`}>
+      <div className={`bg-gradient-to-br from-teal-500 to-cyan-600 rounded-2xl p-8 max-w-lg w-full transform transition-all duration-300 ${show ? 'scale-100' : 'scale-95'}`}>
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="text-6xl mb-3">🎯</div>
+          <h2 className="text-3xl font-bold text-white mb-2">Session Complete!</h2>
+          <p className="text-white text-opacity-90">{session.course}</p>
+        </div>
+        
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="bg-white bg-opacity-20 rounded-xl p-4 text-center">
+            <div className="text-3xl font-bold text-white">{session.duration}</div>
+            <div className="text-white text-opacity-75 text-sm">minutes</div>
+          </div>
+          <div className="bg-white bg-opacity-20 rounded-xl p-4 text-center">
+            <div className="text-3xl font-bold text-yellow-300">+{session.xp}</div>
+            <div className="text-white text-opacity-75 text-sm">XP earned</div>
+          </div>
+        </div>
+        
+        {/* Goal Accomplished */}
+        {session.goal && (
+          <div className="bg-white bg-opacity-20 rounded-xl p-4 mb-6">
+            <div className="text-white text-opacity-75 text-sm mb-1">Your Goal:</div>
+            <div className="text-white font-semibold">"{session.goal}"</div>
+            <div className="mt-2">
+              <span className="text-white text-2xl">✅</span>
+            </div>
+          </div>
+        )}
+        
+        {/* Activity Summary */}
+        <div className="bg-white bg-opacity-20 rounded-xl p-4 mb-6">
+          <div className="text-white font-bold mb-3">📊 What You Did:</div>
+          <div className="space-y-2">
+            {session.notesCreated > 0 && (
+              <div className="flex justify-between items-center">
+                <span className="text-white text-opacity-90">📝 Notes created</span>
+                <span className="text-white font-bold">{session.notesCreated}</span>
+              </div>
+            )}
+            <div className="flex justify-between items-center">
+              <span className="text-white text-opacity-90">⚡ Focus score</span>
+              <span className="text-white font-bold">{session.focusScore}%</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Actions */}
+        <div className="space-y-3">
+          <button
+            onClick={onViewHistory}
+            className="w-full bg-white text-teal-600 py-3 rounded-xl font-bold hover:scale-105 transition-all"
+          >
+            📚 View All Sessions
+          </button>
+          <button
+            onClick={handleClose}
+            className="w-full bg-white bg-opacity-20 text-white py-3 rounded-xl font-bold hover:bg-opacity-30 transition-all"
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CompletionAlert({ earnedXp, onClose, course, duration, level, totalXp, streak, isNewStreak, isMilestone }) {
   const [displayXp, setDisplayXp] = useState(0);
   const [show, setShow] = useState(false);
@@ -420,7 +503,7 @@ function StreakLostModal({ lostStreak, onClose }) {
   );
 }
 
-function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);const[startTime,setStartTime]=useState(null);
+function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);const[startTime,setStartTime]=useState(null);const[sessionGoal,setSessionGoal]=useState('');const[sessionNotesCount,setSessionNotesCount]=useState(0);const[currentSessionData,setCurrentSessionData]=useState(null);const[showSessionSummary,setShowSessionSummary]=useState(false);
 
 // LEADERBOARD STATE
 const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);const[appMode,setAppMode]=useState('education');const[organization,setOrganization]=useState(null);const[isOrgAdmin,setIsOrgAdmin]=useState(false);const[showCreateOrg,setShowCreateOrg]=useState(false);const[showOnboardingWizard,setShowOnboardingWizard]=useState(false);const[onboardingData,setOnboardingData]=useState({orgName:'',orgType:'education',size:'',inviteMethod:'link'});const[onboardingStepNum,setOnboardingStepNum]=useState(1);const[inviteLink,setInviteLink]=useState('');const[orgInviteCode,setOrgInviteCode]=useState('');const[timerSound,setTimerSound]=useState(false);const[endSound,setEndSound]=useState(true);const[endTime,setEndTime]=useState(null);const[lofiEnabled,setLofiEnabled]=useState(false);const[lofiVolume,setLofiVolume]=useState(30);const[lofiStream,setLofiStream]=useState('lofi-girl');const[showBreakGame,setShowBreakGame]=useState(false);const[gameActive,setGameActive]=useState(false);const[gameScore,setGameScore]=useState(0);const[gameTime,setGameTime]=useState(60);const[gameTargets,setGameTargets]=useState([]);const[gameHighScore,setGameHighScore]=useState(0);const[themeMode,setThemeMode]=useState('dark');const[colorTheme,setColorTheme]=useState('cyan');const[fontFamily,setFontFamily]=useState('default');const[showCustomization,setShowCustomization]=useState(false);const[showCalculator,setShowCalculator]=useState(false);const[calcDisplay,setCalcDisplay]=useState('0');const[calcPrevious,setCalcPrevious]=useState(null);const[calcOperation,setCalcOperation]=useState(null);const[stickyNotes,setStickyNotes]=useState([]);const[showNotesPanel,setShowNotesPanel]=useState(false);const[showChess,setShowChess]=useState(false);const[chessBoard,setChessBoard]=useState(null);const[selectedPiece,setSelectedPiece]=useState(null);const[currentTurn,setCurrentTurn]=useState('white');const[gameStatus,setGameStatus]=useState('playing');const[showFeedback,setShowFeedback]=useState(false);const[feedbackType,setFeedbackType]=useState('feature');const[feedbackText,setFeedbackText]=useState('');const[feedbackSubmitting,setFeedbackSubmitting]=useState(false);const[showPasswordReset,setShowPasswordReset]=useState(false);const[resetEmail,setResetEmail]=useState('');const[resetSent,setResetSent]=useState(false);
@@ -1142,6 +1225,11 @@ function addStickyNote() {
     y: 100
   };
   setStickyNotes([...stickyNotes, newNote]);
+  
+  // Track note creation during active session
+  if(running){
+    setSessionNotesCount(prev => prev + 1);
+  }
 }
 
 function updateNoteText(id, text) {
@@ -1663,14 +1751,33 @@ function finish(){
     setTimeout(()=>{setShowTierUp(true)},3500)
   }
   
-  const s={course:selectedCourse,duration:actualDuration,xp:pts,time:Date.now()};
-  setSessions(prev=>[...prev,s]);
+  // Enhanced session data with goal and notes
+  const sessionData={
+    id: Date.now(),
+    course:selectedCourse,
+    duration:actualDuration,
+    xp:pts,
+    time:Date.now(),
+    goal:sessionGoal,
+    notesCreated:sessionNotesCount,
+    pauseCount:0, // TODO: track this later
+    focusScore:100 // TODO: calculate this later
+  };
+  
+  setSessions(prev=>[...prev,sessionData]);
   setXp(prev=>prev+pts);
   setEarnedXp(pts);
-  setShowDone(true);
+  
+  // Store current session for summary card
+  setCurrentSessionData(sessionData);
+  
+  // Show session summary instead of generic completion
+  setShowSessionSummary(true);
   
   // Reset for next session
   setStartTime(null);
+  setSessionGoal('');
+  setSessionNotesCount(0);
   if(duration===0){
     setTime(0);
   }else{
@@ -2350,6 +2457,7 @@ return(
       <button onClick={()=>setTab('courses')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='courses'?'bg-white text-teal-600':'text-white'}`}>Courses</button>
       <button onClick={()=>setTab('deadlines')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='deadlines'?'bg-white text-teal-600':'text-white'}`}>Deadlines</button>
       <button onClick={()=>setTab('stats')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='stats'?'bg-white text-teal-600':'text-white'}`}>Stats</button>
+      <button onClick={()=>setTab('sessions')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='sessions'?'bg-white text-teal-600':'text-white'}`}>Sessions</button>
       <button onClick={()=>setTab('skills')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='skills'?'bg-white text-teal-600':'text-white'}`}>⚔️ Skills</button>
       <button onClick={()=>setTab('classroom')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='classroom'?'bg-white text-teal-600':'text-white'}`}>{getModeEmoji()} {appMode==='education'?'Class':'Teams'}</button>
       <button onClick={()=>setTab('leaderboard')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='leaderboard'?'bg-white text-teal-600':'text-white'}`}>🏆</button>
@@ -2528,6 +2636,37 @@ return(
             </button>
           </div>
           
+          {/* Session Goal Input */}
+          {!running && (
+            <div className="mb-4">
+              <input 
+                type="text"
+                placeholder="📝 What's your goal for this session? (optional)"
+                value={sessionGoal}
+                onChange={e => setSessionGoal(e.target.value)}
+                className="w-full bg-white bg-opacity-20 text-white placeholder-white placeholder-opacity-60 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                maxLength={100}
+              />
+            </div>
+          )}
+          
+          {/* Active Session Info */}
+          {running && sessionGoal && (
+            <div className="mb-4 bg-white bg-opacity-10 rounded-lg px-4 py-2 text-center">
+              <div className="text-white text-sm opacity-75">Goal:</div>
+              <div className="text-white font-semibold">{sessionGoal}</div>
+            </div>
+          )}
+          
+          {/* Notes Counter During Session */}
+          {running && sessionNotesCount > 0 && (
+            <div className="mb-4 text-center">
+              <span className="bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-sm font-bold">
+                📝 {sessionNotesCount} {sessionNotesCount === 1 ? 'note' : 'notes'} created
+              </span>
+            </div>
+          )}
+          
           {/* Sound Settings - Right on timer page */}
           <div className="flex gap-4 mb-4 justify-center items-center text-white text-sm">
             <label className="flex items-center gap-2 cursor-pointer">
@@ -2614,6 +2753,86 @@ return(
         <div className="space-y-3">
           {sessions.length===0?<div className="text-center py-12"><Icon name="trophy" className="w-16 h-16 text-white opacity-40 mx-auto mb-4"/><p className="text-white opacity-70">No sessions yet!</p></div>:sessions.slice(-10).reverse().map((s,i)=><div key={i} className="bg-white bg-opacity-20 rounded-lg p-4 flex justify-between"><div><div className="text-white font-semibold">{s.course}</div><div className="text-white opacity-70 text-sm">{s.duration} min</div></div><div className="text-yellow-300 font-bold">+{s.xp} XP</div></div>)}
         </div>
+      </div>
+    )}
+    {tab==='sessions'&&(
+      <div className="space-y-4">
+        <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <span>📚</span> Session History
+          </h2>
+          
+          {sessions.length===0?(
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4 opacity-40">📖</div>
+              <p className="text-white opacity-70 text-lg mb-2">No sessions yet!</p>
+              <p className="text-white opacity-50 text-sm">Start a study session to see your history here</p>
+            </div>
+          ):(
+            <div className="space-y-4">
+              {sessions.slice().reverse().map((session,i)=>{
+                const date=new Date(session.time);
+                const isToday=date.toDateString()===new Date().toDateString();
+                const isYesterday=date.toDateString()===new Date(Date.now()-86400000).toDateString();
+                const dateLabel=isToday?'Today':isYesterday?'Yesterday':date.toLocaleDateString();
+                
+                return(
+                  <div key={session.id||i} className="bg-gradient-to-r from-teal-500 to-cyan-600 rounded-xl p-6 hover:scale-102 transition-all cursor-pointer">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-white mb-1">{session.course}</h3>
+                        <p className="text-white text-opacity-75 text-sm">{dateLabel} • {date.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</p>
+                      </div>
+                      <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                        <span className="text-yellow-300 font-bold">+{session.xp} XP</span>
+                      </div>
+                    </div>
+                    
+                    {session.goal&&(
+                      <div className="bg-white bg-opacity-20 rounded-lg p-3 mb-4">
+                        <div className="text-white text-opacity-75 text-xs mb-1">GOAL</div>
+                        <div className="text-white font-semibold text-sm">"{session.goal}"</div>
+                      </div>
+                    )}
+                    
+                    <div className="flex flex-wrap gap-3">
+                      <div className="bg-white bg-opacity-20 px-3 py-1 rounded-lg">
+                        <span className="text-white text-sm">⏱️ {session.duration} min</span>
+                      </div>
+                      {session.notesCreated>0&&(
+                        <div className="bg-white bg-opacity-20 px-3 py-1 rounded-lg">
+                          <span className="text-white text-sm">📝 {session.notesCreated} notes</span>
+                        </div>
+                      )}
+                      {session.focusScore&&(
+                        <div className="bg-white bg-opacity-20 px-3 py-1 rounded-lg">
+                          <span className="text-white text-sm">⚡ {session.focusScore}% focus</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        
+        {/* Session Stats */}
+        {sessions.length>0&&(
+          <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+            <h3 className="text-xl font-bold text-white mb-4">Quick Stats</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white">{sessions.length}</div>
+                <div className="text-white text-opacity-75 text-sm">Total Sessions</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white">{sessions.reduce((sum,s)=>sum+(s.notesCreated||0),0)}</div>
+                <div className="text-white text-opacity-75 text-sm">Notes Created</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     )}
     {tab==='skills'&&(
@@ -2978,6 +3197,21 @@ return(
         )}
       </div>
     )}
+    {/* Session Summary Modal */}
+    {showSessionSummary && currentSessionData && (
+      <SessionSummaryCard
+        session={currentSessionData}
+        onClose={() => {
+          setShowSessionSummary(false);
+          setShowDone(true); // Then show the classic completion alert
+        }}
+        onViewHistory={() => {
+          setShowSessionSummary(false);
+          setTab('sessions');
+        }}
+      />
+    )}
+    
     {showDone && <CompletionAlert 
       earnedXp={earnedXp} 
       course={selectedCourse}
