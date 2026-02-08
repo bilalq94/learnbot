@@ -3093,41 +3093,6 @@ return(
         )}
       </div>
     )}
-                      <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full">
-                        <span className="text-yellow-300 font-bold">+{session.xp} XP</span>
-                      </div>
-                    </div>
-                    
-                    {session.goal&&(
-                      <div className="bg-white bg-opacity-20 rounded-lg p-3 mb-4">
-                        <div className="text-white text-opacity-75 text-xs mb-1">GOAL</div>
-                        <div className="text-white font-semibold text-sm">"{session.goal}"</div>
-                      </div>
-                    )}
-                    
-                    <div className="flex flex-wrap gap-3">
-                      <div className="bg-white bg-opacity-20 px-3 py-1 rounded-lg">
-                        <span className="text-white text-sm">⏱️ {session.duration} min</span>
-                      </div>
-                      {session.notesCreated>0&&(
-                        <div className="bg-white bg-opacity-20 px-3 py-1 rounded-lg">
-                          <span className="text-white text-sm">📝 {session.notesCreated} notes</span>
-                        </div>
-                      )}
-                      {session.focusScore&&(
-                        <div className="bg-white bg-opacity-20 px-3 py-1 rounded-lg">
-                          <span className="text-white text-sm">⚡ {session.focusScore}% focus</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
-    )}
     {tab==='skills'&&(
       <div className="space-y-4 md:space-y-6">
         {/* Total Level Card */}
