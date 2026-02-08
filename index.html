@@ -1502,41 +1502,18 @@ async function sendTutorMessage() {
   
   setTutorLoading(true);
   
+  // Simulate thinking delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
-        system: getUserContext(),
-        messages: [
-          ...tutorMessages.filter(m => m.role !== 'system').map(m => ({
-            role: m.role,
-            content: m.content
-          })),
-          {
-            role: 'user',
-            content: userMessage
-          }
-        ]
-      })
-    });
+    // Generate intelligent response based on patterns
+    const response = generateTutorResponse(userMessage);
     
-    const data = await response.json();
-    
-    if (data.content && data.content[0] && data.content[0].text) {
-      setTutorMessages(prev => [...prev, {
-        role: 'assistant',
-        content: data.content[0].text,
-        timestamp: new Date().toISOString()
-      }]);
-    } else {
-      throw new Error('Invalid response format');
-    }
+    setTutorMessages(prev => [...prev, {
+      role: 'assistant',
+      content: response,
+      timestamp: new Date().toISOString()
+    }]);
   } catch (err) {
     console.error('Tutor error:', err);
     setTutorMessages(prev => [...prev, {
@@ -1547,6 +1524,188 @@ async function sendTutorMessage() {
   } finally {
     setTutorLoading(false);
   }
+}
+
+function generateTutorResponse(message) {
+  const lowerMsg = message.toLowerCase();
+  const userName = name || 'there';
+  const mainCourse = courses.length > 0 ? courses[0].name : 'your courses';
+  const goalText = goal || 'your academic goals';
+  
+  // Greeting patterns
+  if (lowerMsg.match(/^(hi|hello|hey|sup|what's up|whats up)/)) {
+    return `Hi ${userName}! 👋 I'm here to help you succeed in ${mainCourse}. You're currently on a ${streak}-day streak with ${totalMinutes} total study minutes - that's impressive! How can I help you today?`;
+  }
+  
+  // Motivation patterns
+  if (lowerMsg.includes('motivat') || lowerMsg.includes('overwhelm') || lowerMsg.includes('struggling') || lowerMsg.includes('stressed')) {
+    return `I understand studying can be challenging, ${userName}. But look at your progress - you've already logged ${weeklyMinutes} minutes this week toward your ${weeklyTarget}-hour goal! That's ${Math.round((weeklyMinutes/60) / weeklyTarget * 100)}% complete. 
+
+Remember why you started: ${goalText}. Break your work into smaller chunks, use the Pomodoro timer, and celebrate small wins. You've got a ${streak}-day streak going - don't break it now! 💪
+
+What specific subject or topic is giving you trouble? Let's tackle it together.`;
+  }
+  
+  // Study tips patterns
+  if (lowerMsg.includes('study tip') || lowerMsg.includes('how to study') || lowerMsg.includes('study better')) {
+    return `Great question, ${userName}! Based on your ${totalMinutes} minutes of study time, here are personalized tips:
+
+**The Pomodoro Technique** - Use our 25-minute timer for focused work, then take 5-minute breaks. You can play chess or use the calculator during breaks!
+
+**Active Recall** - Don't just re-read notes. Quiz yourself, explain concepts out loud, or teach someone else.
+
+**Spaced Repetition** - Review material multiple times over days/weeks. Your ${streak}-day streak shows you're building this habit!
+
+For ${mainCourse}, focus on understanding concepts deeply rather than memorizing. What specific topic are you working on today?`;
+  }
+  
+  // Exam prep patterns
+  if (lowerMsg.includes('exam') || lowerMsg.includes('test') || lowerMsg.includes('quiz') || lowerMsg.includes('midterm') || lowerMsg.includes('final')) {
+    const daysUntil = deadlines.length > 0 ? 'You have upcoming deadlines, so let\'s prioritize!' : 'Let\'s create a solid prep plan!';
+    return `${daysUntil}
+
+**Exam Prep Strategy for ${mainCourse}:**
+
+**Week Before:**
+- Review all notes and make summary sheets
+- Identify weak areas and focus there
+- Practice problems (if applicable)
+- Join study groups
+
+**3 Days Before:**
+- Complete practice exams
+- Review mistakes thoroughly  
+- Create concept maps
+- Get 8 hours of sleep
+
+**Day Before:**
+- Light review only
+- Organize materials
+- Relax and trust your preparation
+
+**Exam Day:**
+- Eat well, arrive early
+- Read all questions first
+- Manage your time
+
+You've studied ${totalMinutes} minutes total - you're building a strong foundation! Need help with specific topics?`;
+  }
+  
+  // Schedule/planning patterns
+  if (lowerMsg.includes('schedule') || lowerMsg.includes('plan') || lowerMsg.includes('organize') || lowerMsg.includes('time management')) {
+    return `Let's create a personalized study schedule, ${userName}!
+
+**Based on your ${weeklyTarget}-hour weekly goal:**
+
+**Daily Schedule:**
+- Morning: 2 hours (best for difficult subjects like ${mainCourse})
+- Afternoon: 1 hour (review and practice)  
+- Evening: 1 hour (lighter material)
+
+**Weekly Breakdown:**
+- Monday-Friday: ~1.5 hours/day
+- Weekend: 2-3 hours each day
+- Use our timer for 25-min Pomodoro sessions
+
+**Your Progress:**
+- Current: ${weeklyMinutes} min this week
+- Remaining: ${(weeklyTarget * 60) - weeklyMinutes} min to hit your goal
+- That's only ${Math.ceil(((weeklyTarget * 60) - weeklyMinutes) / 25)} more Pomodoro sessions!
+
+Want me to help you prioritize specific subjects or topics?`;
+  }
+  
+  // Homework help patterns
+  if (lowerMsg.includes('homework') || lowerMsg.includes('assignment') || lowerMsg.includes('problem') || lowerMsg.includes('question')) {
+    return `I'd love to help with your homework, ${userName}! 
+
+To give you the best guidance:
+1. **What subject?** (Is it ${mainCourse} or another course?)
+2. **What topic?** (Be specific - chapter, concept, etc.)
+3. **What's confusing?** (The whole thing or specific parts?)
+
+**Study Approach:**
+- Break problems into smaller steps
+- Start with what you DO understand
+- Look for patterns in similar problems
+- Check your work as you go
+
+I can help explain concepts, suggest resources, and guide you through problem-solving strategies. What specific homework are you working on?`;
+  }
+  
+  // Explain concept patterns
+  if (lowerMsg.includes('explain') || lowerMsg.includes('what is') || lowerMsg.includes('how does') || lowerMsg.includes('understand')) {
+    return `I'd be happy to explain that concept, ${userName}! 
+
+For the best explanation:
+1. Tell me the specific topic or concept
+2. Let me know your current understanding level
+3. Mention which course this is for (${mainCourse}?)
+
+**My Teaching Style:**
+- Start with simple analogies
+- Build up complexity gradually
+- Use real-world examples
+- Provide practice opportunities
+
+Based on your ${totalLevel} total level, I'll adjust the explanation to match your knowledge. What concept would you like me to break down?`;
+  }
+  
+  // Progress/stats patterns
+  if (lowerMsg.includes('progress') || lowerMsg.includes('how am i doing') || lowerMsg.includes('stats') || lowerMsg.includes('performance')) {
+    return `Let's look at your impressive progress, ${userName}! 📊
+
+**Study Stats:**
+- ⏱️ Total Study Time: ${totalMinutes} minutes (${Math.round(totalMinutes/60)} hours)
+- 📅 This Week: ${weeklyMinutes} minutes (${Math.round((weeklyMinutes/60)/weeklyTarget*100)}% of ${weeklyTarget}h goal)
+- 🔥 Current Streak: ${streak} days
+- ⚡ Total XP: ${xp}
+- 📈 Total Level: ${totalLevel}
+
+**Top Skills:**
+${skills.slice(0, 3).map(s => `- ${s.name}: Level ${s.level}`).join('\n') || 'Keep studying to develop skills!'}
+
+**Insight:** You're ${weeklyMinutes >= weeklyTarget * 60 ? 'exceeding' : 'working toward'} your weekly goal. ${streak > 0 ? `Your ${streak}-day streak shows great consistency!` : 'Start a study session today to begin a streak!'} 
+
+What subject do you want to level up next?`;
+  }
+  
+  // Course-specific help
+  if (courses.some(c => lowerMsg.includes(c.name.toLowerCase()))) {
+    const mentionedCourse = courses.find(c => lowerMsg.includes(c.name.toLowerCase()));
+    return `I see you're working on ${mentionedCourse.name}, ${userName}! 
+
+**Study Resources for ${mentionedCourse.name}:**
+- Use the Pomodoro timer for focused sessions
+- Track your progress in Skills tab
+- Set deadlines for important assignments
+- Review regularly to build long-term retention
+
+**Quick Tips:**
+- Start with the hardest topics when you're fresh
+- Take notes by hand (better retention)
+- Teach the material to someone else
+- Practice with real problems
+
+What specific aspect of ${mentionedCourse.name} can I help you with? I can explain concepts, suggest study strategies, or help you organize your study plan.`;
+  }
+  
+  // Default helpful response
+  return `Thanks for reaching out, ${userName}! I'm here to help you succeed. 
+
+**I can help with:**
+- 📚 Homework & concept explanations
+- 📅 Study planning & time management
+- 🎯 Exam preparation strategies
+- 💪 Motivation & study tips
+- 📊 Progress tracking & goal setting
+- 🧠 Learning techniques & memory tips
+
+**Your Current Focus:** ${mainCourse}
+**Your Goal:** ${goalText}
+**Study Time This Week:** ${weeklyMinutes} minutes
+
+What would you like help with today? Be as specific as possible so I can give you the most useful guidance!`;
 }
 
 function startNewTutorSession() {
