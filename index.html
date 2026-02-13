@@ -1035,6 +1035,105 @@ function getLofiStreamUrl() {
 }
 
 // Theme Customization Functions
+// ── PERSONA THEMES ──────────────────────────────────────────────
+const PERSONA_THEMES = {
+  k12: {
+    bg: 'bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500',
+    card: 'bg-white bg-opacity-25',
+    accent: 'from-yellow-400 to-pink-500',
+    button: 'bg-gradient-to-r from-yellow-400 to-pink-500',
+    text: 'text-white',
+    label: '🎒 Study Session',
+    xpLabel: 'XP',
+    sessionLabel: 'Study Session',
+    timerLabel: 'Study Time',
+    font: 'font-sans',
+    navBg: 'bg-purple-600',
+    statCard: 'bg-white bg-opacity-20',
+    emoji: true,
+  },
+  college: {
+    bg: 'bg-gradient-to-br from-cyan-500 to-blue-700',
+    card: 'bg-white bg-opacity-20',
+    accent: 'from-cyan-400 to-blue-500',
+    button: 'bg-gradient-to-r from-cyan-400 to-blue-500',
+    text: 'text-white',
+    label: '📚 Study Session',
+    xpLabel: 'XP',
+    sessionLabel: 'Study Session',
+    timerLabel: 'Focus Timer',
+    font: 'font-sans',
+    navBg: 'bg-blue-700',
+    statCard: 'bg-white bg-opacity-20',
+    emoji: true,
+  },
+  professional: {
+    bg: 'bg-gradient-to-br from-slate-800 to-slate-900',
+    card: 'bg-slate-700 bg-opacity-80',
+    accent: 'from-blue-500 to-cyan-500',
+    button: 'bg-gradient-to-r from-blue-500 to-cyan-500',
+    text: 'text-slate-100',
+    label: '💼 Focus Session',
+    xpLabel: 'Score',
+    sessionLabel: 'Focus Session',
+    timerLabel: 'Deep Work',
+    font: 'font-sans',
+    navBg: 'bg-slate-900',
+    statCard: 'bg-slate-700',
+    emoji: false,
+  },
+  self_taught: {
+    bg: 'bg-gradient-to-br from-violet-600 to-indigo-800',
+    card: 'bg-white bg-opacity-15',
+    accent: 'from-violet-400 to-indigo-500',
+    button: 'bg-gradient-to-r from-violet-400 to-indigo-500',
+    text: 'text-white',
+    label: '🚀 Learning Session',
+    xpLabel: 'XP',
+    sessionLabel: 'Learning Session',
+    timerLabel: 'Build Time',
+    font: 'font-sans',
+    navBg: 'bg-violet-800',
+    statCard: 'bg-white bg-opacity-15',
+    emoji: true,
+  },
+  hobbyist: {
+    bg: 'bg-gradient-to-br from-orange-400 to-rose-500',
+    card: 'bg-white bg-opacity-20',
+    accent: 'from-orange-300 to-rose-400',
+    button: 'bg-gradient-to-r from-orange-300 to-rose-400',
+    text: 'text-white',
+    label: '🎨 Creative Session',
+    xpLabel: 'XP',
+    sessionLabel: 'Creative Session',
+    timerLabel: 'Create Time',
+    font: 'font-sans',
+    navBg: 'bg-rose-600',
+    statCard: 'bg-white bg-opacity-20',
+    emoji: true,
+  },
+  other: {
+    bg: 'bg-gradient-to-br from-teal-500 to-cyan-700',
+    card: 'bg-white bg-opacity-20',
+    accent: 'from-teal-400 to-cyan-500',
+    button: 'bg-gradient-to-r from-teal-400 to-cyan-500',
+    text: 'text-white',
+    label: '⏱️ Session',
+    xpLabel: 'XP',
+    sessionLabel: 'Session',
+    timerLabel: 'Timer',
+    font: 'font-sans',
+    navBg: 'bg-teal-700',
+    statCard: 'bg-white bg-opacity-20',
+    emoji: true,
+  },
+};
+
+function getPersonaTheme() {
+  return PERSONA_THEMES[userType] || PERSONA_THEMES.other;
+}
+// ────────────────────────────────────────────────────────────────
+
 function getThemeColors() {
   const themes = {
     cyan: { from: 'from-cyan-500', to: 'to-blue-600', accent: 'bg-teal-500', light: 'bg-cyan-400' },
@@ -1047,6 +1146,8 @@ function getThemeColors() {
 }
 
 function getBgClass() {
+  // If user has a persona set, use persona theme
+  if (userType) return getPersonaTheme().bg;
   if (themeMode === 'light') {
     return 'bg-gradient-to-br from-gray-50 to-gray-100';
   }
@@ -1055,13 +1156,35 @@ function getBgClass() {
 }
 
 function getTextClass() {
+  if (userType) return getPersonaTheme().text;
   return themeMode === 'light' ? 'text-gray-900' : 'text-white';
 }
 
 function getCardClass() {
+  if (userType) return getPersonaTheme().card;
   return themeMode === 'light' 
     ? 'bg-white shadow-lg' 
     : 'bg-white bg-opacity-20';
+}
+
+function getButtonClass() {
+  if (userType) return getPersonaTheme().button + ' text-white font-bold';
+  return 'bg-white bg-opacity-20 text-white font-bold';
+}
+
+function getSessionLabel() {
+  if (userType) return getPersonaTheme().sessionLabel;
+  return 'Study Session';
+}
+
+function getTimerLabel() {
+  if (userType) return getPersonaTheme().timerLabel;
+  return 'Focus Timer';
+}
+
+function getXpLabel() {
+  if (userType) return getPersonaTheme().xpLabel;
+  return 'XP';
 }
 
 function getFontClass() {
@@ -1413,7 +1536,13 @@ async function sendPasswordReset() {
   console.log('Attempting to send password reset to:', resetEmail.trim());
   
   try {
-    await auth.sendPasswordResetEmail(resetEmail.trim());
+    // Custom action code settings for branded email
+    const actionCodeSettings = {
+      url: 'https://learnbot.us',
+      handleCodeInApp: false
+    };
+    
+    await auth.sendPasswordResetEmail(resetEmail.trim(), actionCodeSettings);
     console.log('Password reset email sent successfully');
     setResetSent(true);
   } catch (err) {
@@ -1935,7 +2064,7 @@ if(view==='landing'){return(<div className={`min-h-screen ${getBgClass()}`}><sty
 <div className="bg-gray-900 py-12"><div className="max-w-6xl mx-auto px-4 text-center"><div className="text-white mb-4"><div className="text-2xl font-bold mb-2">LearnBot</div><div className="text-sm opacity-75">Powered by 🐺 Alpha Software Group LLC</div></div><div className="text-gray-400 text-sm mb-4">© 2026 Alpha Software Group LLC. All rights reserved.</div><div className="flex justify-center gap-6 text-gray-400 text-sm"><a href="mailto:trylearnbot@gmail.com" className="hover:text-white">Contact</a><button onClick={()=>setView('terms')} className="hover:text-white">Terms</button><button onClick={()=>setView('privacy')} className="hover:text-white">Privacy</button></div></div></div>
 
 {/* Password Reset Modal - Landing Page */}
-{showPasswordReset&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50 p-4"><div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-8 max-w-md w-full"><div className="flex justify-between items-center mb-6"><h2 className="text-3xl font-bold text-white">🔒 Reset Password</h2><button onClick={()=>{setShowPasswordReset(false);setResetSent(false);setResetEmail('')}} className="text-white opacity-75 hover:opacity-100 text-2xl">✕</button></div>{!resetSent?<div><p className="text-white mb-6 opacity-90">Enter your email address and we'll send you a link to reset your password.</p><input type="email" placeholder="Email address" value={resetEmail} onChange={e=>setResetEmail(e.target.value)} onKeyPress={e=>e.key==='Enter'&&sendPasswordReset()} className="w-full bg-white bg-opacity-20 text-white placeholder-white placeholder-opacity-50 rounded-xl px-5 py-4 mb-6 text-lg focus:outline-none focus:ring-2 focus:ring-white"/><div className="flex gap-3"><button onClick={()=>{setShowPasswordReset(false);setResetEmail('')}} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-xl font-bold hover:bg-opacity-30 transition-colors">Cancel</button><button onClick={sendPasswordReset} disabled={!resetEmail.trim()} className="flex-1 bg-white text-indigo-600 py-3 rounded-xl font-bold hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed">Send Reset Link</button></div></div>:<div className="text-center"><div className="text-6xl mb-4">✅</div><h3 className="text-2xl font-bold text-white mb-3">Email Sent!</h3><p className="text-white opacity-90 mb-6">Check your inbox for the password reset link. It may take a few minutes to arrive.</p><p className="text-white text-sm opacity-75 mb-6">Don't see it? Check your spam folder.</p><button onClick={()=>{setShowPasswordReset(false);setResetSent(false);setResetEmail('')}} className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all">Close</button></div>}</div></div>}
+{showPasswordReset&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50 p-4"><div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl p-8 max-w-md w-full shadow-2xl"><div className="text-center mb-6"><div className="text-6xl mb-3">🤖</div><h2 className="text-3xl font-bold text-white mb-2">Reset Your Password</h2><p className="text-white text-opacity-75 text-sm">LearnBot Password Recovery</p></div>{!resetSent?<div><p className="text-white mb-6 opacity-90 text-center">Enter your email and we'll send you a secure link to reset your password.</p><input type="email" placeholder="your@email.com" value={resetEmail} onChange={e=>setResetEmail(e.target.value)} onKeyPress={e=>e.key==='Enter'&&sendPasswordReset()} className="w-full bg-white bg-opacity-20 text-white placeholder-white placeholder-opacity-50 rounded-xl px-5 py-4 mb-6 text-lg focus:outline-none focus:ring-2 focus:ring-white"/><div className="flex gap-3"><button onClick={()=>{setShowPasswordReset(false);setResetEmail('')}} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-xl font-bold hover:bg-opacity-30 transition-colors">Cancel</button><button onClick={sendPasswordReset} disabled={!resetEmail.trim()} className="flex-1 bg-white text-cyan-600 py-3 rounded-xl font-bold hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg">Send Reset Link →</button></div><div className="mt-4 text-center"><p className="text-white text-opacity-60 text-xs">Having trouble? Email us at trylearnbot@gmail.com</p></div></div>:<div className="text-center"><div className="text-7xl mb-4">📬</div><h3 className="text-2xl font-bold text-white mb-3">Check Your Email!</h3><p className="text-white opacity-90 mb-4">We sent a password reset link to:</p><p className="text-white font-semibold bg-white bg-opacity-20 rounded-lg px-4 py-2 mb-6">{resetEmail}</p><div className="bg-white bg-opacity-20 rounded-lg p-4 mb-6 text-left"><p className="text-white text-sm mb-2">📌 <strong>Next steps:</strong></p><ol className="text-white text-opacity-90 text-sm space-y-1 ml-4"><li>1. Check your inbox (and spam folder)</li><li>2. Click the reset link in the email</li><li>3. Create a new password</li><li>4. Log back in to LearnBot</li></ol></div><p className="text-white text-sm opacity-75 mb-6">Link expires in 1 hour for security</p><button onClick={()=>{setShowPasswordReset(false);setResetSent(false);setResetEmail('')}} className="bg-white text-cyan-600 px-8 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg">Got It!</button></div>}</div></div>}
 
 </div>)}
 
@@ -2434,16 +2563,16 @@ return(
       </button>
     </div>
     <div className="grid grid-cols-3 gap-2 md:gap-4 mb-4 md:mb-6">
-      <div className="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-white">
+      <div className={`${getPersonaTheme().statCard} rounded-xl p-3 md:p-4 text-white`}>
         <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2"><Icon name="trophy" className="w-4 h-4 md:w-5 md:h-5 text-yellow-300"/><span className="text-xs md:text-sm">Level</span></div>
         <div className="text-2xl md:text-3xl font-bold flex items-center gap-1">{level}{getTierBadge()&&<span className="text-xl md:text-2xl">{getTierBadge()}</span>}</div>
         <div className="w-full bg-white bg-opacity-30 rounded-full h-1.5 md:h-2 mt-1 md:mt-2"><div className="bg-yellow-300 h-1.5 md:h-2 rounded-full" style={{width:`${levelXp}%`}}/></div>
       </div>
-      <div className="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-white">
-        <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2"><Icon name="zap" className="w-4 h-4 md:w-5 md:h-5 text-orange-300"/><span className="text-xs md:text-sm">Total XP</span></div>
+      <div className={`${getPersonaTheme().statCard} rounded-xl p-3 md:p-4 text-white`}>
+        <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2"><Icon name="zap" className="w-4 h-4 md:w-5 md:h-5 text-orange-300"/><span className="text-xs md:text-sm">Total {getXpLabel()}</span></div>
         <div className="text-2xl md:text-3xl font-bold">{xp}</div>
       </div>
-      <div className="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-white">
+      <div className={`${getPersonaTheme().statCard} rounded-xl p-3 md:p-4 text-white`}>
         <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
           <span className="text-lg md:text-xl">🔥</span>
           <span className="text-xs md:text-sm">Streak</span>
@@ -2452,13 +2581,13 @@ return(
       </div>
     </div>
     <div className="flex gap-1 md:gap-2 mb-4 md:mb-6 bg-white bg-opacity-20 rounded-xl p-1.5 md:p-2 overflow-x-auto">
-      <button onClick={()=>setTab('dashboard')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='dashboard'?'bg-white text-teal-600':'text-white'}`}>Dashboard</button>
-      <button onClick={()=>setTab('timer')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='timer'?'bg-white text-teal-600':'text-white'}`}>Timer</button>
-      <button onClick={()=>setTab('courses')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='courses'?'bg-white text-teal-600':'text-white'}`}>Courses</button>
-      <button onClick={()=>setTab('deadlines')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='deadlines'?'bg-white text-teal-600':'text-white'}`}>Deadlines</button>
-      <button onClick={()=>setTab('stats')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='stats'?'bg-white text-teal-600':'text-white'}`}>Stats</button>
-      <button onClick={()=>setTab('sessions')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='sessions'?'bg-white text-teal-600':'text-white'}`}>Sessions</button>
-      <button onClick={()=>setTab('skills')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='skills'?'bg-white text-teal-600':'text-white'}`}>⚔️ Skills</button>
+      <button onClick={()=>setTab('dashboard')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='dashboard'?`bg-white text-gray-800`:'text-white'}`}>Dashboard</button>
+      <button onClick={()=>setTab('timer')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='timer'?`bg-white text-gray-800`:'text-white'}`}>{getTimerLabel()}</button>
+      <button onClick={()=>setTab('courses')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='courses'?`bg-white text-gray-800`:'text-white'}`}>{userType==='professional'?'Projects':'Courses'}</button>
+      <button onClick={()=>setTab('deadlines')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='deadlines'?`bg-white text-gray-800`:'text-white'}`}>{userType==='professional'?'Deadlines':'Deadlines'}</button>
+      <button onClick={()=>setTab('stats')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='stats'?`bg-white text-gray-800`:'text-white'}`}>Stats</button>
+      <button onClick={()=>setTab('sessions')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='sessions'?`bg-white text-gray-800`:'text-white'}`}>{userType==='professional'?'History':'Sessions'}</button>
+      <button onClick={()=>setTab('skills')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='skills'?`bg-white text-gray-800`:'text-white'}`}>{userType==='professional'?'💼 Skills':'⚔️ Skills'}</button>
       <button onClick={()=>setTab('classroom')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='classroom'?'bg-white text-teal-600':'text-white'}`}>{getModeEmoji()} {appMode==='education'?'Class':'Teams'}</button>
       <button onClick={()=>setTab('leaderboard')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='leaderboard'?'bg-white text-teal-600':'text-white'}`}>🏆</button>
       {!isPro&&<button onClick={()=>setShowPaywall(true)} className="px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 text-white flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-base"><Icon name="crown" className="w-3 h-3 md:w-4 md:h-4"/>Pro</button>}
@@ -2555,9 +2684,9 @@ return(
         <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
           <h3 className="text-lg md:text-xl font-bold text-white mb-4">Quick Actions</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <button onClick={()=>setTab('timer')} className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white py-3 md:py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-105 transition-all text-sm md:text-base">
+            <button onClick={()=>setTab('timer')} className={`${getPersonaTheme().button} text-white py-3 md:py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-105 transition-all text-sm md:text-base`}>
               <Icon name="play" className="w-4 h-4 md:w-5 md:h-5"/>
-              Start Session
+              Start {getSessionLabel()}
             </button>
             <button onClick={()=>setTab('courses')} className="bg-white bg-opacity-20 text-white py-3 md:py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-opacity-30 transition-all text-sm md:text-base">
               <Icon name="plus" className="w-4 h-4 md:w-5 md:h-5"/>
@@ -2567,9 +2696,9 @@ return(
         </div>
 
         <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
-          <h3 className="text-lg md:text-xl font-bold text-white mb-4">Recent Sessions</h3>
+          <h3 className="text-lg md:text-xl font-bold text-white mb-4">Recent {getSessionLabel()}s</h3>
           <div className="space-y-3">
-            {sessions.length===0?<div className="text-center py-8"><Icon name="trophy" className="w-10 h-10 md:w-12 md:h-12 text-white opacity-40 mx-auto mb-3"/><p className="text-white opacity-70 text-sm md:text-base">No sessions yet! Start your first one.</p></div>:sessions.slice(-5).reverse().map((s,i)=><div key={i} className="bg-white bg-opacity-20 rounded-lg p-3 md:p-4 flex justify-between"><div><div className="text-white font-semibold text-sm md:text-base">{s.course}</div><div className="text-white opacity-70 text-xs md:text-sm">{s.duration} min</div></div><div className="text-yellow-300 font-bold text-sm md:text-base">+{s.xp} XP</div></div>)}
+            {sessions.length===0?<div className="text-center py-8"><Icon name="trophy" className="w-10 h-10 md:w-12 md:h-12 text-white opacity-40 mx-auto mb-3"/><p className="text-white opacity-70 text-sm md:text-base">No sessions yet! Start your first one.</p></div>:sessions.slice(-5).reverse().map((s,i)=><div key={i} className={`${getPersonaTheme().statCard} rounded-lg p-3 md:p-4 flex justify-between`}><div><div className="text-white font-semibold text-sm md:text-base">{s.course}</div><div className="text-white opacity-70 text-xs md:text-sm">{s.duration} min</div></div><div className="text-yellow-300 font-bold text-sm md:text-base">+{s.xp} {getXpLabel()}</div></div>)}
           </div>
         </div>
       </div>
