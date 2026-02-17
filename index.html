@@ -2,13 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>LearnBot - Gamified Study Timer</title>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    /* Hide scrollbar on nav */
+    .nav-scroll::-webkit-scrollbar { display: none; }
+    .nav-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
 </head>
 <body>
   <div id="root"></div>
@@ -503,7 +509,7 @@ function StreakLostModal({ lostStreak, onClose }) {
   );
 }
 
-function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);const[startTime,setStartTime]=useState(null);const[sessionGoal,setSessionGoal]=useState('');const[sessionNotesCount,setSessionNotesCount]=useState(0);const[currentSessionData,setCurrentSessionData]=useState(null);const[showSessionSummary,setShowSessionSummary]=useState(false);
+function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);const[startTime,setStartTime]=useState(null);const[sessionGoal,setSessionGoal]=useState('');const[sessionNotesCount,setSessionNotesCount]=useState(0);const[currentSessionData,setCurrentSessionData]=useState(null);const[showSessionSummary,setShowSessionSummary]=useState(false);const[showMoreNav,setShowMoreNav]=useState(false);
 
 // LEADERBOARD STATE
 const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);const[appMode,setAppMode]=useState('education');const[organization,setOrganization]=useState(null);const[isOrgAdmin,setIsOrgAdmin]=useState(false);const[showCreateOrg,setShowCreateOrg]=useState(false);const[showOnboardingWizard,setShowOnboardingWizard]=useState(false);const[onboardingData,setOnboardingData]=useState({orgName:'',orgType:'education',size:'',inviteMethod:'link'});const[onboardingStepNum,setOnboardingStepNum]=useState(1);const[inviteLink,setInviteLink]=useState('');const[orgInviteCode,setOrgInviteCode]=useState('');const[timerSound,setTimerSound]=useState(false);const[endSound,setEndSound]=useState(true);const[endTime,setEndTime]=useState(null);const[lofiEnabled,setLofiEnabled]=useState(false);const[lofiVolume,setLofiVolume]=useState(30);const[lofiStream,setLofiStream]=useState('lofi-girl');const[showBreakGame,setShowBreakGame]=useState(false);const[gameActive,setGameActive]=useState(false);const[gameScore,setGameScore]=useState(0);const[gameTime,setGameTime]=useState(60);const[gameTargets,setGameTargets]=useState([]);const[gameHighScore,setGameHighScore]=useState(0);const[themeMode,setThemeMode]=useState('dark');const[colorTheme,setColorTheme]=useState('cyan');const[fontFamily,setFontFamily]=useState('default');const[showCustomization,setShowCustomization]=useState(false);const[showCalculator,setShowCalculator]=useState(false);const[calcDisplay,setCalcDisplay]=useState('0');const[calcPrevious,setCalcPrevious]=useState(null);const[calcOperation,setCalcOperation]=useState(null);const[stickyNotes,setStickyNotes]=useState([]);const[showNotesPanel,setShowNotesPanel]=useState(false);const[showChess,setShowChess]=useState(false);const[chessBoard,setChessBoard]=useState(null);const[selectedPiece,setSelectedPiece]=useState(null);const[currentTurn,setCurrentTurn]=useState('white');const[gameStatus,setGameStatus]=useState('playing');const[showFeedback,setShowFeedback]=useState(false);const[feedbackType,setFeedbackType]=useState('feature');const[feedbackText,setFeedbackText]=useState('');const[feedbackSubmitting,setFeedbackSubmitting]=useState(false);const[showPasswordReset,setShowPasswordReset]=useState(false);const[resetEmail,setResetEmail]=useState('');const[resetSent,setResetSent]=useState(false);
@@ -2540,7 +2546,7 @@ function ClassroomDetail() {
 }
 
 return(
-<div className={`min-h-screen ${getBgClass()} ${getFontClass()} p-4`}>
+<div className={`min-h-screen ${getBgClass()} ${getFontClass()} p-4 pb-20 md:pb-4`} onClick={()=>showMoreNav&&setShowMoreNav(false)}>
   <div className="max-w-4xl mx-auto">
     {isTrialActive()&&!isPro&&(
       <div className="bg-gradient-to-r from-green-400 to-teal-400 text-white text-center py-3 px-4 rounded-xl mb-6 shadow-lg">
@@ -2580,18 +2586,60 @@ return(
         <div className="text-2xl md:text-3xl font-bold">{streak}</div>
       </div>
     </div>
-    <div className="flex gap-1 md:gap-2 mb-4 md:mb-6 bg-white bg-opacity-20 rounded-xl p-1.5 md:p-2 overflow-x-auto">
-      <button onClick={()=>setTab('dashboard')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='dashboard'?`bg-white text-gray-800`:'text-white'}`}>Dashboard</button>
-      <button onClick={()=>setTab('timer')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='timer'?`bg-white text-gray-800`:'text-white'}`}>{getTimerLabel()}</button>
-      <button onClick={()=>setTab('courses')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='courses'?`bg-white text-gray-800`:'text-white'}`}>{userType==='professional'?'Projects':'Courses'}</button>
-      <button onClick={()=>setTab('deadlines')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='deadlines'?`bg-white text-gray-800`:'text-white'}`}>{userType==='professional'?'Deadlines':'Deadlines'}</button>
-      <button onClick={()=>setTab('stats')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='stats'?`bg-white text-gray-800`:'text-white'}`}>Stats</button>
-      <button onClick={()=>setTab('sessions')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='sessions'?`bg-white text-gray-800`:'text-white'}`}>{userType==='professional'?'History':'Sessions'}</button>
-      <button onClick={()=>setTab('skills')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='skills'?`bg-white text-gray-800`:'text-white'}`}>{userType==='professional'?'💼 Skills':'⚔️ Skills'}</button>
-      <button onClick={()=>setTab('classroom')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='classroom'?'bg-white text-teal-600':'text-white'}`}>{getModeEmoji()} {appMode==='education'?'Class':'Teams'}</button>
-      <button onClick={()=>setTab('leaderboard')} className={`px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold whitespace-nowrap text-xs md:text-base ${tab==='leaderboard'?'bg-white text-teal-600':'text-white'}`}>🏆</button>
-      {!isPro&&<button onClick={()=>setShowPaywall(true)} className="px-3 md:px-4 py-2 md:py-3 rounded-lg font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 text-white flex items-center gap-1 md:gap-2 whitespace-nowrap text-xs md:text-base"><Icon name="crown" className="w-3 h-3 md:w-4 md:h-4"/>Pro</button>}
+    {/* Pro Upgrade Banner - prominent placement */}
+    {!isPro&&<div onClick={()=>setShowPaywall(true)} className="cursor-pointer mb-4 md:mb-6 bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 rounded-xl p-3 md:p-4 flex items-center justify-between hover:scale-[1.02] transition-all shadow-lg">
+      <div className="flex items-center gap-3">
+        <div className="bg-white bg-opacity-20 rounded-lg p-2"><Icon name="crown" className="w-5 h-5 md:w-6 md:h-6 text-white"/></div>
+        <div>
+          <div className="text-white font-bold text-sm md:text-base">Upgrade to Pro — $5 Lifetime</div>
+          <div className="text-white text-opacity-80 text-xs md:text-sm">Unlimited courses, custom themes, priority support</div>
+        </div>
+      </div>
+      <div className="bg-white text-amber-600 px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-bold text-xs md:text-sm whitespace-nowrap">Upgrade →</div>
+    </div>}
+
+    {/* Desktop Navigation - hidden on mobile */}
+    <div className="hidden md:flex gap-2 mb-6 bg-white bg-opacity-10 rounded-xl p-2 flex-wrap">
+      {[
+        {id:'dashboard',label:'Dashboard',icon:'📊'},
+        {id:'timer',label:getTimerLabel(),icon:'⏱️'},
+        {id:'courses',label:userType==='professional'?'Projects':'Courses',icon:'📚'},
+        {id:'deadlines',label:'Deadlines',icon:'📅'},
+        {id:'stats',label:'Stats',icon:'📈'},
+        {id:'sessions',label:userType==='professional'?'History':'Sessions',icon:'🕐'},
+        {id:'skills',label:userType==='professional'?'Skills':'Skills',icon:userType==='professional'?'💼':'⚔️'},
+        {id:'classroom',label:appMode==='education'?'Class':'Teams',icon:getModeEmoji()},
+        {id:'leaderboard',label:'Ranks',icon:'🏆'},
+      ].map(t=><button key={t.id} onClick={()=>setTab(t.id)} className={`px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all ${tab===t.id?'bg-white text-gray-800 shadow-md':'text-white hover:bg-white hover:bg-opacity-10'}`}><span>{t.icon}</span>{t.label}</button>)}
     </div>
+
+    {/* Mobile Bottom Navigation Bar - fixed at bottom, shown only on mobile */}
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-gray-900 bg-opacity-95 backdrop-blur-lg border-t border-white border-opacity-10 safe-area-bottom">
+      <div className="grid grid-cols-5 gap-0">
+        {[
+          {id:'dashboard',label:'Home',icon:'🏠'},
+          {id:'timer',label:'Timer',icon:'⏱️'},
+          {id:'stats',label:'Stats',icon:'📈'},
+          {id:'leaderboard',label:'Ranks',icon:'🏆'},
+        ].map(t=><button key={t.id} onClick={()=>setTab(t.id)} className={`flex flex-col items-center py-2.5 px-1 transition-all ${tab===t.id?'text-cyan-400':'text-gray-400'}`}><span className="text-xl mb-0.5">{t.icon}</span><span className="text-[10px] font-semibold">{t.label}</span>{tab===t.id&&<div className="w-1 h-1 rounded-full bg-cyan-400 mt-0.5"/>}</button>)}
+        {/* More Menu */}
+        <div className="relative">
+          <button onClick={()=>setShowMoreNav(!showMoreNav)} className={`flex flex-col items-center py-2.5 px-1 w-full transition-all ${['courses','deadlines','sessions','skills','classroom'].includes(tab)?'text-cyan-400':'text-gray-400'}`}><span className="text-xl mb-0.5">☰</span><span className="text-[10px] font-semibold">More</span>{['courses','deadlines','sessions','skills','classroom'].includes(tab)&&<div className="w-1 h-1 rounded-full bg-cyan-400 mt-0.5"/>}</button>
+          {showMoreNav&&<div className="absolute bottom-full right-0 mb-2 bg-gray-800 rounded-xl shadow-2xl border border-white border-opacity-10 overflow-hidden w-48">
+            {[
+              {id:'courses',label:userType==='professional'?'Projects':'Courses',icon:'📚'},
+              {id:'deadlines',label:'Deadlines',icon:'📅'},
+              {id:'sessions',label:userType==='professional'?'History':'Sessions',icon:'🕐'},
+              {id:'skills',label:'Skills',icon:userType==='professional'?'💼':'⚔️'},
+              {id:'classroom',label:appMode==='education'?'Class':'Teams',icon:getModeEmoji()},
+            ].map(t=><button key={t.id} onClick={()=>{setTab(t.id);setShowMoreNav(false)}} className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all ${tab===t.id?'bg-cyan-500 bg-opacity-20 text-cyan-400':'text-gray-300 hover:bg-white hover:bg-opacity-5'}`}><span>{t.icon}</span>{t.label}</button>)}
+          </div>}
+        </div>
+      </div>
+    </div>
+
+    {/* Bottom padding spacer for mobile nav */}
+    <div className="md:hidden h-4"></div>
     {tab==='dashboard'&&(
       <div className="space-y-4 md:space-y-6">
         <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
@@ -3844,7 +3892,7 @@ return(
     {showNotesPanel&&<div className="fixed right-4 top-20 bg-white rounded-2xl p-4 shadow-2xl z-40 w-80 max-h-[70vh] overflow-y-auto"><div className="flex justify-between items-center mb-4"><h3 className="font-bold text-lg">📝 Sticky Notes</h3><button onClick={()=>setShowNotesPanel(false)} className="opacity-75 hover:opacity-100"><Icon name="x" className="w-6 h-6"/></button></div><button onClick={addStickyNote} className="w-full bg-yellow-400 text-gray-900 py-3 rounded-lg font-bold mb-4 hover:bg-yellow-500 transition-colors">+ New Note</button><div className="space-y-3">{stickyNotes.length===0?<p className="text-gray-500 text-center py-8">No notes yet!</p>:stickyNotes.map(note=><div key={note.id} className={`p-3 rounded-lg ${note.color==='yellow'?'bg-yellow-100':note.color==='slate'?'bg-slate-200':note.color==='blue'?'bg-blue-100':'bg-green-100'}`}><textarea value={note.text} onChange={e=>updateNoteText(note.id,e.target.value)} placeholder="Type your note..." className="w-full bg-transparent border-none resize-none text-sm mb-2 focus:outline-none" rows="3"/><div className="flex justify-between items-center"><div className="flex gap-1">{['yellow','slate','blue','green'].map(color=><button key={color} onClick={()=>updateNoteColor(note.id,color)} className={`w-6 h-6 rounded-full ${color==='yellow'?'bg-yellow-400':color==='slate'?'bg-slate-500':color==='blue'?'bg-blue-400':'bg-green-400'} ${note.color===color?'ring-2 ring-gray-900':''}`}/>)}</div><button onClick={()=>deleteNote(note.id)} className="text-red-500 text-sm font-bold">Delete</button></div></div>)}</div></div>}
     
     {/* Floating Tool Buttons */}
-    {view==='app'&&<div className="fixed bottom-6 right-6 flex flex-col gap-3 z-30"><button onClick={()=>setShowCalculator(!showCalculator)} className={`${showCalculator?'bg-green-600':'bg-gray-800'} text-white w-14 h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-2xl`}>🧮</button><button onClick={()=>setShowNotesPanel(!showNotesPanel)} className={`${showNotesPanel?'bg-yellow-500':'bg-gray-800'} text-white w-14 h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-2xl`}>📝</button><button onClick={()=>{setShowChess(true);if(!chessBoard)startChess()}} className="bg-gray-800 text-white w-14 h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-2xl">♟️</button></div>}
+    {view==='app'&&<div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 flex flex-col gap-3 z-30"><button onClick={()=>setShowCalculator(!showCalculator)} className={`${showCalculator?'bg-green-600':'bg-gray-800'} text-white w-12 h-12 md:w-14 md:h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-xl md:text-2xl`}>🧮</button><button onClick={()=>setShowNotesPanel(!showNotesPanel)} className={`${showNotesPanel?'bg-yellow-500':'bg-gray-800'} text-white w-12 h-12 md:w-14 md:h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-xl md:text-2xl`}>📝</button><button onClick={()=>{setShowChess(true);if(!chessBoard)startChess()}} className="bg-gray-800 text-white w-12 h-12 md:w-14 md:h-14 rounded-full shadow-lg hover:scale-110 transition-all flex items-center justify-center text-xl md:text-2xl">♟️</button></div>}
     
     {/* Chess Game Modal */}
     {showChess&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50 p-4"><div className="bg-gradient-to-br from-amber-900 to-amber-700 rounded-2xl p-6 max-w-2xl w-full"><div className="flex justify-between items-center mb-4"><h2 className="text-3xl font-bold text-white">♟️ Chess</h2><button onClick={()=>setShowChess(false)} className="text-white opacity-75 hover:opacity-100"><Icon name="x" className="w-8 h-8"/></button></div>{gameStatus!=='playing'&&<div className="bg-white bg-opacity-20 rounded-xl p-4 mb-4 text-center"><div className="text-white text-2xl font-bold">{gameStatus==='white-wins'?'🎉 You Win!':gameStatus==='black-wins'?'😔 Computer Wins':'Game Over'}</div><button onClick={startChess} className="mt-3 bg-white text-amber-900 px-6 py-2 rounded-lg font-bold hover:scale-105 transition-all">New Game</button></div>}<div className="bg-white bg-opacity-10 rounded-xl p-2 mb-4"><div className="grid grid-cols-8 gap-0">{chessBoard?.map((row,r)=>row.map((piece,c)=><div key={`${r}-${c}`} onClick={()=>handleSquareClick(r,c)} className={`aspect-square flex items-center justify-center text-4xl cursor-pointer transition-all ${(r+c)%2===0?'bg-amber-200':'bg-amber-800'} ${selectedPiece?.row===r&&selectedPiece?.col===c?'ring-4 ring-yellow-400':''} hover:opacity-80`}>{getPieceSymbol(piece)}</div>))}</div></div><div className="flex justify-between items-center text-white"><div><span className="font-bold">Your Turn:</span> {currentTurn==='white'?'✅':'⏳'}</div><button onClick={startChess} className="bg-white text-amber-900 px-4 py-2 rounded-lg font-bold hover:scale-105 transition-all text-sm">Reset Game</button></div></div></div>}
