@@ -442,7 +442,7 @@ Join me: learnbot.us`;
             <div className="text-5xl font-bold text-yellow-300 font-mono">
               +{displayXp}
             </div>
-            <div className="text-amber-400 text-sm font-bold mt-2 flex items-center justify-center gap-1">🪙 +{Math.min(Math.floor(duration / 25) + 1, 3)} Learn Tokens</div>
+            <div className="text-amber-400 text-sm font-bold mt-2 flex items-center justify-center gap-1">🪙 +1 Learn Token</div>
           </div>
 
           <div className="flex justify-center gap-3 mb-4 flex-wrap">
@@ -516,7 +516,7 @@ function StreakLostModal({ lostStreak, onClose }) {
 
 function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment',time:'',notes:''});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);const[startTime,setStartTime]=useState(null);const[sessionGoal,setSessionGoal]=useState('');const[sessionNotesCount,setSessionNotesCount]=useState(0);const[currentSessionData,setCurrentSessionData]=useState(null);const[showSessionSummary,setShowSessionSummary]=useState(false);const[showMoreNav,setShowMoreNav]=useState(false);
 // AI Study Coach state
-const[coachInput,setCoachInput]=useState('');const[coachMode,setCoachMode]=useState('quiz');const[coachResult,setCoachResult]=useState(null);const[coachLoading,setCoachLoading]=useState(false);const[coachError,setCoachError]=useState('');const[coachHistory,setCoachHistory]=useState([]);const[learnTokens,setLearnTokens]=useState(20);const[showTokenShop,setShowTokenShop]=useState(false);const[tokenAnimation,setTokenAnimation]=useState(false);const STARTING_TOKENS=20;const[referralCount,setReferralCount]=useState(0);const[referralCode,setReferralCode]=useState('');const[referralCopied,setReferralCopied]=useState(false);
+const[coachInput,setCoachInput]=useState('');const[coachMode,setCoachMode]=useState('quiz');const[coachResult,setCoachResult]=useState(null);const[coachLoading,setCoachLoading]=useState(false);const[coachError,setCoachError]=useState('');const[coachHistory,setCoachHistory]=useState([]);const[learnTokens,setLearnTokens]=useState(10);const[showTokenShop,setShowTokenShop]=useState(false);const[tokenAnimation,setTokenAnimation]=useState(false);const STARTING_TOKENS=10;const[referralCount,setReferralCount]=useState(0);const[referralCode,setReferralCode]=useState('');const[referralCopied,setReferralCopied]=useState(false);
 
 // LEADERBOARD STATE
 const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);const[appMode,setAppMode]=useState('education');const[organization,setOrganization]=useState(null);const[isOrgAdmin,setIsOrgAdmin]=useState(false);const[showCreateOrg,setShowCreateOrg]=useState(false);const[showOnboardingWizard,setShowOnboardingWizard]=useState(false);const[onboardingData,setOnboardingData]=useState({orgName:'',orgType:'education',size:'',inviteMethod:'link'});const[onboardingStepNum,setOnboardingStepNum]=useState(1);const[inviteLink,setInviteLink]=useState('');const[orgInviteCode,setOrgInviteCode]=useState('');const[timerSound,setTimerSound]=useState(false);const[endSound,setEndSound]=useState(true);const[endTime,setEndTime]=useState(null);const[lofiEnabled,setLofiEnabled]=useState(false);const[lofiVolume,setLofiVolume]=useState(30);const[lofiStream,setLofiStream]=useState('lofi-girl');const[showBreakGame,setShowBreakGame]=useState(false);const[gameActive,setGameActive]=useState(false);const[gameScore,setGameScore]=useState(0);const[gameTime,setGameTime]=useState(60);const[gameTargets,setGameTargets]=useState([]);const[gameHighScore,setGameHighScore]=useState(0);const[themeMode,setThemeMode]=useState('dark');const[colorTheme,setColorTheme]=useState('cyan');const[fontFamily,setFontFamily]=useState('default');const[showCustomization,setShowCustomization]=useState(false);const[showCalculator,setShowCalculator]=useState(false);const[calcDisplay,setCalcDisplay]=useState('0');const[calcPrevious,setCalcPrevious]=useState(null);const[calcOperation,setCalcOperation]=useState(null);const[stickyNotes,setStickyNotes]=useState([]);const[showNotesPanel,setShowNotesPanel]=useState(false);const[showChess,setShowChess]=useState(false);const[chessBoard,setChessBoard]=useState(null);const[selectedPiece,setSelectedPiece]=useState(null);const[currentTurn,setCurrentTurn]=useState('white');const[gameStatus,setGameStatus]=useState('playing');const[showFeedback,setShowFeedback]=useState(false);const[feedbackType,setFeedbackType]=useState('feature');const[feedbackText,setFeedbackText]=useState('');const[feedbackSubmitting,setFeedbackSubmitting]=useState(false);const[showPasswordReset,setShowPasswordReset]=useState(false);const[resetEmail,setResetEmail]=useState('');const[resetSent,setResetSent]=useState(false);const[resetSending,setResetSending]=useState(false);const[resetError,setResetError]=useState('');
@@ -724,8 +724,10 @@ function updateStreak() {
       setXp(prev => prev + 50);
     }
     
-    // Streak bonus tokens
-    setLearnTokens(prev => prev + 2);
+    // Streak bonus tokens (only for 3+ day streaks)
+    if (newStreak >= 3) {
+      setLearnTokens(prev => prev + 1);
+    }
     
     return { isNewStreak: true, isMilestone };
   } else {
@@ -856,12 +858,12 @@ useEffect(() => {
 
 async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());setSkills(data.skills||[]);setTotalLevel(data.totalLevel||0);setClassrooms(data.classrooms||[]);setIsTeacher(data.isTeacher||false);setTeachingClasses(data.teachingClasses||[]);setAppMode(data.appMode||'education');setIsOrgAdmin(data.isOrgAdmin||false);setThemeMode(data.themeMode||'dark');setColorTheme(data.colorTheme||'cyan');setFontFamily(data.fontFamily||'default');setLearnTokens(data.learnTokens!=null?data.learnTokens:STARTING_TOKENS);setReferralCount(data.referralCount||0);setReferralCode(data.referralCode||firebaseUser.uid.substring(0,8));
 
-// Daily Pro token drip: 5 tokens/day for Pro users
+// Daily Pro token drip: 3 tokens/day for Pro users
 if(data.isPro){
   const today=new Date().toISOString().split('T')[0];
   const lastDrip=data.lastTokenDrip||'';
   if(lastDrip!==today){
-    const newTokens=(data.learnTokens!=null?data.learnTokens:STARTING_TOKENS)+5;
+    const newTokens=(data.learnTokens!=null?data.learnTokens:STARTING_TOKENS)+3;
     setLearnTokens(newTokens);
     await db.collection('users').doc(firebaseUser.uid).set({learnTokens:newTokens,lastTokenDrip:today},{merge:true});
   }
@@ -918,11 +920,11 @@ useEffect(() => {
   }
 }, [gameActive, gameTime]);
 
-async function signup(){if(!name||!email||!pass)return;setError('');setLoading(true);try{const result=await auth.createUserWithEmailAndPassword(email,pass);const monday=getMonday();const refCode=result.user.uid.substring(0,8);await db.collection('users').doc(result.user.uid).set({name,email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,goal:'',weeklyTarget:10,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday,onboardingCompleted:false,learnTokens:20,referralCode:refCode,referralCount:0,referredBy:referredBy||null});setReferralCode(refCode);setUser({uid:result.user.uid,email,name,trialStartDate:new Date().toISOString()});setWeekStartDate(monday);setView('app');setShowUsernamePrompt(true);await creditReferral(result.user.uid)}catch(err){console.error('Signup error:',err);let errorMsg='';if(err.code==='auth/email-already-in-use'){errorMsg='❌ Email already registered. Try logging in instead.'}else if(err.code==='auth/invalid-email'){errorMsg='❌ Invalid email address'}else if(err.code==='auth/weak-password'){errorMsg='❌ Password too weak. Use at least 6 characters.'}else if(err.code==='auth/operation-not-allowed'){errorMsg='❌ Email/password signup is disabled. Contact support.'}else{errorMsg='❌ '+err.message}setError(errorMsg)}finally{setLoading(false)}}
+async function signup(){if(!name||!email||!pass)return;setError('');setLoading(true);try{const result=await auth.createUserWithEmailAndPassword(email,pass);const monday=getMonday();const refCode=result.user.uid.substring(0,8);await db.collection('users').doc(result.user.uid).set({name,email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,goal:'',weeklyTarget:10,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday,onboardingCompleted:false,learnTokens:STARTING_TOKENS,referralCode:refCode,referralCount:0,referredBy:referredBy||null});setReferralCode(refCode);setUser({uid:result.user.uid,email,name,trialStartDate:new Date().toISOString()});setWeekStartDate(monday);setView('app');setShowUsernamePrompt(true);await creditReferral(result.user.uid)}catch(err){console.error('Signup error:',err);let errorMsg='';if(err.code==='auth/email-already-in-use'){errorMsg='❌ Email already registered. Try logging in instead.'}else if(err.code==='auth/invalid-email'){errorMsg='❌ Invalid email address'}else if(err.code==='auth/weak-password'){errorMsg='❌ Password too weak. Use at least 6 characters.'}else if(err.code==='auth/operation-not-allowed'){errorMsg='❌ Email/password signup is disabled. Contact support.'}else{errorMsg='❌ '+err.message}setError(errorMsg)}finally{setLoading(false)}}
 
 async function login(){if(!email||!pass)return;setError('');setLoading(true);try{const result=await auth.signInWithEmailAndPassword(email,pass);await loadUserData(result.user);setView('app')}catch(err){console.error('Login error:',err);let errorMsg='';if(err.code==='auth/user-not-found'){errorMsg='❌ No account found with this email'}else if(err.code==='auth/wrong-password'){errorMsg='❌ Incorrect password. Try "Forgot password?" to reset.'}else if(err.code==='auth/invalid-email'){errorMsg='❌ Invalid email address'}else if(err.code==='auth/user-disabled'){errorMsg='❌ This account has been disabled'}else if(err.code==='auth/too-many-requests'){errorMsg='❌ Too many failed attempts. Try again later or reset password.'}else{errorMsg='❌ '+err.message}setError(errorMsg)}finally{setLoading(false)}}
 
-async function signInWithGoogle(){setError('');setLoading(true);try{const provider=new firebase.auth.GoogleAuthProvider();const result=await auth.signInWithPopup(provider);const userDoc=await db.collection('users').doc(result.user.uid).get();const monday=getMonday();if(!userDoc.exists){const refCode=result.user.uid.substring(0,8);await db.collection('users').doc(result.user.uid).set({name:result.user.displayName||'',email:result.user.email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday,learnTokens:20,referralCode:refCode,referralCount:0,referredBy:referredBy||null});setReferralCode(refCode);await creditReferral(result.user.uid)}await loadUserData(result.user);setView('app')}catch(err){setError(err.message)}finally{setLoading(false)}}
+async function signInWithGoogle(){setError('');setLoading(true);try{const provider=new firebase.auth.GoogleAuthProvider();const result=await auth.signInWithPopup(provider);const userDoc=await db.collection('users').doc(result.user.uid).get();const monday=getMonday();if(!userDoc.exists){const refCode=result.user.uid.substring(0,8);await db.collection('users').doc(result.user.uid).set({name:result.user.displayName||'',email:result.user.email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday,learnTokens:STARTING_TOKENS,referralCode:refCode,referralCount:0,referredBy:referredBy||null});setReferralCode(refCode);await creditReferral(result.user.uid)}await loadUserData(result.user);setView('app')}catch(err){setError(err.message)}finally{setLoading(false)}}
 
 async function logout(){await auth.signOut();setUser(null);setName('');setEmail('');setSessions([]);setCourses([]);setDeadlines([]);setXp(0);setStreak(0);setLastStudyDate('');setUserType('');setView('landing')}
 
@@ -1607,9 +1609,10 @@ async function sendPasswordReset() {
 async function generateCoachContent() {
   if (!coachInput.trim()) { setCoachError('Paste some notes or type a topic first'); return; }
   
-  // Check token balance
-  if (learnTokens <= 0) {
-    setCoachError('You\'re out of Learn Tokens! Earn more by studying or grab a token pack.');
+  // Check token balance — heavier modes cost more
+  const tokenCost = (coachMode === 'quiz' || coachMode === 'flashcards') ? 2 : 1;
+  if (learnTokens < tokenCost) {
+    setCoachError(`Not enough tokens! ${coachMode === 'quiz' || coachMode === 'flashcards' ? 'Quizzes & flashcards cost 2 tokens.' : ''} Earn more by studying or grab a token pack.`);
     return;
   }
   
@@ -1623,12 +1626,19 @@ async function generateCoachContent() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prompt: coachInput,
-        mode: coachMode
+        mode: coachMode,
+        userId: user?.uid || 'anonymous'
       })
     });
     
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
+      if (response.status === 429) {
+        // Rate limited — don't deduct tokens
+        setCoachError(errData.error || 'Too many requests. Please wait a moment.');
+        setCoachLoading(false);
+        return;
+      }
       throw new Error(errData.error || 'AI service error');
     }
     
@@ -1638,8 +1648,8 @@ async function generateCoachContent() {
     setCoachResult({ type: coachMode, data: parsed, input: coachInput.substring(0, 100) });
     setCoachHistory(prev => [{ type: coachMode, data: parsed, input: coachInput.substring(0, 100), time: new Date().toISOString() }, ...prev].slice(0, 20));
     
-    // Deduct 1 Learn Token
-    setLearnTokens(prev => Math.max(0, prev - 1));
+    // Deduct tokens based on mode
+    setLearnTokens(prev => Math.max(0, prev - tokenCost));
     setTokenAnimation(true);
     setTimeout(() => setTokenAnimation(false), 1000);
     
@@ -2018,8 +2028,8 @@ function finish(){
   setXp(prev=>prev+pts);
   setEarnedXp(pts);
   
-  // Award Learn Tokens for studying (1 token per 25 min, max 3 per session)
-  const tokensEarned = Math.min(Math.floor(sessionData.duration / 25) + 1, 3);
+  // Award Learn Tokens for studying (1 token per completed session)
+  const tokensEarned = 1;
   setLearnTokens(prev => prev + tokensEarned);
   
   // Store current session for summary card
@@ -2045,16 +2055,38 @@ function getTierBadge(){if(tier===0)return'';if(tier===1)return'🥈';if(tier===
 
 function getTierName(){if(tier===0)return'';if(tier===1)return'Silver Scholar';if(tier===2)return'Gold Scholar';if(tier===3)return'Diamond Scholar';return`${tier-2}x Diamond Scholar`}
 
-function startCheckout() {
+function startCheckout(type = 'pro') {
   setPaymentProcessing(true);
   setPaymentError('');
   
+  if (!user?.uid) {
+    setPaymentError('Please log in first');
+    setPaymentProcessing(false);
+    return;
+  }
+  
+  // Payment links with client_reference_id for webhook to identify user
+  const paymentLinks = {
+    pro: 'https://buy.stripe.com/9B64gs9BV17q4ucgAqawo00',
+    tokens_50: '',   // Create in Stripe: $1 for 50 tokens
+    tokens_200: '',  // Create in Stripe: $3 for 200 tokens  
+    tokens_500: '',  // Create in Stripe: $5 for 500 tokens (add ?metadata[type]=tokens)
+  };
+  
+  const baseLink = paymentLinks[type];
+  if (!baseLink) {
+    setPaymentError('Payment link not configured yet');
+    setPaymentProcessing(false);
+    return;
+  }
+  
+  // Append client_reference_id and prefill email
+  const separator = baseLink.includes('?') ? '&' : '?';
+  const paymentLink = `${baseLink}${separator}client_reference_id=${user.uid}&prefilled_email=${encodeURIComponent(user.email||email)}`;
+  
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  const paymentLink = 'https://buy.stripe.com/9B64gs9BV17q4ucgAqawo00';
   
   if (isMobile) {
-    // Mobile: Direct redirect
-    // Set a flag so we know to check for payment on return
     localStorage.setItem('learnbot_payment_pending', Date.now().toString());
     window.location.href = paymentLink;
     return;
@@ -2078,15 +2110,15 @@ function startCheckout() {
     return;
   }
   
-  // Check if popup was closed
+  // Poll for popup close, then reload to pick up Firestore changes from webhook
   const checkPopup = setInterval(() => {
     if (popup.closed) {
       clearInterval(checkPopup);
       setPaymentProcessing(false);
-      // Check if payment succeeded by looking at URL or reloading
-      window.location.reload();
+      // Reload user data to pick up Pro status or token credits from webhook
+      if (user) loadUserData({ uid: user.uid, email: user.email });
     }
-  }, 500);
+  }, 1000);
 }
 
 function addDeadline(){if(newDeadline.course&&newDeadline.title&&newDeadline.date){setDeadlines(prev=>[...prev,{...newDeadline,id:Date.now()}]);setNewDeadline({course:'',title:'',date:'',type:'assignment'});setShowAddDeadline(false)}}
@@ -2181,10 +2213,10 @@ if(view==='landing'){return(<div className={`min-h-screen ${getBgClass()}`}><sty
 ].map((s,i)=><div key={i}><div className="text-5xl font-black mb-2">{s.num}</div><div className="text-xl opacity-90">{s.label}</div></div>)}</div></div></div>
 
 {/* Pricing */}
-<div className="bg-white py-20"><div className="max-w-4xl mx-auto px-4 text-center"><h2 className="text-5xl font-black mb-4">Simple, Honest Pricing</h2><p className="text-xl text-gray-600 mb-12">No subscriptions. No hidden fees. Pay once, use forever.</p><div className="grid md:grid-cols-2 gap-8"><div className="border-4 border-gray-200 rounded-2xl p-8"><div className="text-4xl mb-4">🆓</div><h3 className="text-3xl font-bold mb-2">Free</h3><div className="text-5xl font-black mb-4">$0<span className="text-xl text-gray-500">/forever</span></div><ul className="text-left space-y-3 mb-8">{['Unlimited study time','Basic leaderboards','20 free Learn Tokens','Lofi music player','Streak tracking'].map((f,i)=><li key={i} className="flex items-start"><span className="text-green-500 mr-2">✓</span>{f}</li>)}</ul><button onClick={()=>{document.getElementById('signup-section').scrollIntoView({behavior:'smooth'})}} className="w-full bg-gray-200 text-gray-800 py-3 rounded-xl font-bold hover:bg-gray-300">Start Free</button></div><div className="border-4 border-yellow-400 rounded-2xl p-8 relative"><div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-4 py-1 rounded-full font-bold text-sm">BEST VALUE</div><div className="text-4xl mb-4">👑</div><h3 className="text-3xl font-bold mb-2">Pro</h3><div className="text-5xl font-black mb-4">$5<span className="text-xl text-gray-500">/lifetime</span></div><ul className="text-left space-y-3 mb-8">{['Everything in Free','Bonus Learn Tokens daily','Custom themes','Priority support','Early access to features'].map((f,i)=><li key={i} className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>{f}</strong></li>)}</ul><button onClick={()=>{document.getElementById('signup-section').scrollIntoView({behavior:'smooth'})}} className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white py-3 rounded-xl font-bold hover:scale-105 transition-all">Upgrade to Pro</button></div></div></div></div>
+<div className="bg-white py-20"><div className="max-w-4xl mx-auto px-4 text-center"><h2 className="text-5xl font-black mb-4">Simple, Honest Pricing</h2><p className="text-xl text-gray-600 mb-12">No subscriptions. No hidden fees. Pay once, use forever.</p><div className="grid md:grid-cols-2 gap-8"><div className="border-4 border-gray-200 rounded-2xl p-8"><div className="text-4xl mb-4">🆓</div><h3 className="text-3xl font-bold mb-2">Free</h3><div className="text-5xl font-black mb-4">$0<span className="text-xl text-gray-500">/forever</span></div><ul className="text-left space-y-3 mb-8">{['Unlimited study time','Basic leaderboards','10 free Learn Tokens','Lofi music player','Streak tracking'].map((f,i)=><li key={i} className="flex items-start"><span className="text-green-500 mr-2">✓</span>{f}</li>)}</ul><button onClick={()=>{document.getElementById('signup-section').scrollIntoView({behavior:'smooth'})}} className="w-full bg-gray-200 text-gray-800 py-3 rounded-xl font-bold hover:bg-gray-300">Start Free</button></div><div className="border-4 border-yellow-400 rounded-2xl p-8 relative"><div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-4 py-1 rounded-full font-bold text-sm">BEST VALUE</div><div className="text-4xl mb-4">👑</div><h3 className="text-3xl font-bold mb-2">Pro</h3><div className="text-5xl font-black mb-4">$5<span className="text-xl text-gray-500">/lifetime</span></div><ul className="text-left space-y-3 mb-8">{['Everything in Free','Bonus Learn Tokens daily','Custom themes','Priority support','Early access to features'].map((f,i)=><li key={i} className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>{f}</strong></li>)}</ul><button onClick={()=>{document.getElementById('signup-section').scrollIntoView({behavior:'smooth'})}} className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white py-3 rounded-xl font-bold hover:scale-105 transition-all">Upgrade to Pro</button></div></div></div></div>
 
 {/* CTA */}
-<div className="bg-gradient-to-br from-cyan-500 to-blue-600 py-20" id="signup-section"><div className="max-w-2xl mx-auto px-4"><div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-8"><h2 className="text-4xl font-black text-white text-center mb-8">{isLogin?'Welcome Back!':'Start Your Journey Today'}</h2>{!isLogin&&referredBy&&<div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 rounded-xl p-3 mb-4 text-center text-sm font-bold">🎁 You've been referred! Sign up and get 30 free Learn Tokens (20 + 10 bonus)</div>}{!isLogin&&<input type="text" placeholder="Your name" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/>}<input type="email" placeholder="Email address" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/><input type="password" placeholder="Password" value={pass} onChange={e=>setPass(e.target.value)} onKeyPress={e=>e.key==='Enter'&&(isLogin?login():signup())} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/>{isLogin&&<div className="text-right mb-4"><button type="button" onClick={()=>{setResetEmail(email||'');setShowPasswordReset(true)}} className="text-white text-sm hover:underline opacity-90 hover:opacity-100 cursor-pointer">Forgot password?</button></div>}{error&&<p className="text-red-200 bg-red-500 bg-opacity-30 p-3 rounded-xl mb-4">{error}</p>}<button onClick={isLogin?login:signup} disabled={(isLogin?(!email||!pass):(!name||!email||!pass))||loading} className="w-full bg-white text-cyan-600 py-5 rounded-xl font-black text-2xl hover:scale-105 transition-all disabled:opacity-50 shadow-2xl">{loading?(isLogin?'Logging in...':'Creating Account...'):(isLogin?'Log In →':'🚀 Start Learning Free →')}</button><button onClick={()=>{setIsLogin(!isLogin);setError('')}} className="w-full text-white text-sm mt-4 hover:underline">{isLogin?"Don't have an account? Sign up free":'Already have an account? Log in'}</button></div></div></div>
+<div className="bg-gradient-to-br from-cyan-500 to-blue-600 py-20" id="signup-section"><div className="max-w-2xl mx-auto px-4"><div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-8"><h2 className="text-4xl font-black text-white text-center mb-8">{isLogin?'Welcome Back!':'Start Your Journey Today'}</h2>{!isLogin&&referredBy&&<div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 rounded-xl p-3 mb-4 text-center text-sm font-bold">🎁 You've been referred! Sign up and get 20 free Learn Tokens (10 + 10 bonus)</div>}{!isLogin&&<input type="text" placeholder="Your name" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/>}<input type="email" placeholder="Email address" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/><input type="password" placeholder="Password" value={pass} onChange={e=>setPass(e.target.value)} onKeyPress={e=>e.key==='Enter'&&(isLogin?login():signup())} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/>{isLogin&&<div className="text-right mb-4"><button type="button" onClick={()=>{setResetEmail(email||'');setShowPasswordReset(true)}} className="text-white text-sm hover:underline opacity-90 hover:opacity-100 cursor-pointer">Forgot password?</button></div>}{error&&<p className="text-red-200 bg-red-500 bg-opacity-30 p-3 rounded-xl mb-4">{error}</p>}<button onClick={isLogin?login:signup} disabled={(isLogin?(!email||!pass):(!name||!email||!pass))||loading} className="w-full bg-white text-cyan-600 py-5 rounded-xl font-black text-2xl hover:scale-105 transition-all disabled:opacity-50 shadow-2xl">{loading?(isLogin?'Logging in...':'Creating Account...'):(isLogin?'Log In →':'🚀 Start Learning Free →')}</button><button onClick={()=>{setIsLogin(!isLogin);setError('')}} className="w-full text-white text-sm mt-4 hover:underline">{isLogin?"Don't have an account? Sign up free":'Already have an account? Log in'}</button></div></div></div>
 
 {/* Footer */}
 <div className="bg-gray-900 py-12"><div className="max-w-6xl mx-auto px-4 text-center"><div className="text-white mb-4"><div className="text-2xl font-bold mb-2">LearnBot</div><div className="text-sm opacity-75">Powered by 🐺 Alpha Software Group LLC</div></div><div className="text-gray-400 text-sm mb-4">© 2026 Alpha Software Group LLC. All rights reserved.</div><div className="flex justify-center gap-6 text-gray-400 text-sm"><a href="mailto:trylearnbot@gmail.com" className="hover:text-white">Contact</a><button onClick={()=>setView('terms')} className="hover:text-white">Terms</button><button onClick={()=>setView('privacy')} className="hover:text-white">Privacy</button></div></div></div>
@@ -2673,7 +2705,7 @@ return(
         {isTrialActive()?(
           <span className="text-sm font-bold">🎉 Launch Special: All Pro features free until Feb 28th!</span>
         ):(
-          <><span className="text-sm font-bold">👑 Get 5 free tokens daily + unlimited courses</span><button onClick={()=>setShowPaywall(true)} className="bg-gray-900 text-yellow-400 px-4 py-1.5 rounded-lg font-bold text-sm hover:scale-105 transition-all">Upgrade $5 →</button></>
+          <><span className="text-sm font-bold">👑 Get 3 free tokens daily + unlimited courses</span><button onClick={()=>setShowPaywall(true)} className="bg-gray-900 text-yellow-400 px-4 py-1.5 rounded-lg font-bold text-sm hover:scale-105 transition-all">Upgrade $5 →</button></>
         )}
       </div>
     )}
@@ -2718,7 +2750,7 @@ return(
         <div className="bg-white bg-opacity-20 rounded-lg p-2"><Icon name="crown" className="w-5 h-5 md:w-6 md:h-6 text-white"/></div>
         <div>
           <div className="text-white font-bold text-sm md:text-base">Upgrade to Pro — $5 Lifetime</div>
-          <div className="text-white text-opacity-80 text-xs md:text-sm">5 free tokens daily, unlimited courses, custom themes</div>
+          <div className="text-white text-opacity-80 text-xs md:text-sm">3 free tokens daily, unlimited courses, custom themes</div>
         </div>
       </div>
       <div className="bg-white text-amber-600 px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-bold text-xs md:text-sm whitespace-nowrap">Upgrade →</div>
@@ -3909,17 +3941,17 @@ return(
           {/* Mode Selector */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
             {[
-              {id:'quiz',label:'Quiz',icon:'❓',desc:'5 multiple choice'},
-              {id:'flashcards',label:'Flashcards',icon:'🗂️',desc:'8 key concepts'},
-              {id:'summary',label:'Summary',icon:'📋',desc:'Key takeaways'},
-              {id:'explain',label:'Explain',icon:'💡',desc:'Simple analogy'},
-            ].map(m=><button key={m.id} onClick={()=>setCoachMode(m.id)} className={`p-3 rounded-xl text-left transition-all ${coachMode===m.id?'bg-cyan-500 bg-opacity-30 border-2 border-cyan-400 text-white':'bg-white bg-opacity-5 border border-white border-opacity-10 text-white text-opacity-70 hover:bg-opacity-10'}`}><div className="flex items-center gap-2 mb-1"><span>{m.icon}</span><span className="font-bold text-sm">{m.label}</span></div><div className="text-xs opacity-60">{m.desc}</div></button>)}
+              {id:'quiz',label:'Quiz',icon:'❓',desc:'5 multiple choice',cost:2},
+              {id:'flashcards',label:'Flashcards',icon:'🗂️',desc:'8 key concepts',cost:2},
+              {id:'summary',label:'Summary',icon:'📋',desc:'Key takeaways',cost:1},
+              {id:'explain',label:'Explain',icon:'💡',desc:'Simple analogy',cost:1},
+            ].map(m=><button key={m.id} onClick={()=>setCoachMode(m.id)} className={`p-3 rounded-xl text-left transition-all ${coachMode===m.id?'bg-cyan-500 bg-opacity-30 border-2 border-cyan-400 text-white':'bg-white bg-opacity-5 border border-white border-opacity-10 text-white text-opacity-70 hover:bg-opacity-10'}`}><div className="flex items-center gap-2 mb-1"><span>{m.icon}</span><span className="font-bold text-sm">{m.label}</span><span className="ml-auto text-yellow-400 text-[10px] font-bold">{m.cost}🪙</span></div><div className="text-xs opacity-60">{m.desc}</div></button>)}
           </div>
 
-          {coachError && <div className="mt-3 bg-red-500 bg-opacity-20 border border-red-400 border-opacity-30 text-red-200 px-4 py-3 rounded-xl text-sm flex items-center gap-2"><span>⚠️</span>{coachError}{learnTokens <= 0 && <button onClick={()=>setShowTokenShop(true)} className="ml-auto bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap">🪙 Get Tokens</button>}</div>}
+          {coachError && <div className="mt-3 bg-red-500 bg-opacity-20 border border-red-400 border-opacity-30 text-red-200 px-4 py-3 rounded-xl text-sm flex items-center gap-2"><span>⚠️</span>{coachError}{learnTokens < 2 && <button onClick={()=>setShowTokenShop(true)} className="ml-auto bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap">🪙 Get Tokens</button>}</div>}
 
           <button onClick={generateCoachContent} disabled={coachLoading || !coachInput.trim()} className="w-full mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3.5 rounded-xl font-bold text-lg hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 shadow-lg flex items-center justify-center gap-2">
-            {coachLoading ? <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"/>LearnBot is thinking...</> : <><span>🤖</span>Ask LearnBot</>}
+            {coachLoading ? <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"/>LearnBot is thinking...</> : <><span>🤖</span>Ask LearnBot <span className="opacity-60 text-sm">({(coachMode === 'quiz' || coachMode === 'flashcards') ? '2' : '1'}🪙)</span></>}
           </button>
         </div>
 
@@ -4348,14 +4380,14 @@ return(
           </div>
 
           <div className="space-y-3 mb-6">
-            <div className="flex items-center gap-3 text-white"><span className="text-lg">🪙</span><div><span className="font-bold">5 free tokens daily</span><span className="text-white text-opacity-50 text-sm block">That's 150/month — no purchase needed</span></div></div>
+            <div className="flex items-center gap-3 text-white"><span className="text-lg">🪙</span><div><span className="font-bold">3 free tokens daily</span><span className="text-white text-opacity-50 text-sm block">That's 90/month — no purchase needed</span></div></div>
             <div className="flex items-center gap-3 text-white"><span className="text-lg">📚</span><div><span className="font-bold">Unlimited courses</span><span className="text-white text-opacity-50 text-sm block">Free users limited to 2</span></div></div>
             <div className="flex items-center gap-3 text-white"><span className="text-lg">🎨</span><div><span className="font-bold">Custom themes & colors</span><span className="text-white text-opacity-50 text-sm block">Personalize your study space</span></div></div>
             <div className="flex items-center gap-3 text-white"><span className="text-lg">⚡</span><div><span className="font-bold">Priority support</span><span className="text-white text-opacity-50 text-sm block">Direct line to the team</span></div></div>
             <div className="flex items-center gap-3 text-white"><span className="text-lg">🚀</span><div><span className="font-bold">Early access to features</span><span className="text-white text-opacity-50 text-sm block">Be the first to try new tools</span></div></div>
           </div>
 
-          <button onClick={startCheckout} disabled={paymentProcessing} className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 py-4 rounded-xl font-black text-lg mb-3 hover:scale-105 transition-all shadow-lg disabled:opacity-50">{paymentProcessing?'Processing...':'Upgrade to Pro — $5'}</button>
+          <button onClick={()=>setShowPaywall(false)} className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 py-4 rounded-xl font-black text-lg mb-3 hover:scale-105 transition-all shadow-lg">🎉 All Pro features free until Feb 28th!</button>
           {paymentError&&<div className="bg-red-500 bg-opacity-20 border border-red-300 text-red-200 p-3 rounded-lg mb-3 text-sm text-center">{paymentError}</div>}
           <button onClick={()=>setShowPaywall(false)} className="w-full text-white text-sm opacity-50 hover:opacity-75 py-2">Maybe later</button>
           <p className="text-white text-opacity-30 text-xs text-center mt-3">Secure payment via Stripe · No subscription · Cancel-proof</p>
@@ -4417,8 +4449,8 @@ return(
           {!isPro&&<button onClick={()=>{setShowTokenShop(false);setShowPaywall(true)}} className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 rounded-xl p-3 flex items-center gap-3 hover:scale-[1.02] transition-all">
             <span className="text-2xl">👑</span>
             <div className="flex-1 text-left">
-              <div className="text-gray-900 font-bold text-sm">Go Pro — 5 free tokens daily</div>
-              <div className="text-gray-900 text-opacity-60 text-xs">150 tokens/month + unlimited courses</div>
+              <div className="text-gray-900 font-bold text-sm">Go Pro — 3 free tokens daily</div>
+              <div className="text-gray-900 text-opacity-60 text-xs">90 tokens/month + unlimited courses</div>
             </div>
             <div className="text-gray-900 font-black">$5</div>
           </button>}
@@ -4426,11 +4458,11 @@ return(
           <div className="space-y-2">
             <h3 className="text-white font-bold text-xs uppercase tracking-wide opacity-60">Buy Token Packs</h3>
             {[
-              {tokens:50,price:'$1',label:'Starter',icon:'📦',popular:false},
-              {tokens:200,price:'$3',label:'Value Pack',icon:'🎁',popular:true},
-              {tokens:500,price:'$5',label:'Mega Pack',icon:'💎',popular:false},
+              {tokens:50,price:'$1',label:'Starter',icon:'📦',popular:false,type:'tokens_50'},
+              {tokens:200,price:'$3',label:'Value Pack',icon:'🎁',popular:true,type:'tokens_200'},
+              {tokens:500,price:'$5',label:'Mega Pack',icon:'💎',popular:false,type:'tokens_500'},
             ].map(pack=>(
-              <button key={pack.tokens} onClick={()=>{alert('Token purchases coming soon! For now, earn tokens by studying 🎓')}} className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all hover:scale-[1.02] ${pack.popular?'bg-gradient-to-r from-cyan-500 to-blue-600 border border-cyan-300':'bg-white bg-opacity-10 border border-white border-opacity-10'}`}>
+              <button key={pack.tokens} onClick={()=>startCheckout(pack.type)} className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all hover:scale-[1.02] ${pack.popular?'bg-gradient-to-r from-cyan-500 to-blue-600 border border-cyan-300':'bg-white bg-opacity-10 border border-white border-opacity-10'}`}>
                 <span className="text-lg">{pack.icon}</span>
                 <div className="flex-1 text-left">
                   <div className="text-white font-bold text-sm">{pack.label} <span className="text-white text-opacity-50 font-normal">· {pack.tokens} tokens</span></div>
@@ -4444,11 +4476,11 @@ return(
           <div className="bg-white bg-opacity-5 rounded-xl p-3 border border-white border-opacity-10">
             <h3 className="text-white font-bold text-xs uppercase tracking-wide opacity-60 mb-2">Earn Free Tokens</h3>
             <div className="space-y-1.5 text-xs">
-              <div className="flex items-center justify-between text-white text-opacity-80"><span>📝 Study session</span><span className="text-yellow-400 font-bold">+1-3 🪙</span></div>
-              <div className="flex items-center justify-between text-white text-opacity-80"><span>🔥 Daily streak</span><span className="text-yellow-400 font-bold">+2 🪙</span></div>
+              <div className="flex items-center justify-between text-white text-opacity-80"><span>📝 Study session</span><span className="text-yellow-400 font-bold">+1 🪙</span></div>
+              <div className="flex items-center justify-between text-white text-opacity-80"><span>🔥 3+ day streak</span><span className="text-yellow-400 font-bold">+1 🪙</span></div>
               <div className="flex items-center justify-between text-white text-opacity-80"><span>🤝 Refer a friend</span><span className="text-yellow-400 font-bold">+10 🪙 each</span></div>
-              <div className="flex items-center justify-between text-white text-opacity-80"><span>🆕 Sign up bonus</span><span className="text-yellow-400 font-bold">+20 🪙</span></div>
-              {isPro&&<div className="flex items-center justify-between text-white text-opacity-80"><span>👑 Pro daily bonus</span><span className="text-yellow-400 font-bold">+5 🪙/day</span></div>}
+              <div className="flex items-center justify-between text-white text-opacity-80"><span>🆕 Sign up bonus</span><span className="text-yellow-400 font-bold">+10 🪙</span></div>
+              {isPro&&<div className="flex items-center justify-between text-white text-opacity-80"><span>👑 Pro daily bonus</span><span className="text-yellow-400 font-bold">+3 🪙/day</span></div>}
             </div>
           </div>
 
