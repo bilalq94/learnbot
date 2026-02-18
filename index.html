@@ -159,20 +159,22 @@ function CompletionAlert({ earnedXp, onClose, course, duration, level, totalXp, 
 
   useEffect(() => {
     setShow(true);
-    playCompletionSound();
+    try { playCompletionSound(); } catch(e) {}
     
     // Browser notification (works even when tab is minimized)
-    if (Notification.permission === 'granted') {
-      new Notification('⏰ Study Session Complete!', {
-        body: `${duration} min on ${course} - +${earnedXp} XP earned!`,
-        icon: '/icon.png',
-        badge: '/badge.png',
-        requireInteraction: false,
-        tag: 'timer-complete'
-      });
-    } else if (Notification.permission === 'default') {
+    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+      try {
+        new Notification('⏰ Study Session Complete!', {
+          body: `${duration} min on ${course} - +${earnedXp} XP earned!`,
+          icon: '/icon.png',
+          badge: '/badge.png',
+          requireInteraction: false,
+          tag: 'timer-complete'
+        });
+      } catch(e) {}
+    } else if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
       // Request permission on first timer completion
-      Notification.requestPermission();
+      try { Notification.requestPermission(); } catch(e) {}
     }
     
     const dur = 1000;
@@ -201,6 +203,7 @@ function CompletionAlert({ earnedXp, onClose, course, duration, level, totalXp, 
   };
 
   const playCompletionSound = () => {
+    try {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     
     const playNote = (frequency, startTime, duration, type = 'square') => {
@@ -225,6 +228,7 @@ function CompletionAlert({ earnedXp, onClose, course, duration, level, totalXp, 
     playNote(554, now + 0.1, 0.15, 'square');
     playNote(659, now + 0.2, 0.2, 'square');
     playNote(880, now + 0.3, 0.3, 'sine');
+    } catch(e) {}
   };
 
   const shareProgress = async () => {
@@ -510,7 +514,7 @@ function StreakLostModal({ lostStreak, onClose }) {
   );
 }
 
-function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);const[startTime,setStartTime]=useState(null);const[sessionGoal,setSessionGoal]=useState('');const[sessionNotesCount,setSessionNotesCount]=useState(0);const[currentSessionData,setCurrentSessionData]=useState(null);const[showSessionSummary,setShowSessionSummary]=useState(false);const[showMoreNav,setShowMoreNav]=useState(false);
+function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment',time:'',notes:''});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);const[startTime,setStartTime]=useState(null);const[sessionGoal,setSessionGoal]=useState('');const[sessionNotesCount,setSessionNotesCount]=useState(0);const[currentSessionData,setCurrentSessionData]=useState(null);const[showSessionSummary,setShowSessionSummary]=useState(false);const[showMoreNav,setShowMoreNav]=useState(false);
 // AI Study Coach state
 const[coachInput,setCoachInput]=useState('');const[coachMode,setCoachMode]=useState('quiz');const[coachResult,setCoachResult]=useState(null);const[coachLoading,setCoachLoading]=useState(false);const[coachError,setCoachError]=useState('');const[coachHistory,setCoachHistory]=useState([]);const[learnTokens,setLearnTokens]=useState(20);const[showTokenShop,setShowTokenShop]=useState(false);const[tokenAnimation,setTokenAnimation]=useState(false);const STARTING_TOKENS=20;const[referralCount,setReferralCount]=useState(0);const[referralCode,setReferralCode]=useState('');const[referralCopied,setReferralCopied]=useState(false);
 
@@ -851,6 +855,17 @@ useEffect(() => {
 
 
 async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());setSkills(data.skills||[]);setTotalLevel(data.totalLevel||0);setClassrooms(data.classrooms||[]);setIsTeacher(data.isTeacher||false);setTeachingClasses(data.teachingClasses||[]);setAppMode(data.appMode||'education');setIsOrgAdmin(data.isOrgAdmin||false);setThemeMode(data.themeMode||'dark');setColorTheme(data.colorTheme||'cyan');setFontFamily(data.fontFamily||'default');setLearnTokens(data.learnTokens!=null?data.learnTokens:STARTING_TOKENS);setReferralCount(data.referralCount||0);setReferralCode(data.referralCode||firebaseUser.uid.substring(0,8));
+
+// Daily Pro token drip: 5 tokens/day for Pro users
+if(data.isPro){
+  const today=new Date().toISOString().split('T')[0];
+  const lastDrip=data.lastTokenDrip||'';
+  if(lastDrip!==today){
+    const newTokens=(data.learnTokens!=null?data.learnTokens:STARTING_TOKENS)+5;
+    setLearnTokens(newTokens);
+    await db.collection('users').doc(firebaseUser.uid).set({learnTokens:newTokens,lastTokenDrip:today},{merge:true});
+  }
+}
 if(data.organizationId){const orgDoc=await db.collection('organizations').doc(data.organizationId).get();if(orgDoc.exists){setOrganization({id:orgDoc.id,...orgDoc.data()})}}
 
 if(!data.username){setShowUsernamePrompt(true)}else if(!data.onboardingCompleted){setShowOnboarding(true)}}}catch(err){console.error('Error loading user data:',err)}}
@@ -2653,10 +2668,13 @@ function ClassroomDetail() {
 return(
 <div className={`min-h-screen ${getBgClass()} ${getFontClass()} p-4 pb-20 md:pb-4`} onClick={()=>showMoreNav&&setShowMoreNav(false)}>
   <div className="max-w-4xl mx-auto">
-    {isTrialActive()&&!isPro&&(
-      <div className="bg-gradient-to-r from-green-400 to-teal-400 text-white text-center py-3 px-4 rounded-xl mb-6 shadow-lg">
-        <span className="text-lg">🎉 <strong>Launch Special:</strong> All Premium features free until Feb 28th!</span>
-        {!isTrialActive() && <button onClick={()=>setShowPaywall(true)} className="ml-4 bg-white text-teal-600 px-4 py-1 rounded-lg font-bold text-sm">Lock in $5 Forever</button>}
+    {!isPro&&(
+      <div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 text-center py-3 px-4 rounded-xl mb-6 shadow-lg flex items-center justify-center gap-3 flex-wrap">
+        {isTrialActive()?(
+          <span className="text-sm font-bold">🎉 Launch Special: All Pro features free until Feb 28th!</span>
+        ):(
+          <><span className="text-sm font-bold">👑 Get 5 free tokens daily + unlimited courses</span><button onClick={()=>setShowPaywall(true)} className="bg-gray-900 text-yellow-400 px-4 py-1.5 rounded-lg font-bold text-sm hover:scale-105 transition-all">Upgrade $5 →</button></>
+        )}
       </div>
     )}
     <div className="flex items-center justify-between mb-4 md:mb-6">
@@ -2700,7 +2718,7 @@ return(
         <div className="bg-white bg-opacity-20 rounded-lg p-2"><Icon name="crown" className="w-5 h-5 md:w-6 md:h-6 text-white"/></div>
         <div>
           <div className="text-white font-bold text-sm md:text-base">Upgrade to Pro — $5 Lifetime</div>
-          <div className="text-white text-opacity-80 text-xs md:text-sm">Unlimited LearnBot tutor, custom themes, priority support</div>
+          <div className="text-white text-opacity-80 text-xs md:text-sm">5 free tokens daily, unlimited courses, custom themes</div>
         </div>
       </div>
       <div className="bg-white text-amber-600 px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-bold text-xs md:text-sm whitespace-nowrap">Upgrade →</div>
@@ -2864,8 +2882,45 @@ return(
           </div>
         </div>
 
+        {/* Upcoming Deadlines on Dashboard */}
+        {deadlines.length>0&&(
+          <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg md:text-xl font-bold text-white flex items-center gap-2"><span>📅</span> Upcoming Deadlines</h3>
+              <button onClick={()=>setTab('deadlines')} className="text-cyan-400 text-xs font-bold hover:underline">View All →</button>
+            </div>
+            <div className="space-y-2">
+              {deadlines
+                .filter(d=>new Date(d.date)>=new Date(new Date().toDateString()))
+                .sort((a,b)=>new Date(a.date)-new Date(b.date))
+                .slice(0,3)
+                .map((d,i)=>{
+                  const diffDays=Math.ceil((new Date(d.date)-new Date())/(1000*60*60*24));
+                  const isUrgent=diffDays<=3;
+                  const typeEmoji=d.type==='exam'?'📝':d.type==='project'?'💻':d.type==='quiz'?'❓':'📄';
+                  return(
+                    <div key={d.id||i} className={`flex items-center justify-between p-3 rounded-xl ${isUrgent?'bg-red-500 bg-opacity-20 border border-red-400 border-opacity-30':'bg-white bg-opacity-10'}`}>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className="text-lg">{typeEmoji}</span>
+                        <div className="min-w-0">
+                          <div className="text-white font-semibold text-sm truncate">{d.title}</div>
+                          <div className="text-white text-opacity-50 text-xs">{d.course||'General'}</div>
+                        </div>
+                      </div>
+                      <div className={`text-sm font-bold whitespace-nowrap ${isUrgent?'text-red-300':'text-white text-opacity-70'}`}>
+                        {diffDays===0?'Today':diffDays===1?'Tomorrow':`${diffDays}d`}
+                      </div>
+                    </div>
+                  );
+                })}
+              {deadlines.filter(d=>new Date(d.date)>=new Date(new Date().toDateString())).length===0&&(
+                <div className="text-white text-opacity-50 text-sm text-center py-2">All caught up! 🎉</div>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
-          <h3 className="text-lg md:text-xl font-bold text-white mb-4">Recent {getSessionLabel()}s</h3>
           <div className="space-y-3">
             {sessions.length===0?<div className="text-center py-8"><Icon name="trophy" className="w-10 h-10 md:w-12 md:h-12 text-white opacity-40 mx-auto mb-3"/><p className="text-white opacity-70 text-sm md:text-base">No sessions yet! Start your first one.</p></div>:sessions.slice(-5).reverse().map((s,i)=><div key={i} className={`${getPersonaTheme().statCard} rounded-lg p-3 md:p-4 flex justify-between`}><div><div className="text-white font-semibold text-sm md:text-base">{s.course}</div><div className="text-white opacity-70 text-xs md:text-sm">{s.duration} min</div></div><div className="text-yellow-300 font-bold text-sm md:text-base">+{s.xp} {getXpLabel()}</div></div>)}
           </div>
@@ -3040,9 +3095,89 @@ return(
       </div>
     )}
     {tab==='deadlines'&&(
-      <div className="bg-white bg-opacity-20 rounded-2xl p-6">
-        <h2 className="text-2xl font-bold text-white mb-6"><Icon name="calendar" className="inline mr-2"/>Deadlines</h2>
-        {hasAccess?(<><button onClick={()=>setShowAddDeadline(true)} className="w-full bg-teal-500 text-white py-3 rounded-lg mb-6">Add Deadline</button><div className="text-white text-center py-8">Deadlines feature coming soon!</div></>):(<div className="text-center py-12"><Icon name="crown" className="w-16 h-16 text-yellow-400 mx-auto mb-4 opacity-60"/><p className="text-white text-lg mb-4">Premium feature</p><button onClick={()=>setShowPaywall(true)} className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-6 py-3 rounded-lg font-bold">Unlock $5</button></div>)}
+      <div className="space-y-4">
+        <div className="bg-white bg-opacity-20 rounded-2xl p-5 md:p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2"><span>📅</span> Deadlines</h2>
+            <button onClick={()=>setShowAddDeadline(true)} className={`${getThemeColors().accent} text-white px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 hover:scale-105 transition-all`}><span>+</span> Add</button>
+          </div>
+
+          {deadlines.length===0?(
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4 opacity-40">📅</div>
+              <p className="text-white opacity-70 text-lg mb-2">No deadlines yet</p>
+              <p className="text-white opacity-50 text-sm mb-4">Add exams, assignments, and project due dates</p>
+              <button onClick={()=>setShowAddDeadline(true)} className={`${getThemeColors().accent} text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all`}>Add Your First Deadline</button>
+            </div>
+          ):(
+            <div className="space-y-3">
+              {deadlines
+                .sort((a,b)=>new Date(a.date)-new Date(b.date))
+                .map((d,i)=>{
+                  const now=new Date();
+                  const due=new Date(d.date);
+                  const diffMs=due-now;
+                  const diffDays=Math.ceil(diffMs/(1000*60*60*24));
+                  const isPast=diffDays<0;
+                  const isToday=diffDays===0;
+                  const isUrgent=diffDays>=0&&diffDays<=3;
+                  const typeEmoji=d.type==='exam'?'📝':d.type==='project'?'💻':d.type==='quiz'?'❓':'📄';
+                  const urgencyColor=isPast?'from-red-600 to-red-700':isToday?'from-orange-500 to-red-500':isUrgent?'from-yellow-500 to-orange-500':'from-white/10 to-white/5';
+                  const urgencyBorder=isPast?'border-red-400':isToday?'border-orange-400':isUrgent?'border-yellow-400':'border-white/10';
+                  
+                  return(
+                    <div key={d.id||i} className={`bg-gradient-to-r ${urgencyColor} rounded-xl p-4 border ${urgencyBorder} border-opacity-30`}>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3 flex-1 min-w-0">
+                          <span className="text-2xl mt-0.5">{typeEmoji}</span>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-white font-bold text-base truncate">{d.title}</div>
+                            <div className="text-white text-opacity-70 text-sm">{d.course||'General'}</div>
+                            <div className="text-white text-opacity-60 text-xs mt-1">
+                              {due.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}
+                              {d.time&&` at ${d.time}`}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          <div className={`text-white font-bold text-sm whitespace-nowrap ${isPast?'text-red-200':isToday?'text-orange-200':isUrgent?'text-yellow-200':'text-white text-opacity-80'}`}>
+                            {isPast?`${Math.abs(diffDays)}d overdue`:isToday?'Today!':diffDays===1?'Tomorrow':`${diffDays} days`}
+                          </div>
+                          <button onClick={()=>{
+                            if(confirm('Delete this deadline?')){
+                              setDeadlines(prev=>prev.filter((_,idx)=>idx!==i));
+                            }
+                          }} className="text-white text-opacity-40 hover:text-opacity-80 text-xs">✕ Remove</button>
+                        </div>
+                      </div>
+                      {d.notes&&<div className="mt-2 text-white text-opacity-60 text-xs bg-black bg-opacity-20 rounded-lg px-3 py-2">{d.notes}</div>}
+                    </div>
+                  );
+                })}
+            </div>
+          )}
+        </div>
+        
+        {/* Upcoming on Dashboard Preview */}
+        {deadlines.length>0&&(
+          <div className="bg-white bg-opacity-10 rounded-xl p-4">
+            <div className="text-white text-opacity-50 text-xs uppercase tracking-wide mb-2">Summary</div>
+            <div className="grid grid-cols-3 gap-3 text-center">
+              <div>
+                <div className="text-red-400 text-2xl font-black">{deadlines.filter(d=>new Date(d.date)<new Date()).length}</div>
+                <div className="text-white text-opacity-50 text-xs">Overdue</div>
+              </div>
+              <div>
+                <div className="text-yellow-400 text-2xl font-black">{deadlines.filter(d=>{const diff=Math.ceil((new Date(d.date)-new Date())/(1000*60*60*24));return diff>=0&&diff<=7}).length}</div>
+                <div className="text-white text-opacity-50 text-xs">This Week</div>
+              </div>
+              <div>
+                <div className="text-green-400 text-2xl font-black">{deadlines.filter(d=>new Date(d.date)>=new Date()).length}</div>
+                <div className="text-white text-opacity-50 text-xs">Upcoming</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     )}
     {tab==='stats'&&(
@@ -3939,6 +4074,63 @@ return(
   </svg>
   Edit Profile
 </button></div><div className="bg-white bg-opacity-20 rounded-xl p-4"><h3 className="text-white font-bold mb-3 flex items-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>Notifications</h3><div className="space-y-3"><div className="flex items-center justify-between bg-white bg-opacity-10 p-3 rounded-lg"><div className="flex items-center gap-2"><span className="text-white text-sm font-semibold">📧 Email Reminders</span></div><button onClick={()=>setEmailReminders(!emailReminders)} className={`relative w-12 h-6 rounded-full transition-colors ${emailReminders?'bg-green-400':'bg-white bg-opacity-30'}`}><div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${emailReminders?'translate-x-7':'translate-x-1'}`}/></button></div><div className="flex items-center justify-between bg-white bg-opacity-10 p-3 rounded-lg opacity-50"><div className="flex items-center gap-2"><span className="text-white text-sm font-semibold">📱 SMS Reminders</span><span className="text-xs bg-white bg-opacity-20 px-2 py-0.5 rounded">Soon</span></div><button disabled className="relative w-12 h-6 rounded-full bg-white bg-opacity-30 cursor-not-allowed"><div className="absolute top-1 left-1 w-4 h-4 bg-white rounded-full"/></button></div><div className="flex items-center justify-between bg-white bg-opacity-10 p-3 rounded-lg"><div className="flex items-center gap-2"><span className="text-white text-sm font-semibold">🔊 Timer End Sound</span></div><button onClick={()=>setEndSound(!endSound)} className={`relative w-12 h-6 rounded-full transition-colors ${endSound?'bg-green-400':'bg-white bg-opacity-30'}`}><div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${endSound?'translate-x-7':'translate-x-1'}`}/></button></div><div className="flex items-center justify-between bg-white bg-opacity-10 p-3 rounded-lg"><div className="flex items-center gap-2"><span className="text-white text-sm font-semibold">⏱️ Tick Sound</span></div><button onClick={()=>setTimerSound(!timerSound)} className={`relative w-12 h-6 rounded-full transition-colors ${timerSound?'bg-green-400':'bg-white bg-opacity-30'}`}><div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${timerSound?'translate-x-7':'translate-x-1'}`}/></button></div></div></div><div className="bg-white bg-opacity-20 rounded-xl p-4"><h3 className="text-white font-bold mb-3 flex items-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>Lofi Music</h3><div className="space-y-3"><div className="flex items-center justify-between bg-white bg-opacity-10 p-3 rounded-lg"><div className="flex items-center gap-2"><span className="text-white text-sm font-semibold">🎵 Enable Lofi</span></div><button onClick={()=>setLofiEnabled(!lofiEnabled)} className={`relative w-12 h-6 rounded-full transition-colors ${lofiEnabled?'bg-green-400':'bg-white bg-opacity-30'}`}><div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${lofiEnabled?'translate-x-7':'translate-x-1'}`}/></button></div>{lofiEnabled&&<div><label className="opacity-75 block mb-1 text-white text-sm">Volume:</label><div className="flex items-center gap-2"><input type="range" min="0" max="100" value={lofiVolume} onChange={e=>setLofiVolume(parseInt(e.target.value))} className="flex-1 h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer"/><span className="text-white font-bold text-sm">{lofiVolume}%</span></div></div>}{lofiEnabled&&<div><label className="opacity-75 block mb-1 text-white text-sm">Stream:</label><select value={lofiStream} onChange={e=>setLofiStream(e.target.value)} className="w-full px-3 py-2 rounded-lg text-sm"><option value="lofi-girl">Lofi Girl - Beats to Relax/Study</option><option value="chillhop">ChillHop Music</option><option value="jazz-cafe">The Jazz Café</option><option value="study-md">StudyMD - Medical Study Music</option></select></div>}</div></div><div className="bg-white bg-opacity-20 rounded-xl p-4"><h3 className="text-white font-bold mb-3 flex items-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>Settings</h3><div className="space-y-3 text-white text-sm"><div><label className="opacity-75 block mb-1">Weekly Study Goal:</label><div className="flex items-center gap-2"><input type="range" min="0" max="40" value={weeklyTarget} onChange={e=>setWeeklyTarget(parseInt(e.target.value))} className="flex-1 h-2 bg-white bg-opacity-30 rounded-lg appearance-none cursor-pointer"/><span className="font-bold">{weeklyTarget}h</span></div></div><div><label className="opacity-75 block mb-1">Main Goal:</label><input type="text" value={goal} onChange={e=>setGoal(e.target.value)} placeholder="e.g., Pass my finals" className="w-full bg-white bg-opacity-20 rounded-lg px-3 py-2 text-white placeholder-white placeholder-opacity-50"/></div></div></div>{!isPro&&<button onClick={()=>{setShowMenu(false);setShowPaywall(true)}} className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:scale-105 transition-all shadow-lg"><Icon name="crown" className="w-5 h-5"/>Upgrade - $5 Lifetime</button>}<button onClick={()=>{setShowMenu(false);setShowCustomization(true)}} className="w-full bg-gradient-to-r from-slate-600 to-gray-800 text-white py-4 rounded-xl font-bold hover:scale-105 transition-all flex items-center justify-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>Customize Appearance</button><button onClick={()=>{setShowMenu(false);setShowFeedback(true)}} className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-4 rounded-xl font-bold hover:scale-105 transition-all flex items-center justify-center gap-2"><svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>Send Feedback</button><button onClick={logout} className="w-full bg-white bg-opacity-20 text-white py-4 rounded-xl font-bold hover:bg-opacity-30 transition-colors flex items-center justify-center gap-2"><Icon name="logout" className="w-5 h-5"/>Log Out</button></div></div></div></div>}
+    {/* Add Deadline Modal */}
+    {showAddDeadline&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50 p-4" onClick={()=>setShowAddDeadline(false)}>
+      <div className="bg-gradient-to-br from-gray-800 to-slate-900 rounded-2xl p-6 max-w-md w-full border border-white border-opacity-10 shadow-2xl" onClick={e=>e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-xl font-bold text-white flex items-center gap-2"><span>📅</span> Add Deadline</h2>
+          <button onClick={()=>setShowAddDeadline(false)} className="text-white opacity-75 hover:opacity-100"><Icon name="x" className="w-6 h-6"/></button>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <label className="text-white text-sm font-semibold block mb-1">Title *</label>
+            <input type="text" placeholder="e.g., Midterm Exam, Essay Due" value={newDeadline.title} onChange={e=>setNewDeadline({...newDeadline,title:e.target.value})} className="w-full bg-white bg-opacity-10 text-white placeholder-white placeholder-opacity-40 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-400 border border-white border-opacity-10"/>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-white text-sm font-semibold block mb-1">Date *</label>
+              <input type="date" value={newDeadline.date} onChange={e=>setNewDeadline({...newDeadline,date:e.target.value})} className="w-full bg-white bg-opacity-10 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-400 border border-white border-opacity-10" style={{colorScheme:'dark'}}/>
+            </div>
+            <div>
+              <label className="text-white text-sm font-semibold block mb-1">Time</label>
+              <input type="time" value={newDeadline.time||''} onChange={e=>setNewDeadline({...newDeadline,time:e.target.value})} className="w-full bg-white bg-opacity-10 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-400 border border-white border-opacity-10" style={{colorScheme:'dark'}}/>
+            </div>
+          </div>
+          <div>
+            <label className="text-white text-sm font-semibold block mb-1">Course</label>
+            <select value={newDeadline.course} onChange={e=>setNewDeadline({...newDeadline,course:e.target.value})} className="w-full bg-white bg-opacity-10 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-400 border border-white border-opacity-10" style={{colorScheme:'dark'}}>
+              <option value="">General</option>
+              {courses.map(c=><option key={c.id} value={c.name}>{c.name}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="text-white text-sm font-semibold block mb-1">Type</label>
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                {value:'assignment',label:'📄 HW',full:'Assignment'},
+                {value:'exam',label:'📝 Exam',full:'Exam'},
+                {value:'project',label:'💻 Proj',full:'Project'},
+                {value:'quiz',label:'❓ Quiz',full:'Quiz'},
+              ].map(t=><button key={t.value} onClick={()=>setNewDeadline({...newDeadline,type:t.value})} className={`p-2 rounded-lg text-center text-xs font-bold transition-all ${newDeadline.type===t.value?'bg-cyan-500 text-white':'bg-white bg-opacity-10 text-white text-opacity-60 hover:bg-opacity-20'}`}>{t.label}</button>)}
+            </div>
+          </div>
+          <div>
+            <label className="text-white text-sm font-semibold block mb-1">Notes</label>
+            <input type="text" placeholder="Optional notes..." value={newDeadline.notes||''} onChange={e=>setNewDeadline({...newDeadline,notes:e.target.value})} className="w-full bg-white bg-opacity-10 text-white placeholder-white placeholder-opacity-40 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-400 border border-white border-opacity-10"/>
+          </div>
+        </div>
+        <div className="flex gap-3 mt-6">
+          <button onClick={()=>setShowAddDeadline(false)} className="flex-1 bg-white bg-opacity-10 text-white py-3 rounded-xl font-bold hover:bg-opacity-20 transition-colors">Cancel</button>
+          <button onClick={()=>{
+            if(!newDeadline.title.trim()||!newDeadline.date){return}
+            setDeadlines(prev=>[...prev,{...newDeadline,id:Date.now(),title:newDeadline.title.trim()}]);
+            setNewDeadline({course:'',title:'',date:'',type:'assignment',time:'',notes:''});
+            setShowAddDeadline(false);
+          }} disabled={!newDeadline.title.trim()||!newDeadline.date} className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3 rounded-xl font-bold hover:scale-105 transition-all disabled:opacity-50 disabled:hover:scale-100">Add Deadline</button>
+        </div>
+      </div>
+    </div>}
+
     {showUsernamePrompt&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4">
       <div className="bg-gradient-to-br from-cyan-600 to-teal-700 rounded-2xl p-8 max-w-md w-full">
         <div className="text-center mb-6">
@@ -4141,7 +4333,35 @@ return(
         </button>
       </div>
     </div></div></div>}
-    {showPaywall&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-cyan-600 to-teal-700 rounded-2xl p-8 max-w-md w-full relative overflow-hidden"><div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400 rounded-full blur-3xl opacity-20"></div><div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-400 rounded-full blur-3xl opacity-20"></div><div className="relative z-10"><div className="text-center mb-6"><div className="text-6xl mb-4">👑</div><h2 className="text-3xl font-bold text-white mb-2">Upgrade to Premium</h2><p className="text-white opacity-90">{isTrialActive() ? 'Lock in lifetime access!' : 'Your trial has ended'}</p></div><div className="bg-white bg-opacity-20 rounded-xl p-6 mb-6"><div className="text-white mb-4"><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Unlimited courses</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Access to new features</span></div><div className="flex items-center gap-2 mb-2"><span className="text-xl">✅</span><span>Premium access for lifetime</span></div></div><div className="text-center"><div className="text-5xl font-bold text-yellow-300 mb-1">$5</div><div className="text-white text-sm opacity-75">One-time payment • Lifetime access</div></div></div>{paymentError&&<div className="bg-red-500 bg-opacity-20 border border-red-300 text-white p-3 rounded-lg mb-4 text-sm">{paymentError}</div>}<button onClick={()=>setShowPaywall(false)} className="w-full bg-white text-teal-600 py-4 rounded-xl font-bold text-lg mb-3 hover:scale-105 transition-all shadow-lg">All Premium features free until Feb 28th ✨</button><button onClick={()=>setShowPaywall(false)} disabled={paymentProcessing} className="w-full text-white text-sm opacity-75 hover:opacity-100 disabled:opacity-50">Close</button></div></div></div>}
+    {showPaywall&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50 p-4" onClick={()=>setShowPaywall(false)}>
+      <div className="bg-gradient-to-br from-gray-800 to-slate-900 rounded-2xl max-w-md w-full border border-white border-opacity-10 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
+        <div className="p-6">
+          <div className="text-center mb-6">
+            <div className="text-6xl mb-3">👑</div>
+            <h2 className="text-3xl font-bold text-white mb-1">LearnBot Pro</h2>
+            <p className="text-white text-opacity-60 text-sm">Pay once, learn forever</p>
+          </div>
+
+          <div className="bg-gradient-to-r from-yellow-400 to-amber-500 rounded-xl p-5 mb-5 text-center">
+            <div className="text-gray-900 text-5xl font-black">$5</div>
+            <div className="text-gray-900 text-sm font-semibold opacity-75">Lifetime · One-time payment</div>
+          </div>
+
+          <div className="space-y-3 mb-6">
+            <div className="flex items-center gap-3 text-white"><span className="text-lg">🪙</span><div><span className="font-bold">5 free tokens daily</span><span className="text-white text-opacity-50 text-sm block">That's 150/month — no purchase needed</span></div></div>
+            <div className="flex items-center gap-3 text-white"><span className="text-lg">📚</span><div><span className="font-bold">Unlimited courses</span><span className="text-white text-opacity-50 text-sm block">Free users limited to 2</span></div></div>
+            <div className="flex items-center gap-3 text-white"><span className="text-lg">🎨</span><div><span className="font-bold">Custom themes & colors</span><span className="text-white text-opacity-50 text-sm block">Personalize your study space</span></div></div>
+            <div className="flex items-center gap-3 text-white"><span className="text-lg">⚡</span><div><span className="font-bold">Priority support</span><span className="text-white text-opacity-50 text-sm block">Direct line to the team</span></div></div>
+            <div className="flex items-center gap-3 text-white"><span className="text-lg">🚀</span><div><span className="font-bold">Early access to features</span><span className="text-white text-opacity-50 text-sm block">Be the first to try new tools</span></div></div>
+          </div>
+
+          <button onClick={startCheckout} disabled={paymentProcessing} className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 py-4 rounded-xl font-black text-lg mb-3 hover:scale-105 transition-all shadow-lg disabled:opacity-50">{paymentProcessing?'Processing...':'Upgrade to Pro — $5'}</button>
+          {paymentError&&<div className="bg-red-500 bg-opacity-20 border border-red-300 text-red-200 p-3 rounded-lg mb-3 text-sm text-center">{paymentError}</div>}
+          <button onClick={()=>setShowPaywall(false)} className="w-full text-white text-sm opacity-50 hover:opacity-75 py-2">Maybe later</button>
+          <p className="text-white text-opacity-30 text-xs text-center mt-3">Secure payment via Stripe · No subscription · Cancel-proof</p>
+        </div>
+      </div>
+    </div>}
     
     {/* Create Classroom Modal */}
     {showCreateClassroom&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 p-4"><div className="bg-gradient-to-br from-slate-700 to-gray-900 rounded-2xl p-8 max-w-md w-full"><h2 className="text-3xl font-bold text-white mb-6 text-center">{getModeEmoji()} Create {getTerminology('classroom')}</h2><div className="space-y-4"><input type="text" placeholder={`${getTerminology('classroom')} Name *`} value={newClassroom.name} onChange={e=>setNewClassroom({...newClassroom,name:e.target.value})} className="w-full px-4 py-3 rounded-lg text-lg" /><input type="text" placeholder={appMode==='education'?"Subject (e.g., Math, Science)":"Department (e.g., Engineering, Sales)"} value={newClassroom.subject} onChange={e=>setNewClassroom({...newClassroom,subject:e.target.value})} className="w-full px-4 py-3 rounded-lg" /><textarea placeholder="Description (optional)" value={newClassroom.description} onChange={e=>setNewClassroom({...newClassroom,description:e.target.value})} className="w-full px-4 py-3 rounded-lg resize-none" rows="3"></textarea></div><div className="flex gap-3 mt-6"><button onClick={()=>setShowCreateClassroom(false)} className="flex-1 bg-white bg-opacity-20 text-white py-3 rounded-lg font-bold">Cancel</button><button onClick={createClassroom} className="flex-1 bg-white text-slate-800 py-3 rounded-lg font-bold hover:scale-105 transition-all">Create 🎉</button></div></div></div>}
@@ -4194,6 +4414,15 @@ return(
             <div className="text-gray-900 text-3xl font-black">{learnTokens} 🪙</div>
           </div>
 
+          {!isPro&&<button onClick={()=>{setShowTokenShop(false);setShowPaywall(true)}} className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 rounded-xl p-3 flex items-center gap-3 hover:scale-[1.02] transition-all">
+            <span className="text-2xl">👑</span>
+            <div className="flex-1 text-left">
+              <div className="text-gray-900 font-bold text-sm">Go Pro — 5 free tokens daily</div>
+              <div className="text-gray-900 text-opacity-60 text-xs">150 tokens/month + unlimited courses</div>
+            </div>
+            <div className="text-gray-900 font-black">$5</div>
+          </button>}
+
           <div className="space-y-2">
             <h3 className="text-white font-bold text-xs uppercase tracking-wide opacity-60">Buy Token Packs</h3>
             {[
@@ -4219,6 +4448,7 @@ return(
               <div className="flex items-center justify-between text-white text-opacity-80"><span>🔥 Daily streak</span><span className="text-yellow-400 font-bold">+2 🪙</span></div>
               <div className="flex items-center justify-between text-white text-opacity-80"><span>🤝 Refer a friend</span><span className="text-yellow-400 font-bold">+10 🪙 each</span></div>
               <div className="flex items-center justify-between text-white text-opacity-80"><span>🆕 Sign up bonus</span><span className="text-yellow-400 font-bold">+20 🪙</span></div>
+              {isPro&&<div className="flex items-center justify-between text-white text-opacity-80"><span>👑 Pro daily bonus</span><span className="text-yellow-400 font-bold">+5 🪙/day</span></div>}
             </div>
           </div>
 
