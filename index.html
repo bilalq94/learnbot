@@ -512,7 +512,7 @@ function StreakLostModal({ lostStreak, onClose }) {
 
 function LearnBot(){const[view,setView]=useState('landing');const[isLogin,setIsLogin]=useState(false);const[user,setUser]=useState(null);const[name,setName]=useState('');const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[isPro,setIsPro]=useState(false);const[loading,setLoading]=useState(true);const[error,setError]=useState('');const[time,setTime]=useState(1500);const[running,setRunning]=useState(false);const[duration,setDuration]=useState(25);const[selectedCourse,setSelectedCourse]=useState('');const[sessions,setSessions]=useState([]);const[courses,setCourses]=useState([]);const[xp,setXp]=useState(0);const[showDone,setShowDone]=useState(false);const[earnedXp,setEarnedXp]=useState(0);const[tab,setTab]=useState('dashboard');const[newCourse,setNewCourse]=useState('');const[showPaywall,setShowPaywall]=useState(false);const[deadlines,setDeadlines]=useState([]);const[showAddDeadline,setShowAddDeadline]=useState(false);const[newDeadline,setNewDeadline]=useState({course:'',title:'',date:'',type:'assignment'});const[showOnboarding,setShowOnboarding]=useState(false);const[onboardingStep,setOnboardingStep]=useState(1);const[goal,setGoal]=useState('');const[weeklyTarget,setWeeklyTarget]=useState(10);const[tempCourses,setTempCourses]=useState([]);const[tempCourse,setTempCourse]=useState('');const[showMenu,setShowMenu]=useState(false);const[emailReminders,setEmailReminders]=useState(false);const[smsReminders,setSmsReminders]=useState(false);const[tier,setTier]=useState(0);const[showTierUp,setShowTierUp]=useState(false);const[streak,setStreak]=useState(0);const[lastStudyDate,setLastStudyDate]=useState('');const[longestStreak,setLongestStreak]=useState(0);const[showStreakLost,setShowStreakLost]=useState(false);const[lostStreakCount,setLostStreakCount]=useState(0);const[userType,setUserType]=useState('');const[tempUserType,setTempUserType]=useState('');const[showEditProfile,setShowEditProfile]=useState(false);const[editingUserType,setEditingUserType]=useState('');const[editingGoal,setEditingGoal]=useState('');const[editingWeeklyTarget,setEditingWeeklyTarget]=useState(10);const[paymentProcessing,setPaymentProcessing]=useState(false);const[paymentError,setPaymentError]=useState('');const[cardElement,setCardElement]=useState(null);const[startTime,setStartTime]=useState(null);const[sessionGoal,setSessionGoal]=useState('');const[sessionNotesCount,setSessionNotesCount]=useState(0);const[currentSessionData,setCurrentSessionData]=useState(null);const[showSessionSummary,setShowSessionSummary]=useState(false);const[showMoreNav,setShowMoreNav]=useState(false);
 // AI Study Coach state
-const[coachInput,setCoachInput]=useState('');const[coachMode,setCoachMode]=useState('quiz');const[coachResult,setCoachResult]=useState(null);const[coachLoading,setCoachLoading]=useState(false);const[coachError,setCoachError]=useState('');const[coachHistory,setCoachHistory]=useState([]);const[learnTokens,setLearnTokens]=useState(20);const[showTokenShop,setShowTokenShop]=useState(false);const[tokenAnimation,setTokenAnimation]=useState(false);const STARTING_TOKENS=20;
+const[coachInput,setCoachInput]=useState('');const[coachMode,setCoachMode]=useState('quiz');const[coachResult,setCoachResult]=useState(null);const[coachLoading,setCoachLoading]=useState(false);const[coachError,setCoachError]=useState('');const[coachHistory,setCoachHistory]=useState([]);const[learnTokens,setLearnTokens]=useState(20);const[showTokenShop,setShowTokenShop]=useState(false);const[tokenAnimation,setTokenAnimation]=useState(false);const STARTING_TOKENS=20;const[referralCount,setReferralCount]=useState(0);const[referralCode,setReferralCode]=useState('');const[referralCopied,setReferralCopied]=useState(false);
 
 // LEADERBOARD STATE
 const[username,setUsername]=useState('');const[tempUsername,setTempUsername]=useState('');const[showUsernamePrompt,setShowUsernamePrompt]=useState(false);const[weeklyMinutes,setWeeklyMinutes]=useState(0);const[totalMinutes,setTotalMinutes]=useState(0);const[weekStartDate,setWeekStartDate]=useState('');const[leaderboardData,setLeaderboardData]=useState([]);const[leaderboardType,setLeaderboardType]=useState('weekly');const[loadingLeaderboard,setLoadingLeaderboard]=useState(false);const[shareText,setShareText]=useState('');const[showShareModal,setShowShareModal]=useState(false);const[skills,setSkills]=useState([]);const[totalLevel,setTotalLevel]=useState(0);const[classrooms,setClassrooms]=useState([]);const[isTeacher,setIsTeacher]=useState(false);const[teachingClasses,setTeachingClasses]=useState([]);const[showCreateClassroom,setShowCreateClassroom]=useState(false);const[showJoinClassroom,setShowJoinClassroom]=useState(false);const[newClassroom,setNewClassroom]=useState({name:'',subject:'',description:''});const[joinCode,setJoinCode]=useState('');const[selectedClassroom,setSelectedClassroom]=useState(null);const[classroomData,setClassroomData]=useState(null);const[appMode,setAppMode]=useState('education');const[organization,setOrganization]=useState(null);const[isOrgAdmin,setIsOrgAdmin]=useState(false);const[showCreateOrg,setShowCreateOrg]=useState(false);const[showOnboardingWizard,setShowOnboardingWizard]=useState(false);const[onboardingData,setOnboardingData]=useState({orgName:'',orgType:'education',size:'',inviteMethod:'link'});const[onboardingStepNum,setOnboardingStepNum]=useState(1);const[inviteLink,setInviteLink]=useState('');const[orgInviteCode,setOrgInviteCode]=useState('');const[timerSound,setTimerSound]=useState(false);const[endSound,setEndSound]=useState(true);const[endTime,setEndTime]=useState(null);const[lofiEnabled,setLofiEnabled]=useState(false);const[lofiVolume,setLofiVolume]=useState(30);const[lofiStream,setLofiStream]=useState('lofi-girl');const[showBreakGame,setShowBreakGame]=useState(false);const[gameActive,setGameActive]=useState(false);const[gameScore,setGameScore]=useState(0);const[gameTime,setGameTime]=useState(60);const[gameTargets,setGameTargets]=useState([]);const[gameHighScore,setGameHighScore]=useState(0);const[themeMode,setThemeMode]=useState('dark');const[colorTheme,setColorTheme]=useState('cyan');const[fontFamily,setFontFamily]=useState('default');const[showCustomization,setShowCustomization]=useState(false);const[showCalculator,setShowCalculator]=useState(false);const[calcDisplay,setCalcDisplay]=useState('0');const[calcPrevious,setCalcPrevious]=useState(null);const[calcOperation,setCalcOperation]=useState(null);const[stickyNotes,setStickyNotes]=useState([]);const[showNotesPanel,setShowNotesPanel]=useState(false);const[showChess,setShowChess]=useState(false);const[chessBoard,setChessBoard]=useState(null);const[selectedPiece,setSelectedPiece]=useState(null);const[currentTurn,setCurrentTurn]=useState('white');const[gameStatus,setGameStatus]=useState('playing');const[showFeedback,setShowFeedback]=useState(false);const[feedbackType,setFeedbackType]=useState('feature');const[feedbackText,setFeedbackText]=useState('');const[feedbackSubmitting,setFeedbackSubmitting]=useState(false);const[showPasswordReset,setShowPasswordReset]=useState(false);const[resetEmail,setResetEmail]=useState('');const[resetSent,setResetSent]=useState(false);const[resetSending,setResetSending]=useState(false);const[resetError,setResetError]=useState('');
@@ -651,11 +651,13 @@ Join the grind: learnbot.us${username ? `/ref/${username}` : ''}`;
 async function submitUsername(u) {
   try {
     setUsername(u);
+    setReferralCode(u.toLowerCase());
     setShowUsernamePrompt(false);
     
     if (user && user.uid) {
       await db.collection('users').doc(user.uid).set({
-        username: u
+        username: u,
+        referralCode: u.toLowerCase()
       }, { merge: true });
     }
     
@@ -764,6 +766,14 @@ useEffect(() => {
   }
 }, [tab]);
 
+// Detect referral code from URL
+const [referredBy, setReferredBy] = useState('');
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  if (ref) { setReferredBy(ref); }
+}, []);
+
 useEffect(()=>{const unsubscribe=auth.onAuthStateChanged(async(firebaseUser)=>{if(firebaseUser){await loadUserData(firebaseUser);setView('app')}setLoading(false)});return unsubscribe},[]);
 
 useEffect(() => {
@@ -840,14 +850,14 @@ useEffect(() => {
 }, [user, organization]);
 
 
-async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());setSkills(data.skills||[]);setTotalLevel(data.totalLevel||0);setClassrooms(data.classrooms||[]);setIsTeacher(data.isTeacher||false);setTeachingClasses(data.teachingClasses||[]);setAppMode(data.appMode||'education');setIsOrgAdmin(data.isOrgAdmin||false);setThemeMode(data.themeMode||'dark');setColorTheme(data.colorTheme||'cyan');setFontFamily(data.fontFamily||'default');setLearnTokens(data.learnTokens!=null?data.learnTokens:STARTING_TOKENS);
+async function loadUserData(firebaseUser){try{const userDoc=await db.collection('users').doc(firebaseUser.uid).get();if(userDoc.exists){const data=userDoc.data();setUser({uid:firebaseUser.uid,email:firebaseUser.email,...data});setName(data.name||'');setEmail(firebaseUser.email);setIsPro(data.isPro||false);setCourses(data.courses||[]);setSessions(data.sessions||[]);setDeadlines(data.deadlines||[]);setXp(data.xp||0);setGoal(data.goal||'');setWeeklyTarget(data.weeklyTarget||10);setEmailReminders(data.emailReminders||false);setSmsReminders(data.smsReminders||false);setTier(data.tier||0);setStreak(data.streak||0);setLastStudyDate(data.lastStudyDate||'');setLongestStreak(data.longestStreak||0);setUserType(data.userType||'');setUsername(data.username||'');setWeekStartDate(data.weekStartDate||getMonday());setSkills(data.skills||[]);setTotalLevel(data.totalLevel||0);setClassrooms(data.classrooms||[]);setIsTeacher(data.isTeacher||false);setTeachingClasses(data.teachingClasses||[]);setAppMode(data.appMode||'education');setIsOrgAdmin(data.isOrgAdmin||false);setThemeMode(data.themeMode||'dark');setColorTheme(data.colorTheme||'cyan');setFontFamily(data.fontFamily||'default');setLearnTokens(data.learnTokens!=null?data.learnTokens:STARTING_TOKENS);setReferralCount(data.referralCount||0);setReferralCode(data.referralCode||firebaseUser.uid.substring(0,8));
 if(data.organizationId){const orgDoc=await db.collection('organizations').doc(data.organizationId).get();if(orgDoc.exists){setOrganization({id:orgDoc.id,...orgDoc.data()})}}
 
 if(!data.username){setShowUsernamePrompt(true)}else if(!data.onboardingCompleted){setShowOnboarding(true)}}}catch(err){console.error('Error loading user data:',err)}}
 
-async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,classrooms,isTeacher,teachingClasses,appMode,organizationId:organization?.id||null,isOrgAdmin,themeMode,colorTheme,fontFamily,learnTokens,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
+async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,classrooms,isTeacher,teachingClasses,appMode,organizationId:organization?.id||null,isOrgAdmin,themeMode,colorTheme,fontFamily,learnTokens,referralCode,referralCount,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
 
-useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,skills,totalLevel,learnTokens]);
+useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,skills,totalLevel,learnTokens,referralCount]);
 
 // Load classroom data when classrooms change
 useEffect(() => {
@@ -893,11 +903,11 @@ useEffect(() => {
   }
 }, [gameActive, gameTime]);
 
-async function signup(){if(!name||!email||!pass)return;setError('');setLoading(true);try{const result=await auth.createUserWithEmailAndPassword(email,pass);const monday=getMonday();await db.collection('users').doc(result.user.uid).set({name,email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,goal:'',weeklyTarget:10,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday,onboardingCompleted:false,learnTokens:20});setUser({uid:result.user.uid,email,name,trialStartDate:new Date().toISOString()});setWeekStartDate(monday);setView('app');setShowUsernamePrompt(true)}catch(err){console.error('Signup error:',err);let errorMsg='';if(err.code==='auth/email-already-in-use'){errorMsg='❌ Email already registered. Try logging in instead.'}else if(err.code==='auth/invalid-email'){errorMsg='❌ Invalid email address'}else if(err.code==='auth/weak-password'){errorMsg='❌ Password too weak. Use at least 6 characters.'}else if(err.code==='auth/operation-not-allowed'){errorMsg='❌ Email/password signup is disabled. Contact support.'}else{errorMsg='❌ '+err.message}setError(errorMsg)}finally{setLoading(false)}}
+async function signup(){if(!name||!email||!pass)return;setError('');setLoading(true);try{const result=await auth.createUserWithEmailAndPassword(email,pass);const monday=getMonday();const refCode=result.user.uid.substring(0,8);await db.collection('users').doc(result.user.uid).set({name,email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,goal:'',weeklyTarget:10,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday,onboardingCompleted:false,learnTokens:20,referralCode:refCode,referralCount:0,referredBy:referredBy||null});setReferralCode(refCode);setUser({uid:result.user.uid,email,name,trialStartDate:new Date().toISOString()});setWeekStartDate(monday);setView('app');setShowUsernamePrompt(true);await creditReferral(result.user.uid)}catch(err){console.error('Signup error:',err);let errorMsg='';if(err.code==='auth/email-already-in-use'){errorMsg='❌ Email already registered. Try logging in instead.'}else if(err.code==='auth/invalid-email'){errorMsg='❌ Invalid email address'}else if(err.code==='auth/weak-password'){errorMsg='❌ Password too weak. Use at least 6 characters.'}else if(err.code==='auth/operation-not-allowed'){errorMsg='❌ Email/password signup is disabled. Contact support.'}else{errorMsg='❌ '+err.message}setError(errorMsg)}finally{setLoading(false)}}
 
 async function login(){if(!email||!pass)return;setError('');setLoading(true);try{const result=await auth.signInWithEmailAndPassword(email,pass);await loadUserData(result.user);setView('app')}catch(err){console.error('Login error:',err);let errorMsg='';if(err.code==='auth/user-not-found'){errorMsg='❌ No account found with this email'}else if(err.code==='auth/wrong-password'){errorMsg='❌ Incorrect password. Try "Forgot password?" to reset.'}else if(err.code==='auth/invalid-email'){errorMsg='❌ Invalid email address'}else if(err.code==='auth/user-disabled'){errorMsg='❌ This account has been disabled'}else if(err.code==='auth/too-many-requests'){errorMsg='❌ Too many failed attempts. Try again later or reset password.'}else{errorMsg='❌ '+err.message}setError(errorMsg)}finally{setLoading(false)}}
 
-async function signInWithGoogle(){setError('');setLoading(true);try{const provider=new firebase.auth.GoogleAuthProvider();const result=await auth.signInWithPopup(provider);const userDoc=await db.collection('users').doc(result.user.uid).get();const monday=getMonday();if(!userDoc.exists){await db.collection('users').doc(result.user.uid).set({name:result.user.displayName||'',email:result.user.email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday,learnTokens:20})}await loadUserData(result.user);setView('app')}catch(err){setError(err.message)}finally{setLoading(false)}}
+async function signInWithGoogle(){setError('');setLoading(true);try{const provider=new firebase.auth.GoogleAuthProvider();const result=await auth.signInWithPopup(provider);const userDoc=await db.collection('users').doc(result.user.uid).get();const monday=getMonday();if(!userDoc.exists){const refCode=result.user.uid.substring(0,8);await db.collection('users').doc(result.user.uid).set({name:result.user.displayName||'',email:result.user.email,isPro:false,trialStartDate:new Date().toISOString(),createdAt:new Date().toISOString(),courses:[],sessions:[],deadlines:[],xp:0,streak:0,lastStudyDate:'',longestStreak:0,userType:'',username:'',weeklyMinutes:0,totalMinutes:0,weekStartDate:monday,learnTokens:20,referralCode:refCode,referralCount:0,referredBy:referredBy||null});setReferralCode(refCode);await creditReferral(result.user.uid)}await loadUserData(result.user);setView('app')}catch(err){setError(err.message)}finally{setLoading(false)}}
 
 async function logout(){await auth.signOut();setUser(null);setName('');setEmail('');setSessions([]);setCourses([]);setDeadlines([]);setXp(0);setStreak(0);setLastStudyDate('');setUserType('');setView('landing')}
 
@@ -1626,6 +1636,33 @@ async function generateCoachContent() {
   }
 }
 
+// Referral Functions
+async function creditReferral(newUserId) {
+  if (!referredBy) return;
+  try {
+    // Find the referrer by referralCode
+    const referrerQuery = await db.collection('users').where('referralCode', '==', referredBy).limit(1).get();
+    if (!referrerQuery.empty) {
+      const referrerDoc = referrerQuery.docs[0];
+      // Don't let users refer themselves
+      if (referrerDoc.id === newUserId) return;
+      // Credit referrer: +10 tokens, increment referral count
+      await db.collection('users').doc(referrerDoc.id).update({
+        learnTokens: firebase.firestore.FieldValue.increment(10),
+        referralCount: firebase.firestore.FieldValue.increment(1)
+      });
+      // Credit new user: +10 bonus tokens
+      await db.collection('users').doc(newUserId).update({
+        learnTokens: firebase.firestore.FieldValue.increment(10)
+      });
+      // Update local state for new user
+      setLearnTokens(prev => prev + 10);
+    }
+  } catch (err) {
+    console.error('Referral credit error:', err);
+  }
+}
+
 // Organization Functions
 async function startOnboarding() {
   setShowOnboardingWizard(true);
@@ -2087,7 +2124,7 @@ if(view==='landing'){return(<div className={`min-h-screen ${getBgClass()}`}><sty
 
 {/* Features Grid */}
 <div className="bg-white py-20"><div className="max-w-6xl mx-auto px-4"><h2 className="text-5xl font-black text-center mb-4">Everything You Need to Study Better</h2><p className="text-xl text-gray-600 text-center mb-16 max-w-3xl mx-auto">From Pomodoro timers to chess breaks, LearnBot has every tool you need to maximize focus and retention.</p><div className="grid md:grid-cols-3 gap-8">{[
-{icon:'🧠',title:'AI Study Coach',desc:'Paste your notes → get instant quizzes, flashcards, summaries & explanations. Powered by AI.'},
+{icon:'🤖',title:'Ask LearnBot',desc:'Paste your notes → get instant quizzes, flashcards, summaries & explanations. Your AI study tutor.'},
 {icon:'⏱️',title:'Smart Timer',desc:'Pomodoro technique with automatic breaks. Study 25 min, rest 5 min. Perfect rhythm.'},
 {icon:'⚔️',title:'Skill System',desc:'RuneScape-style skills! Level up in Math, Science, Languages. Track your progress visually.'},
 {icon:'🏆',title:'Leaderboards',desc:'Compete with classmates. Weekly and all-time rankings. See who studies the most!'},
@@ -2127,7 +2164,7 @@ if(view==='landing'){return(<div className={`min-h-screen ${getBgClass()}`}><sty
 <div className="bg-white py-20"><div className="max-w-4xl mx-auto px-4 text-center"><h2 className="text-5xl font-black mb-4">Simple, Honest Pricing</h2><p className="text-xl text-gray-600 mb-12">No subscriptions. No hidden fees. Pay once, use forever.</p><div className="grid md:grid-cols-2 gap-8"><div className="border-4 border-gray-200 rounded-2xl p-8"><div className="text-4xl mb-4">🆓</div><h3 className="text-3xl font-bold mb-2">Free</h3><div className="text-5xl font-black mb-4">$0<span className="text-xl text-gray-500">/forever</span></div><ul className="text-left space-y-3 mb-8">{['Unlimited study time','Basic leaderboards','Join classrooms','Calculator & notes','Chess breaks'].map((f,i)=><li key={i} className="flex items-start"><span className="text-green-500 mr-2">✓</span>{f}</li>)}</ul><button onClick={()=>{document.getElementById('signup-section').scrollIntoView({behavior:'smooth'})}} className="w-full bg-gray-200 text-gray-800 py-3 rounded-xl font-bold hover:bg-gray-300">Start Free</button></div><div className="border-4 border-yellow-400 rounded-2xl p-8 relative"><div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-4 py-1 rounded-full font-bold text-sm">BEST VALUE</div><div className="text-4xl mb-4">👑</div><h3 className="text-3xl font-bold mb-2">Pro</h3><div className="text-5xl font-black mb-4">$5<span className="text-xl text-gray-500">/lifetime</span></div><ul className="text-left space-y-3 mb-8">{['Everything in Free','Create classrooms','Custom themes','Priority support','Early access to features'].map((f,i)=><li key={i} className="flex items-start"><span className="text-green-500 mr-2">✓</span><strong>{f}</strong></li>)}</ul><button onClick={()=>{document.getElementById('signup-section').scrollIntoView({behavior:'smooth'})}} className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white py-3 rounded-xl font-bold hover:scale-105 transition-all">Upgrade to Pro</button></div></div></div></div>
 
 {/* CTA */}
-<div className="bg-gradient-to-br from-cyan-500 to-blue-600 py-20" id="signup-section"><div className="max-w-2xl mx-auto px-4"><div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-8"><h2 className="text-4xl font-black text-white text-center mb-8">{isLogin?'Welcome Back!':'Start Your Journey Today'}</h2>{!isLogin&&<input type="text" placeholder="Your name" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/>}<input type="email" placeholder="Email address" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/><input type="password" placeholder="Password" value={pass} onChange={e=>setPass(e.target.value)} onKeyPress={e=>e.key==='Enter'&&(isLogin?login():signup())} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/>{isLogin&&<div className="text-right mb-4"><button type="button" onClick={()=>{setResetEmail(email||'');setShowPasswordReset(true)}} className="text-white text-sm hover:underline opacity-90 hover:opacity-100 cursor-pointer">Forgot password?</button></div>}{error&&<p className="text-red-200 bg-red-500 bg-opacity-30 p-3 rounded-xl mb-4">{error}</p>}<button onClick={isLogin?login:signup} disabled={(isLogin?(!email||!pass):(!name||!email||!pass))||loading} className="w-full bg-white text-cyan-600 py-5 rounded-xl font-black text-2xl hover:scale-105 transition-all disabled:opacity-50 shadow-2xl">{loading?(isLogin?'Logging in...':'Creating Account...'):(isLogin?'Log In →':'🚀 Start Learning Free →')}</button><button onClick={()=>{setIsLogin(!isLogin);setError('')}} className="w-full text-white text-sm mt-4 hover:underline">{isLogin?"Don't have an account? Sign up free":'Already have an account? Log in'}</button></div></div></div>
+<div className="bg-gradient-to-br from-cyan-500 to-blue-600 py-20" id="signup-section"><div className="max-w-2xl mx-auto px-4"><div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-8"><h2 className="text-4xl font-black text-white text-center mb-8">{isLogin?'Welcome Back!':'Start Your Journey Today'}</h2>{!isLogin&&referredBy&&<div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 rounded-xl p-3 mb-4 text-center text-sm font-bold">🎁 You've been referred! Sign up and get 30 free Learn Tokens (20 + 10 bonus)</div>}{!isLogin&&<input type="text" placeholder="Your name" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/>}<input type="email" placeholder="Email address" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/><input type="password" placeholder="Password" value={pass} onChange={e=>setPass(e.target.value)} onKeyPress={e=>e.key==='Enter'&&(isLogin?login():signup())} className="w-full bg-white rounded-xl px-5 py-4 mb-4 text-lg"/>{isLogin&&<div className="text-right mb-4"><button type="button" onClick={()=>{setResetEmail(email||'');setShowPasswordReset(true)}} className="text-white text-sm hover:underline opacity-90 hover:opacity-100 cursor-pointer">Forgot password?</button></div>}{error&&<p className="text-red-200 bg-red-500 bg-opacity-30 p-3 rounded-xl mb-4">{error}</p>}<button onClick={isLogin?login:signup} disabled={(isLogin?(!email||!pass):(!name||!email||!pass))||loading} className="w-full bg-white text-cyan-600 py-5 rounded-xl font-black text-2xl hover:scale-105 transition-all disabled:opacity-50 shadow-2xl">{loading?(isLogin?'Logging in...':'Creating Account...'):(isLogin?'Log In →':'🚀 Start Learning Free →')}</button><button onClick={()=>{setIsLogin(!isLogin);setError('')}} className="w-full text-white text-sm mt-4 hover:underline">{isLogin?"Don't have an account? Sign up free":'Already have an account? Log in'}</button></div></div></div>
 
 {/* Footer */}
 <div className="bg-gray-900 py-12"><div className="max-w-6xl mx-auto px-4 text-center"><div className="text-white mb-4"><div className="text-2xl font-bold mb-2">LearnBot</div><div className="text-sm opacity-75">Powered by 🐺 Alpha Software Group LLC</div></div><div className="text-gray-400 text-sm mb-4">© 2026 Alpha Software Group LLC. All rights reserved.</div><div className="flex justify-center gap-6 text-gray-400 text-sm"><a href="mailto:trylearnbot@gmail.com" className="hover:text-white">Contact</a><button onClick={()=>setView('terms')} className="hover:text-white">Terms</button><button onClick={()=>setView('privacy')} className="hover:text-white">Privacy</button></div></div></div>
@@ -2629,7 +2666,7 @@ return(
         <button onClick={()=>setShowTokenShop(true)} className={`bg-gradient-to-r from-yellow-400 to-amber-500 px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg text-gray-900 text-xs md:text-sm font-bold flex items-center gap-1 hover:scale-105 transition-all ${tokenAnimation?'scale-110':''}`}><span>🪙</span>{learnTokens}</button>
         <button onClick={()=>setShowMenu(true)} className="text-white opacity-80 hover:opacity-100 p-2">
           <svg className="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M4 6h16M4 12h16M4 18h16"/>
+            <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/>
           </svg>
         </button>
       </div>
@@ -2658,7 +2695,7 @@ return(
         <div className="bg-white bg-opacity-20 rounded-lg p-2"><Icon name="crown" className="w-5 h-5 md:w-6 md:h-6 text-white"/></div>
         <div>
           <div className="text-white font-bold text-sm md:text-base">Upgrade to Pro — $5 Lifetime</div>
-          <div className="text-white text-opacity-80 text-xs md:text-sm">Unlimited AI Coach, custom themes, priority support</div>
+          <div className="text-white text-opacity-80 text-xs md:text-sm">Unlimited LearnBot tutor, custom themes, priority support</div>
         </div>
       </div>
       <div className="bg-white text-amber-600 px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-bold text-xs md:text-sm whitespace-nowrap">Upgrade →</div>
@@ -2676,7 +2713,7 @@ return(
         {id:'skills',label:userType==='professional'?'Skills':'Skills',icon:userType==='professional'?'💼':'⚔️'},
         {id:'classroom',label:appMode==='education'?'Class':'Teams',icon:getModeEmoji()},
         {id:'leaderboard',label:'Ranks',icon:'🏆'},
-        {id:'aicoach',label:'AI Coach',icon:'🧠'},
+        {id:'aicoach',label:'Ask LearnBot',icon:'🤖'},
       ].map(t=><button key={t.id} onClick={()=>setTab(t.id)} className={`px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all ${tab===t.id?'bg-white text-gray-800 shadow-md':'text-white hover:bg-white hover:bg-opacity-10'}`}><span>{t.icon}</span>{t.label}</button>)}
     </div>
 
@@ -2686,20 +2723,20 @@ return(
         {[
           {id:'dashboard',label:'Home',icon:'🏠'},
           {id:'timer',label:'Timer',icon:'⏱️'},
-          {id:'stats',label:'Stats',icon:'📈'},
-          {id:'leaderboard',label:'Ranks',icon:'🏆'},
-        ].map(t=><button key={t.id} onClick={()=>setTab(t.id)} className={`flex flex-col items-center py-2.5 px-1 transition-all ${tab===t.id?'text-cyan-400':'text-gray-400'}`}><span className="text-xl mb-0.5">{t.icon}</span><span className="text-[10px] font-semibold">{t.label}</span>{tab===t.id&&<div className="w-1 h-1 rounded-full bg-cyan-400 mt-0.5"/>}</button>)}
+          {id:'aicoach',label:'LearnBot',icon:'🤖',special:true},
+          {id:'courses',label:userType==='professional'?'Projects':'Courses',icon:'📚'},
+        ].map(t=><button key={t.id} onClick={()=>setTab(t.id)} className={`flex flex-col items-center py-2.5 px-1 transition-all ${t.special && tab!==t.id?'text-cyan-400':tab===t.id?'text-cyan-400':'text-gray-400'}`}><span className={`mb-0.5 ${t.special?'text-2xl':'text-xl'}`}>{t.icon}</span><span className="text-[10px] font-semibold">{t.label}</span>{tab===t.id&&<div className={`w-1 h-1 rounded-full mt-0.5 ${t.special?'bg-cyan-400':'bg-cyan-400'}`}/>}</button>)}
         {/* More Menu */}
         <div className="relative">
-          <button onClick={()=>setShowMoreNav(!showMoreNav)} className={`flex flex-col items-center py-2.5 px-1 w-full transition-all ${['courses','deadlines','sessions','skills','classroom','aicoach'].includes(tab)?'text-cyan-400':'text-gray-400'}`}><span className="text-xl mb-0.5">☰</span><span className="text-[10px] font-semibold">More</span>{['courses','deadlines','sessions','skills','classroom','aicoach'].includes(tab)&&<div className="w-1 h-1 rounded-full bg-cyan-400 mt-0.5"/>}</button>
+          <button onClick={()=>setShowMoreNav(!showMoreNav)} className={`flex flex-col items-center py-2.5 px-1 w-full transition-all ${['stats','deadlines','sessions','skills','classroom','leaderboard'].includes(tab)?'text-cyan-400':'text-gray-400'}`}><span className="text-xl mb-0.5">☰</span><span className="text-[10px] font-semibold">More</span>{['stats','deadlines','sessions','skills','classroom','leaderboard'].includes(tab)&&<div className="w-1 h-1 rounded-full bg-cyan-400 mt-0.5"/>}</button>
           {showMoreNav&&<div className="absolute bottom-full right-0 mb-2 bg-gray-800 rounded-xl shadow-2xl border border-white border-opacity-10 overflow-hidden w-48">
             {[
-              {id:'aicoach',label:'AI Coach',icon:'🧠'},
-              {id:'courses',label:userType==='professional'?'Projects':'Courses',icon:'📚'},
+              {id:'stats',label:'Stats',icon:'📈'},
               {id:'deadlines',label:'Deadlines',icon:'📅'},
               {id:'sessions',label:userType==='professional'?'History':'Sessions',icon:'🕐'},
               {id:'skills',label:'Skills',icon:userType==='professional'?'💼':'⚔️'},
               {id:'classroom',label:appMode==='education'?'Class':'Teams',icon:getModeEmoji()},
+              {id:'leaderboard',label:'Ranks',icon:'🏆'},
             ].map(t=><button key={t.id} onClick={()=>{setTab(t.id);setShowMoreNav(false)}} className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all ${tab===t.id?'bg-cyan-500 bg-opacity-20 text-cyan-400':'text-gray-300 hover:bg-white hover:bg-opacity-5'}`}><span>{t.icon}</span>{t.label}</button>)}
           </div>}
         </div>
@@ -2809,8 +2846,8 @@ return(
               Add Course
             </button>
             <button onClick={()=>setTab('aicoach')} className="md:col-span-2 bg-gradient-to-r from-cyan-600 to-blue-700 text-white py-3 md:py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-105 transition-all text-sm md:text-base border border-cyan-400 border-opacity-30">
-              <span className="text-lg">🧠</span>
-              AI Study Coach — Generate Quizzes & Flashcards
+              <span className="text-lg">🤖</span>
+              Ask LearnBot — Quizzes, Flashcards & More
             </button>
           </div>
         </div>
@@ -3709,7 +3746,7 @@ return(
         {/* Header */}
         <div className="bg-gradient-to-r from-cyan-600 to-blue-700 rounded-2xl p-5 md:p-6 border border-cyan-400 border-opacity-30">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3"><span className="text-3xl">🧠</span> AI Study Coach</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3"><span className="text-3xl">🤖</span> Ask LearnBot</h2>
             <button onClick={()=>setShowTokenShop(true)} className={`bg-gradient-to-r from-yellow-400 to-amber-500 px-3 py-1.5 rounded-lg text-gray-900 text-sm font-bold flex items-center gap-1.5 hover:scale-105 transition-all shadow-md ${tokenAnimation?'scale-110':''}`}>
               <span className="text-base">🪙</span> {learnTokens} Tokens
             </button>
@@ -3735,7 +3772,7 @@ return(
           {coachError && <div className="mt-3 bg-red-500 bg-opacity-20 border border-red-400 border-opacity-30 text-red-200 px-4 py-3 rounded-xl text-sm flex items-center gap-2"><span>⚠️</span>{coachError}{learnTokens <= 0 && <button onClick={()=>setShowTokenShop(true)} className="ml-auto bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap">🪙 Get Tokens</button>}</div>}
 
           <button onClick={generateCoachContent} disabled={coachLoading || !coachInput.trim()} className="w-full mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3.5 rounded-xl font-bold text-lg hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 shadow-lg flex items-center justify-center gap-2">
-            {coachLoading ? <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"/>Generating...</> : <><span>🧠</span>Generate {coachMode==='quiz'?'Quiz':coachMode==='flashcards'?'Flashcards':coachMode==='summary'?'Summary':'Explanation'}</>}
+            {coachLoading ? <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"/>LearnBot is thinking...</> : <><span>🤖</span>Ask LearnBot</>}
           </button>
         </div>
 
@@ -3831,6 +3868,13 @@ return(
                 <div className="space-y-1.5">{coachResult.data.commonMistakes.map((m, mi) => <div key={mi} className="text-white text-opacity-80 text-sm flex items-start gap-2"><span className="text-orange-400">✗</span>{m}</div>)}</div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* AI Disclaimer */}
+        {coachResult && (
+          <div className="flex items-center gap-2 text-white text-opacity-40 text-xs px-1">
+            <span>🤖</span> AI-generated — always double-check important facts with your course materials
           </div>
         )}
 
@@ -4151,8 +4195,27 @@ return(
           <div className="space-y-2 text-sm">
             <div className="flex items-center justify-between text-white text-opacity-80"><span>📝 Complete a study session</span><span className="text-yellow-400 font-bold">+1-3 🪙</span></div>
             <div className="flex items-center justify-between text-white text-opacity-80"><span>🔥 Maintain daily streak</span><span className="text-yellow-400 font-bold">+2 🪙</span></div>
+            <div className="flex items-center justify-between text-white text-opacity-80"><span>🤝 Refer a friend</span><span className="text-yellow-400 font-bold">+10 🪙 each</span></div>
             <div className="flex items-center justify-between text-white text-opacity-80"><span>🆕 Sign up bonus</span><span className="text-yellow-400 font-bold">+20 🪙</span></div>
           </div>
+        </div>
+
+        {/* Referral Share Card */}
+        <div className="bg-gradient-to-r from-cyan-600 to-blue-700 rounded-xl p-4 border border-cyan-400 border-opacity-30">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xl">🤝</span>
+            <h3 className="text-white font-bold text-sm">Invite Friends, Earn Tokens</h3>
+          </div>
+          <p className="text-white text-opacity-70 text-xs mb-3">You both get 10 Learn Tokens when they sign up!</p>
+          <div className="flex gap-2">
+            <div className="flex-1 bg-black bg-opacity-30 rounded-lg px-3 py-2 text-cyan-300 text-xs font-mono truncate border border-white border-opacity-10">learnbot.us?ref={referralCode||'...'}</div>
+            <button onClick={async()=>{
+              const link='https://learnbot.us?ref='+(referralCode||'');
+              const shareText='🤖 I use LearnBot to study smarter — it has an AI tutor, gamified timers, and leaderboards. Sign up with my link and we both get 10 free Learn Tokens!\n\n'+link;
+              if(navigator.share){try{await navigator.share({title:'Join me on LearnBot',text:shareText,url:link})}catch(e){}}else{try{await navigator.clipboard.writeText(shareText);setReferralCopied(true);setTimeout(()=>setReferralCopied(false),2000)}catch(e){}}
+            }} className="bg-white text-cyan-700 px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap hover:scale-105 transition-all">{referralCopied?'✓ Copied!':'Share 📤'}</button>
+          </div>
+          {referralCount > 0 && <div className="mt-2 text-cyan-200 text-xs">🎉 {referralCount} friend{referralCount!==1?'s':''} referred — {referralCount * 10} tokens earned!</div>}
         </div>
       </div>
     </div>}
