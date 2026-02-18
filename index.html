@@ -2799,126 +2799,167 @@ return(
     {/* Bottom padding spacer for mobile nav */}
     <div className="md:hidden h-4"></div>
     {tab==='dashboard'&&(
-      <div className="space-y-4 md:space-y-6">
-        <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Welcome back, {name}! 👋</h2>
-          {goal?<p className="text-white text-base md:text-lg opacity-90">🎯 Goal: {goal}</p>:<p className="text-white opacity-75 text-sm md:text-base">Set your learning goal in settings!</p>}
-        </div>
-
-        {/* Beta Notice */}
-        <div className="bg-cyan-500 bg-opacity-15 border border-cyan-400 border-opacity-30 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-cyan-300 text-base">🚀</span>
-            <span className="text-cyan-200">You're using <strong>LearnBot Beta</strong> — some features are still being polished!</span>
-          </div>
-          <button onClick={()=>setShowFeedback(true)} className="bg-cyan-400 bg-opacity-20 text-cyan-300 px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap hover:bg-opacity-30 transition-all">Give Feedback</button>
-        </div>
-
-        <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-6 relative overflow-hidden border-2 border-orange-300">
-          <style>{`
-            @keyframes flamePulse {
-              0%, 100% { transform: scale(1); }
-              50% { transform: scale(1.1); }
-            }
-            .flame-pulse { animation: flamePulse 2s ease-in-out infinite; }
-          `}</style>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
-              <span className="text-3xl flame-pulse">🔥</span>
-              Current Streak
-            </h3>
-            {longestStreak > 0 && longestStreak > streak && (
-              <div className="text-white text-xs md:text-sm opacity-75">
-                Best: {longestStreak} days
+      <div className="space-y-4">
+        {/* Hero Welcome + Stats Bar */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-slate-900 to-gray-950 border border-white border-opacity-10 p-5 md:p-6">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-500 rounded-full blur-[100px] opacity-10"/>
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500 rounded-full blur-[80px] opacity-10"/>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-xl md:text-2xl font-black text-white">Hey {name} 👋</h2>
+                {goal&&<p className="text-cyan-400 text-sm mt-0.5">🎯 {goal}</p>}
               </div>
-            )}
-          </div>
-          
-          <div className="text-center mb-4">
-            <div className={`text-7xl md:text-8xl font-black text-white mb-2 ${streak > 0 ? 'flame-pulse' : 'opacity-50'}`}>
-              {streak > 0 ? streak : '0'}
+              <div className="flex items-center gap-2">
+                <div className="bg-white bg-opacity-5 border border-white border-opacity-10 rounded-xl px-3 py-1.5 text-center">
+                  <div className="text-yellow-400 text-lg font-black leading-none">{level}</div>
+                  <div className="text-[10px] text-gray-500 uppercase tracking-wider">LVL</div>
+                </div>
+                {tier>0&&<div className="text-2xl">{getTierBadge()}</div>}
+              </div>
             </div>
-            <div className="text-white text-xl md:text-2xl font-bold">
-              DAY{streak !== 1 ? 'S' : ''}
+            
+            {/* XP Progress Bar */}
+            <div className="mb-4">
+              <div className="flex justify-between text-xs mb-1">
+                <span className="text-gray-400">Level {level} Progress</span>
+                <span className="text-cyan-400 font-mono font-bold">{levelXp}/100 XP</span>
+              </div>
+              <div className="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
+                <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 transition-all duration-500 relative" style={{width:`${levelXp}%`}}>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-pulse"/>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div className="bg-white bg-opacity-20 rounded-xl p-3 mb-3">
-            <p className="text-white text-sm md:text-base">
-              {streak === 0 ? '🎯 Complete a session to start your streak!' : 
-               lastStudyDate === new Date().toISOString().split('T')[0] ? 
-               "✅ Today's session complete!" : 
-               '⏰ Study today to keep your streak alive!'}
-            </p>
-          </div>
-
-          {streak > 0 && (
-            <div className="text-white text-center text-sm opacity-90">
-              {getStreakMessage()}
+            {/* Stats Row */}
+            <div className="grid grid-cols-4 gap-2">
+              <div className="bg-white bg-opacity-5 rounded-lg p-2 text-center border border-white border-opacity-5">
+                <div className="text-orange-400 text-xl md:text-2xl font-black font-mono leading-none">{xp}</div>
+                <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Total XP</div>
+              </div>
+              <div className="bg-white bg-opacity-5 rounded-lg p-2 text-center border border-white border-opacity-5">
+                <div className="text-green-400 text-xl md:text-2xl font-black font-mono leading-none">{sessions.length}</div>
+                <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Sessions</div>
+              </div>
+              <div className="bg-white bg-opacity-5 rounded-lg p-2 text-center border border-white border-opacity-5">
+                <div className="text-yellow-400 text-xl md:text-2xl font-black font-mono leading-none">{learnTokens}</div>
+                <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Tokens</div>
+              </div>
+              <div className="bg-white bg-opacity-5 rounded-lg p-2 text-center border border-white border-opacity-5">
+                <div className="text-purple-400 text-xl md:text-2xl font-black font-mono leading-none">{courses.length}</div>
+                <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Courses</div>
+              </div>
             </div>
-          )}
-
-          {streak >= 7 && (
-            <div className="mt-4 flex justify-center gap-2 flex-wrap">
-              {streak >= 7 && <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-xs font-bold">🔥 Week Warrior</div>}
-              {streak >= 30 && <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-xs font-bold">🔥🔥 Month Master</div>}
-              {streak >= 100 && <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-white text-xs font-bold">🔥🔥🔥 Centurion</div>}
-              {streak >= 365 && <div className="bg-yellow-400 bg-opacity-90 px-3 py-1 rounded-full text-gray-900 text-xs font-bold">👑 Year Legend</div>}
-            </div>
-          )}
-        </div>
-
-        <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl md:text-2xl font-bold text-white">This Week's Progress</h3>
-            <div className="text-white text-xs md:text-sm opacity-75">{Math.round(getWeeklyHours())} / {weeklyTarget} hours</div>
-          </div>
-          <div className="w-full bg-white bg-opacity-30 rounded-full h-3 md:h-4 mb-2">
-            <div className="bg-gradient-to-r from-yellow-300 to-orange-300 h-3 md:h-4 rounded-full transition-all" style={{width:`${Math.min((getWeeklyHours()/weeklyTarget)*100,100)}%`}}/>
-          </div>
-          <p className="text-white text-xs md:text-sm opacity-75">
-            {getWeeklyHours()>=weeklyTarget?'🎉 Goal reached! Amazing work!':weeklyTarget-getWeeklyHours()>0?`${Math.round(weeklyTarget-getWeeklyHours())} hours to go this week`:'Keep it up!'}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2 md:gap-4">
-          <div className="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-white">
-            <div className="flex flex-col md:flex-row items-center md:gap-2 mb-1 md:mb-2"><Icon name="trophy" className="w-4 h-4 md:w-5 md:h-5 text-yellow-300"/><span className="text-xs md:text-sm">Level</span></div>
-            <div className="text-2xl md:text-3xl font-bold flex items-center gap-1">{level}{getTierBadge()&&<span className="text-xl md:text-2xl">{getTierBadge()}</span>}</div>
-          </div>
-          <div className="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-white">
-            <div className="flex flex-col md:flex-row items-center md:gap-2 mb-1 md:mb-2"><Icon name="zap" className="w-4 h-4 md:w-5 md:h-5 text-orange-300"/><span className="text-xs md:text-sm">Total XP</span></div>
-            <div className="text-2xl md:text-3xl font-bold">{xp}</div>
-          </div>
-          <div className="bg-white bg-opacity-20 rounded-xl p-3 md:p-4 text-white">
-            <div className="flex flex-col md:flex-row items-center md:gap-2 mb-1 md:mb-2"><Icon name="target" className="w-4 h-4 md:w-5 md:h-5 text-green-300"/><span className="text-xs md:text-sm">Sessions</span></div>
-            <div className="text-2xl md:text-3xl font-bold">{sessions.length}</div>
           </div>
         </div>
 
-        <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
-          <h3 className="text-lg md:text-xl font-bold text-white mb-4">Quick Actions</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <button onClick={()=>setTab('timer')} className={`${getPersonaTheme().button} text-white py-3 md:py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-105 transition-all text-sm md:text-base`}>
-              <Icon name="play" className="w-4 h-4 md:w-5 md:h-5"/>
-              Start {getSessionLabel()}
-            </button>
-            <button onClick={()=>setTab('courses')} className="bg-white bg-opacity-20 text-white py-3 md:py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-opacity-30 transition-all text-sm md:text-base">
-              <Icon name="plus" className="w-4 h-4 md:w-5 md:h-5"/>
-              Add Course
-            </button>
-            <button onClick={()=>setTab('aicoach')} className="md:col-span-2 bg-gradient-to-r from-cyan-600 to-blue-700 text-white py-3 md:py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-105 transition-all text-sm md:text-base border border-cyan-400 border-opacity-30">
-              <span className="text-lg">🤖</span>
-              Ask LearnBot — Quizzes, Flashcards & More
-            </button>
+        {/* Streak + Weekly Progress Side by Side */}
+        <div className="grid md:grid-cols-2 gap-4">
+          {/* Streak Card */}
+          <div className="relative overflow-hidden rounded-2xl border border-orange-500 border-opacity-20 bg-gradient-to-br from-gray-900 to-gray-950 p-5">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500 rounded-full blur-[60px] opacity-15"/>
+            <style>{`@keyframes flamePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}.flame-pulse{animation:flamePulse 2s ease-in-out infinite}`}</style>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl flame-pulse">🔥</span>
+                  <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">Streak</span>
+                </div>
+                {longestStreak>0&&longestStreak>streak&&<span className="text-xs text-gray-600">Best: {longestStreak}d</span>}
+              </div>
+              <div className="flex items-baseline gap-2 mb-3">
+                <span className={`text-5xl font-black font-mono ${streak>0?'text-orange-400':'text-gray-700'}`}>{streak}</span>
+                <span className="text-gray-500 font-bold">DAY{streak!==1?'S':''}</span>
+              </div>
+              <div className={`text-xs px-3 py-1.5 rounded-lg inline-block ${
+                lastStudyDate===new Date().toISOString().split('T')[0]
+                  ?'bg-green-500 bg-opacity-20 text-green-400 border border-green-500 border-opacity-20'
+                  :streak>0?'bg-yellow-500 bg-opacity-20 text-yellow-400 border border-yellow-500 border-opacity-20'
+                  :'bg-gray-800 text-gray-500 border border-gray-700'
+              }`}>
+                {streak===0?'Start a session to begin!':lastStudyDate===new Date().toISOString().split('T')[0]?'✅ Studied today':'⚡ Study today to keep it alive'}
+              </div>
+              {streak>=7&&<div className="flex gap-1.5 mt-3 flex-wrap">
+                {streak>=7&&<span className="bg-orange-500 bg-opacity-15 text-orange-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-orange-500 border-opacity-20">🔥 Week Warrior</span>}
+                {streak>=30&&<span className="bg-orange-500 bg-opacity-15 text-orange-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-orange-500 border-opacity-20">🔥🔥 Month Master</span>}
+                {streak>=100&&<span className="bg-yellow-500 bg-opacity-15 text-yellow-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-yellow-500 border-opacity-20">💎 Centurion</span>}
+              </div>}
+            </div>
           </div>
+
+          {/* Weekly Progress Card */}
+          <div className="relative overflow-hidden rounded-2xl border border-cyan-500 border-opacity-20 bg-gradient-to-br from-gray-900 to-gray-950 p-5">
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-cyan-500 rounded-full blur-[60px] opacity-15"/>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">📊</span>
+                  <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">This Week</span>
+                </div>
+                <span className="text-cyan-400 font-mono text-sm font-bold">{Math.round(getWeeklyHours())}h / {weeklyTarget}h</span>
+              </div>
+              <div className="w-full bg-gray-800 rounded-full h-3 mb-3 overflow-hidden">
+                <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-700 relative" style={{width:`${Math.min((getWeeklyHours()/weeklyTarget)*100,100)}%`}}>
+                  {getWeeklyHours()>=weeklyTarget&&<div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"/>}
+                </div>
+              </div>
+              <div className={`text-xs px-3 py-1.5 rounded-lg inline-block ${
+                getWeeklyHours()>=weeklyTarget
+                  ?'bg-green-500 bg-opacity-20 text-green-400 border border-green-500 border-opacity-20'
+                  :'bg-cyan-500 bg-opacity-10 text-cyan-400 border border-cyan-500 border-opacity-20'
+              }`}>
+                {getWeeklyHours()>=weeklyTarget?'🎉 Weekly goal reached!':weeklyTarget-getWeeklyHours()>0?`${Math.round(weeklyTarget-getWeeklyHours())}h to go`:'Almost there!'}
+              </div>
+              
+              {/* Mini week heatmap */}
+              <div className="flex gap-1 mt-3">
+                {['M','T','W','T','F','S','S'].map((day,i)=>{
+                  const weekStart=new Date(getMonday());
+                  const d=new Date(weekStart);
+                  d.setDate(d.getDate()+i);
+                  const dateStr=d.toISOString().split('T')[0];
+                  const hasSession=sessions.some(s=>s.date===dateStr);
+                  const isToday=dateStr===new Date().toISOString().split('T')[0];
+                  return(
+                    <div key={i} className="flex-1 text-center">
+                      <div className="text-[10px] text-gray-600 mb-1">{day}</div>
+                      <div className={`h-5 rounded ${hasSession?'bg-cyan-500':'isToday'?'bg-gray-700 border border-gray-600':'bg-gray-800'} ${isToday&&!hasSession?'border border-cyan-500 border-opacity-40':''}`}/>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions - Compact */}
+        <div className="grid grid-cols-3 gap-2">
+          <button onClick={()=>setTab('timer')} className="bg-gradient-to-br from-cyan-600 to-blue-700 text-white py-3 md:py-4 rounded-xl font-bold flex flex-col items-center gap-1 hover:scale-105 transition-all border border-cyan-400 border-opacity-20 text-xs md:text-sm">
+            <Icon name="play" className="w-5 h-5"/>
+            Study
+          </button>
+          <button onClick={()=>setTab('aicoach')} className="bg-gradient-to-br from-purple-600 to-indigo-700 text-white py-3 md:py-4 rounded-xl font-bold flex flex-col items-center gap-1 hover:scale-105 transition-all border border-purple-400 border-opacity-20 text-xs md:text-sm">
+            <span className="text-lg">🤖</span>
+            LearnBot
+          </button>
+          <button onClick={()=>setTab('courses')} className="bg-gradient-to-br from-gray-700 to-gray-800 text-white py-3 md:py-4 rounded-xl font-bold flex flex-col items-center gap-1 hover:scale-105 transition-all border border-white border-opacity-10 text-xs md:text-sm">
+            <Icon name="plus" className="w-5 h-5"/>
+            Courses
+          </button>
+        </div>
+
+        {/* Beta Notice - Minimal */}
+        <div className="bg-cyan-500 bg-opacity-10 border border-cyan-500 border-opacity-15 rounded-xl px-4 py-2.5 flex items-center justify-between gap-3">
+          <span className="text-cyan-300 text-xs">🚀 <strong>Beta</strong> — some features are being polished</span>
+          <button onClick={()=>setShowFeedback(true)} className="text-cyan-400 text-xs font-bold hover:underline whitespace-nowrap">Feedback →</button>
         </div>
 
         {/* Upcoming Deadlines on Dashboard */}
         {deadlines.length>0&&(
-          <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
+          <div className="bg-gray-900 bg-opacity-50 rounded-2xl p-4 md:p-5 border border-white border-opacity-5">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg md:text-xl font-bold text-white flex items-center gap-2"><span>📅</span> Upcoming Deadlines</h3>
+              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2"><span>📅</span> Upcoming</h3>
               <button onClick={()=>setTab('deadlines')} className="text-cyan-400 text-xs font-bold hover:underline">View All →</button>
             </div>
             <div className="space-y-2">
@@ -2931,30 +2972,32 @@ return(
                   const isUrgent=diffDays<=3;
                   const typeEmoji=d.type==='exam'?'📝':d.type==='project'?'💻':d.type==='quiz'?'❓':'📄';
                   return(
-                    <div key={d.id||i} className={`flex items-center justify-between p-3 rounded-xl ${isUrgent?'bg-red-500 bg-opacity-20 border border-red-400 border-opacity-30':'bg-white bg-opacity-10'}`}>
-                      <div className="flex items-center gap-3 min-w-0">
-                        <span className="text-lg">{typeEmoji}</span>
+                    <div key={d.id||i} className={`flex items-center justify-between p-2.5 rounded-lg ${isUrgent?'bg-red-500 bg-opacity-10 border border-red-500 border-opacity-20':'bg-white bg-opacity-5 border border-white border-opacity-5'}`}>
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="text-sm">{typeEmoji}</span>
                         <div className="min-w-0">
-                          <div className="text-white font-semibold text-sm truncate">{d.title}</div>
-                          <div className="text-white text-opacity-50 text-xs">{d.course||'General'}</div>
+                          <div className="text-white font-semibold text-xs truncate">{d.title}</div>
+                          <div className="text-gray-500 text-[10px]">{d.course||'General'}</div>
                         </div>
                       </div>
-                      <div className={`text-sm font-bold whitespace-nowrap ${isUrgent?'text-red-300':'text-white text-opacity-70'}`}>
-                        {diffDays===0?'Today':diffDays===1?'Tomorrow':`${diffDays}d`}
+                      <div className={`text-xs font-bold font-mono whitespace-nowrap ${isUrgent?'text-red-400':'text-gray-500'}`}>
+                        {diffDays===0?'TODAY':diffDays===1?'TMRW':`${diffDays}D`}
                       </div>
                     </div>
                   );
                 })}
               {deadlines.filter(d=>new Date(d.date)>=new Date(new Date().toDateString())).length===0&&(
-                <div className="text-white text-opacity-50 text-sm text-center py-2">All caught up! 🎉</div>
+                <div className="text-gray-600 text-xs text-center py-2">All caught up 🎉</div>
               )}
             </div>
           </div>
         )}
 
-        <div className="bg-white bg-opacity-20 rounded-2xl p-4 md:p-6">
-          <div className="space-y-3">
-            {sessions.length===0?<div className="text-center py-8"><Icon name="trophy" className="w-10 h-10 md:w-12 md:h-12 text-white opacity-40 mx-auto mb-3"/><p className="text-white opacity-70 text-sm md:text-base">No sessions yet! Start your first one.</p></div>:sessions.slice(-5).reverse().map((s,i)=><div key={i} className={`${getPersonaTheme().statCard} rounded-lg p-3 md:p-4 flex justify-between`}><div><div className="text-white font-semibold text-sm md:text-base">{s.course}</div><div className="text-white opacity-70 text-xs md:text-sm">{s.duration} min</div></div><div className="text-yellow-300 font-bold text-sm md:text-base">+{s.xp} {getXpLabel()}</div></div>)}
+        {/* Recent Activity */}
+        <div className="bg-gray-900 bg-opacity-50 rounded-2xl p-4 md:p-5 border border-white border-opacity-5">
+          <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2"><span>⚡</span> Recent Activity</h3>
+          <div className="space-y-2">
+            {sessions.length===0?<div className="text-center py-6"><div className="text-4xl mb-2 opacity-30">📚</div><p className="text-gray-600 text-xs">Complete your first session to see activity</p></div>:sessions.slice(-5).reverse().map((s,i)=><div key={i} className="flex items-center justify-between p-2.5 rounded-lg bg-white bg-opacity-5 border border-white border-opacity-5"><div className="flex items-center gap-2.5"><div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-600 to-blue-700 flex items-center justify-center text-white text-xs font-bold">{s.duration}m</div><div><div className="text-white font-semibold text-xs">{s.course}</div><div className="text-gray-500 text-[10px]">{s.date?new Date(s.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'Recent'}</div></div></div><span className="text-yellow-400 font-mono font-bold text-xs">+{s.xp} XP</span></div>)}
           </div>
         </div>
       </div>
