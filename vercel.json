@@ -5,6 +5,9 @@
     },
     "api/webhook.js": {
       "maxDuration": 10
+    },
+    "api/verify-payment.js": {
+      "maxDuration": 15
     }
   },
   "routes": [

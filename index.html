@@ -810,35 +810,45 @@ useEffect(() => {
   }
   
   if (paymentStatus === 'success') {
-    // Payment completed — webhook handles the actual upgrade in Firestore.
-    // We just reload user data to pick up the verified Pro status.
-    console.log('Payment redirect detected — verifying via Firestore...');
+    // Payment completed — verify server-side via Stripe API
+    console.log('Payment redirect detected — verifying with server...');
 
     const verifyPayment = async (attempts = 0) => {
       const currentUser = auth.currentUser;
       if (!currentUser) {
         if (attempts < 10) {
-          console.log('Waiting for auth...');
           setTimeout(() => verifyPayment(attempts + 1), 500);
         }
         return;
       }
 
       try {
-        // Reload user data from Firestore (webhook should have set isPro: true)
-        const userDoc = await db.collection('users').doc(currentUser.uid).get();
-        if (userDoc.exists && userDoc.data().isPro) {
+        const idToken = await currentUser.getIdToken();
+        const response = await fetch('https://learnbot.us/api/verify-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (data.isPro) {
           setIsPro(true);
-          console.log('Payment verified via webhook — user is Pro');
+          await loadUserData(currentUser);
           alert('🎉 Payment successful! Welcome to Premium!');
-        } else if (attempts < 6) {
-          // Webhook might not have processed yet — retry with backoff
-          console.log(`Waiting for webhook confirmation (attempt ${attempts + 1})...`);
-          setTimeout(() => verifyPayment(attempts + 1), 2000);
+        } else if (data.tokensAdded) {
+          setLearnTokens(prev => prev + data.tokens);
+          await loadUserData(currentUser);
+          alert(`🎉 ${data.tokens} tokens added to your account!`);
+        } else if (attempts < 4) {
+          // Stripe may take a moment to process — retry
+          console.log(`Payment not confirmed yet (attempt ${attempts + 1})...`);
+          setTimeout(() => verifyPayment(attempts + 1), 3000);
           return;
         } else {
-          // Webhook hasn't confirmed after retries — tell user to refresh
-          alert('Payment received! It may take a moment to activate. Please refresh if Premium features don\'t appear.');
+          alert('Payment received! It may take a moment to activate. Please refresh if features don\'t appear.');
         }
       } catch (err) {
         console.error('Error verifying payment:', err);
@@ -2115,13 +2125,35 @@ function startCheckout(type = 'pro') {
     return;
   }
   
-  // Poll for popup close, then reload to pick up Firestore changes from webhook
-  const checkPopup = setInterval(() => {
+  // Poll for popup close, then verify payment server-side
+  const checkPopup = setInterval(async () => {
     if (popup.closed) {
       clearInterval(checkPopup);
       setPaymentProcessing(false);
-      // Reload user data to pick up Pro status or token credits from webhook
-      if (user) loadUserData({ uid: user.uid, email: user.email });
+      if (user && auth.currentUser) {
+        try {
+          const idToken = await auth.currentUser.getIdToken();
+          const response = await fetch('https://learnbot.us/api/verify-payment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${idToken}`
+            }
+          });
+          const data = await response.json();
+          if (data.isPro) {
+            setIsPro(true);
+            alert('🎉 Payment successful! Welcome to Premium!');
+          } else if (data.tokensAdded) {
+            setLearnTokens(prev => prev + data.tokens);
+            alert(`🎉 ${data.tokens} tokens added!`);
+          }
+          await loadUserData({ uid: user.uid, email: user.email });
+        } catch (err) {
+          console.error('Error verifying payment:', err);
+          await loadUserData({ uid: user.uid, email: user.email });
+        }
+      }
     }
   }, 1000);
 }
