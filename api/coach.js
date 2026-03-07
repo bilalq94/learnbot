@@ -1,3 +1,18 @@
+import admin from 'firebase-admin';
+
+// Initialize Firebase Admin (uses GOOGLE_APPLICATION_CREDENTIALS env var or explicit config)
+if (!admin.apps.length) {
+  const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
+    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+    : null;
+
+  admin.initializeApp(
+    serviceAccount
+      ? { credential: admin.credential.cert(serviceAccount) }
+      : { projectId: process.env.FIREBASE_PROJECT_ID || 'learnbot-93edf' }
+  );
+}
+
 // In-memory rate limiting (resets when serverless function cold starts, which is fine)
 const globalCounter = { count: 0, resetDate: '' };
 const userLimits = new Map();
@@ -7,21 +22,45 @@ const DAILY_GLOBAL_BUDGET = parseInt(process.env.DAILY_API_BUDGET) || 2000;
 const USER_HOURLY_LIMIT = parseInt(process.env.USER_HOURLY_LIMIT) || 10;
 const KILL_SWITCH = process.env.API_KILL_SWITCH === 'true';
 
+async function verifyAuth(req) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+  try {
+    const token = authHeader.split('Bearer ')[1];
+    const decoded = await admin.auth().verifyIdToken(token);
+    return decoded;
+  } catch (err) {
+    console.error('Auth verification failed:', err.message);
+    return null;
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   // === KILL SWITCH ===
   if (KILL_SWITCH) {
-    return res.status(503).json({ error: 'AI features are temporarily paused. Try again later! 🔧' });
+    return res.status(503).json({ error: 'AI features are temporarily paused. Try again later!' });
   }
 
-  const { prompt, mode, userId } = req.body;
+  // === AUTH VERIFICATION ===
+  const authUser = await verifyAuth(req);
+  if (!authUser) {
+    return res.status(401).json({ error: 'Please log in to use the AI coach.' });
+  }
+
+  const { prompt, mode } = req.body;
   if (!prompt || !mode) return res.status(400).json({ error: 'Missing prompt or mode' });
+
+  // Use verified UID from token, not client-provided userId
+  const verifiedUid = authUser.uid;
 
   // === GLOBAL DAILY BUDGET ===
   const today = new Date().toISOString().split('T')[0];
@@ -30,17 +69,16 @@ export default async function handler(req, res) {
     globalCounter.resetDate = today;
   }
   if (globalCounter.count >= DAILY_GLOBAL_BUDGET) {
-    return res.status(429).json({ error: 'LearnBot is resting — too many students today! Try again tomorrow. 📚' });
+    return res.status(429).json({ error: 'LearnBot is resting — too many students today! Try again tomorrow.' });
   }
 
-  // === PER-USER HOURLY LIMIT ===
-  const userKey = userId || req.headers['x-forwarded-for'] || 'anon';
+  // === PER-USER HOURLY LIMIT (using verified UID) ===
   const now = Date.now();
-  if (!userLimits.has(userKey)) userLimits.set(userKey, []);
-  const userHistory = userLimits.get(userKey).filter(t => t > now - 3600000);
-  userLimits.set(userKey, userHistory);
+  if (!userLimits.has(verifiedUid)) userLimits.set(verifiedUid, []);
+  const userHistory = userLimits.get(verifiedUid).filter(t => t > now - 3600000);
+  userLimits.set(verifiedUid, userHistory);
   if (userHistory.length >= USER_HOURLY_LIMIT) {
-    return res.status(429).json({ error: 'Slow down! Take a break and try again in a bit. ⏳' });
+    return res.status(429).json({ error: 'Slow down! Take a break and try again in a bit.' });
   }
   userHistory.push(now);
   globalCounter.count++;
@@ -90,7 +128,7 @@ export default async function handler(req, res) {
     const inTok = data.usage?.input_tokens || 0;
     const outTok = data.usage?.output_tokens || 0;
     const cost = (inTok * 3 + outTok * 15) / 1000000;
-    console.log(`[AI] ${mode} user=${userKey.substring(0,8)} cost=$${cost.toFixed(4)} daily=${globalCounter.count}/${DAILY_GLOBAL_BUDGET}`);
+    console.log(`[AI] ${mode} user=${verifiedUid.substring(0,8)} cost=$${cost.toFixed(4)} daily=${globalCounter.count}/${DAILY_GLOBAL_BUDGET}`);
 
     let parsed;
     try {
