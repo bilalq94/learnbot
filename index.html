@@ -2233,20 +2233,20 @@ if(view==='landing'){return(<div className={`min-h-screen ${getBgClass()}`}><sty
 {num:'4',icon:'🚀',title:'Level Up!',desc:'Earn XP and climb leaderboards'}
 ].map((s,i)=><div key={i} className="text-center slide-right" style={{animationDelay:`${i*0.15}s`}}><div className="bg-white bg-opacity-20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl font-black text-white">{s.num}</div><div className="text-5xl mb-3">{s.icon}</div><h3 className="text-2xl font-bold text-white mb-2">{s.title}</h3><p className="text-white opacity-90">{s.desc}</p></div>)}</div></div></div>
 
-{/* Social Proof */}
-<div className="bg-white py-20"><div className="max-w-4xl mx-auto px-4 text-center"><h2 className="text-4xl font-black mb-12">Students Love LearnBot</h2><div className="grid md:grid-cols-2 gap-8">{[
-{name:'Sarah M.',role:'High School Senior',quote:'I went from failing to straight As! The gamification makes me WANT to study. Best app ever!',rating:5},
-{name:'Alex K.',role:'College Sophomore',quote:'The chess breaks are genius. I can actually focus for hours now without burning out.',rating:5},
-{name:'Ms. Johnson',role:'AP Calculus Teacher',quote:'My entire class uses LearnBot. Engagement is up 300%. Kids compete to study more!',rating:5},
-{name:'David R.',role:'Medical Student',quote:'Studied 200+ hours last month with LearnBot. The streak feature keeps me motivated daily.',rating:5}
-].map((t,i)=><div key={i} className="bg-gray-50 p-6 rounded-xl text-left"><div className="flex items-center mb-3"><div className="bg-cyan-100 text-cyan-600 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl mr-3">{t.name[0]}</div><div><div className="font-bold">{t.name}</div><div className="text-sm text-gray-500">{t.role}</div></div></div><div className="text-yellow-400 mb-2">{'⭐'.repeat(t.rating)}</div><p className="text-gray-700 italic">"{t.quote}"</p></div>)}</div></div></div>
+{/* Why LearnBot */}
+<div className="bg-white py-20"><div className="max-w-4xl mx-auto px-4 text-center"><h2 className="text-4xl font-black mb-4">Built for How Students Actually Study</h2><p className="text-xl text-gray-600 mb-12">No fake reviews. No inflated numbers. Just a tool built by a student who needed it.</p><div className="grid md:grid-cols-2 gap-8">{[
+{icon:'🎮',title:'Studying Shouldn\'t Feel Like Punishment',desc:'XP, levels, streaks, and leaderboards turn study sessions into something you actually look forward to.'},
+{icon:'🤖',title:'AI That Explains, Not Just Answers',desc:'Ask the AI coach anything about what you\'re studying. It explains concepts, generates quizzes, and makes flashcards.'},
+{icon:'💸',title:'$5. Once. Forever.',desc:'No subscriptions, no trials that auto-charge, no "premium" paywalls every 5 minutes. One price, full access.'},
+{icon:'🛠️',title:'Early Stage, Shipping Fast',desc:'LearnBot is new and actively being built. You get a say in what we build next. Report bugs, request features — we listen.'}
+].map((t,i)=><div key={i} className="bg-gray-50 p-6 rounded-xl text-left"><div className="text-4xl mb-3">{t.icon}</div><h3 className="text-xl font-bold mb-2">{t.title}</h3><p className="text-gray-700">{t.desc}</p></div>)}</div></div></div>
 
-{/* Stats */}
+{/* What You Get */}
 <div className="bg-gradient-to-br from-gray-800 to-slate-900 py-16"><div className="max-w-6xl mx-auto px-4"><div className="grid md:grid-cols-4 gap-8 text-center text-white">{[
-{num:'10,000+',label:'Study Hours Logged'},
-{num:'2,500+',label:'Active Students'},
-{num:'150+',label:'Schools Using LearnBot'},
-{num:'98%',label:'Would Recommend'}
+{num:'⏱️',label:'Pomodoro & Free Timers'},
+{num:'🧠',label:'AI Quizzes & Flashcards'},
+{num:'🏆',label:'XP, Streaks & Leaderboards'},
+{num:'♟️',label:'Chess, Lofi & Study Breaks'}
 ].map((s,i)=><div key={i}><div className="text-5xl font-black mb-2">{s.num}</div><div className="text-xl opacity-90">{s.label}</div></div>)}</div></div></div>
 
 {/* Pricing */}
