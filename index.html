@@ -1199,7 +1199,6 @@ function getThemeColors() {
 }
 
 function getBgClass() {
-  if (userType) return getPersonaTheme().bg;
   const colors = getThemeColors();
   if (themeMode === 'dark') {
     return `bg-gradient-to-br ${colors.darkBg} ${colors.darkTo}`;
@@ -1208,24 +1207,27 @@ function getBgClass() {
 }
 
 function getTextClass() {
-  if (userType) return getPersonaTheme().text;
   return themeMode === 'dark' ? 'text-white' : 'text-gray-900';
 }
 
 function getCardClass() {
-  if (userType) return getPersonaTheme().card;
   if (themeMode === 'dark') {
     return 'bg-white bg-opacity-10 backdrop-blur-sm border border-white border-opacity-10';
   }
   return 'bg-white shadow-lg border border-gray-200';
 }
 
-function getButtonClass() {
-  if (userType) return getPersonaTheme().button + ' text-white font-bold';
+function getStatCardClass() {
+  if (themeMode === 'dark') {
+    return 'bg-white bg-opacity-10 backdrop-blur-sm border border-white border-opacity-10';
+  }
   const colors = getThemeColors();
-  return themeMode === 'dark'
-    ? `bg-gradient-to-r ${colors.from} ${colors.to} text-white font-bold`
-    : `bg-gradient-to-r ${colors.from} ${colors.to} text-white font-bold`;
+  return `bg-gradient-to-r ${colors.from} ${colors.to} text-white`;
+}
+
+function getButtonClass() {
+  const colors = getThemeColors();
+  return `bg-gradient-to-r ${colors.from} ${colors.to} text-white font-bold`;
 }
 
 function getSessionLabel() {
@@ -2768,16 +2770,16 @@ return(
       </div>
     </div>
     <div className="grid grid-cols-3 gap-2 md:gap-4 mb-4 md:mb-6">
-      <div className={`${getPersonaTheme().statCard} rounded-xl p-3 md:p-4 text-white`}>
+      <div className={`${getStatCardClass()} rounded-xl p-3 md:p-4 text-white`}>
         <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2"><Icon name="trophy" className="w-4 h-4 md:w-5 md:h-5 text-yellow-300"/><span className="text-xs md:text-sm">Level</span></div>
         <div className="text-2xl md:text-3xl font-bold flex items-center gap-1">{level}{getTierBadge()&&<span className="text-xl md:text-2xl">{getTierBadge()}</span>}</div>
         <div className="w-full bg-white bg-opacity-30 rounded-full h-1.5 md:h-2 mt-1 md:mt-2"><div className="bg-yellow-300 h-1.5 md:h-2 rounded-full" style={{width:`${levelXp}%`}}/></div>
       </div>
-      <div className={`${getPersonaTheme().statCard} rounded-xl p-3 md:p-4 text-white`}>
+      <div className={`${getStatCardClass()} rounded-xl p-3 md:p-4 text-white`}>
         <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2"><Icon name="zap" className="w-4 h-4 md:w-5 md:h-5 text-orange-300"/><span className="text-xs md:text-sm">Total {getXpLabel()}</span></div>
         <div className="text-2xl md:text-3xl font-bold">{xp}</div>
       </div>
-      <div className={`${getPersonaTheme().statCard} rounded-xl p-3 md:p-4 text-white`}>
+      <div className={`${getStatCardClass()} rounded-xl p-3 md:p-4 text-white`}>
         <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
           <span className="text-lg md:text-xl">🔥</span>
           <span className="text-xs md:text-sm">Streak</span>
