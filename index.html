@@ -1297,14 +1297,31 @@ function getPersonaTheme() {
 
 function getThemeColors() {
   const themes = {
-    cyan: { from: 'from-cyan-500', to: 'to-blue-600', accent: 'bg-teal-500', light: 'bg-cyan-400', darkBg: 'from-gray-900', darkTo: 'to-slate-800', lightBg: 'from-cyan-50', lightTo: 'to-blue-50' },
-    purple: { from: 'from-purple-600', to: 'to-indigo-700', accent: 'bg-purple-600', light: 'bg-purple-500', darkBg: 'from-gray-900', darkTo: 'to-purple-950', lightBg: 'from-purple-50', lightTo: 'to-indigo-50' },
-    sunset: { from: 'from-orange-500', to: 'to-rose-600', accent: 'bg-orange-500', light: 'bg-orange-400', darkBg: 'from-gray-900', darkTo: 'to-orange-950', lightBg: 'from-orange-50', lightTo: 'to-rose-50' },
-    emerald: { from: 'from-emerald-500', to: 'to-teal-600', accent: 'bg-emerald-500', light: 'bg-emerald-400', darkBg: 'from-gray-900', darkTo: 'to-emerald-950', lightBg: 'from-emerald-50', lightTo: 'to-teal-50' },
-    midnight: { from: 'from-indigo-600', to: 'to-slate-800', accent: 'bg-indigo-500', light: 'bg-indigo-400', darkBg: 'from-slate-950', darkTo: 'to-indigo-950', lightBg: 'from-indigo-50', lightTo: 'to-slate-100' },
-    rose: { from: 'from-pink-500', to: 'to-rose-600', accent: 'bg-pink-500', light: 'bg-pink-400', darkBg: 'from-gray-900', darkTo: 'to-pink-950', lightBg: 'from-pink-50', lightTo: 'to-rose-50' }
+    cyan: { from: 'from-cyan-500', to: 'to-blue-600', accent: 'text-cyan-400', accentBorder: 'border-cyan-500', glow1: 'bg-cyan-500', glow2: 'bg-blue-500', darkBg: 'from-gray-900', darkTo: 'to-slate-800', darkCard: 'from-slate-900 via-slate-800 to-slate-900', lightBg: 'from-cyan-50', lightTo: 'to-blue-50', lightCard: 'bg-white' },
+    purple: { from: 'from-purple-600', to: 'to-indigo-700', accent: 'text-purple-400', accentBorder: 'border-purple-500', glow1: 'bg-purple-500', glow2: 'bg-indigo-500', darkBg: 'from-gray-900', darkTo: 'to-purple-950', darkCard: 'from-gray-900 via-purple-950 to-gray-900', lightBg: 'from-purple-50', lightTo: 'to-indigo-50', lightCard: 'bg-white' },
+    sunset: { from: 'from-orange-500', to: 'to-rose-600', accent: 'text-orange-400', accentBorder: 'border-orange-500', glow1: 'bg-orange-500', glow2: 'bg-rose-500', darkBg: 'from-gray-900', darkTo: 'to-orange-950', darkCard: 'from-gray-900 via-orange-950 to-gray-900', lightBg: 'from-orange-50', lightTo: 'to-rose-50', lightCard: 'bg-white' },
+    emerald: { from: 'from-emerald-500', to: 'to-teal-600', accent: 'text-emerald-400', accentBorder: 'border-emerald-500', glow1: 'bg-emerald-500', glow2: 'bg-teal-500', darkBg: 'from-gray-900', darkTo: 'to-emerald-950', darkCard: 'from-gray-900 via-emerald-950 to-gray-900', lightBg: 'from-emerald-50', lightTo: 'to-teal-50', lightCard: 'bg-white' },
+    midnight: { from: 'from-indigo-600', to: 'to-slate-800', accent: 'text-indigo-400', accentBorder: 'border-indigo-500', glow1: 'bg-indigo-500', glow2: 'bg-slate-500', darkBg: 'from-slate-950', darkTo: 'to-indigo-950', darkCard: 'from-slate-950 via-indigo-950 to-slate-950', lightBg: 'from-indigo-50', lightTo: 'to-slate-100', lightCard: 'bg-white' },
+    rose: { from: 'from-pink-500', to: 'to-rose-600', accent: 'text-pink-400', accentBorder: 'border-pink-500', glow1: 'bg-pink-500', glow2: 'bg-rose-500', darkBg: 'from-gray-900', darkTo: 'to-pink-950', darkCard: 'from-gray-900 via-pink-950 to-gray-900', lightBg: 'from-pink-50', lightTo: 'to-rose-50', lightCard: 'bg-white' }
   };
   return themes[colorTheme] || themes.cyan;
+}
+
+function getHeroCardClass() {
+  const colors = getThemeColors();
+  if (themeMode === 'dark') {
+    return `bg-gradient-to-br ${colors.darkCard} border border-white border-opacity-10`;
+  }
+  return `${colors.lightCard} shadow-lg border border-gray-200`;
+}
+
+function getAccentColor() {
+  return getThemeColors().accent;
+}
+
+function getGlowColors() {
+  const colors = getThemeColors();
+  return { glow1: colors.glow1, glow2: colors.glow2 };
 }
 
 function getBgClass() {
@@ -2931,10 +2948,10 @@ return(
           {id:'timer',label:'Timer',icon:'⏱️'},
           {id:'aicoach',label:'LearnBot',icon:'🤖',special:true},
           {id:'courses',label:userType==='professional'?'Projects':'Courses',icon:'📚'},
-        ].map(t=><button key={t.id} onClick={()=>setTab(t.id)} className={`flex flex-col items-center py-2.5 px-1 transition-all ${t.special && tab!==t.id?'text-cyan-400':tab===t.id?'text-cyan-400':'text-gray-400'}`}><span className={`mb-0.5 ${t.special?'text-2xl':'text-xl'}`}>{t.icon}</span><span className="text-[10px] font-semibold">{t.label}</span>{tab===t.id&&<div className={`w-1 h-1 rounded-full mt-0.5 ${t.special?'bg-cyan-400':'bg-cyan-400'}`}/>}</button>)}
+        ].map(t=><button key={t.id} onClick={()=>setTab(t.id)} className={`flex flex-col items-center py-2.5 px-1 transition-all ${t.special && tab!==t.id?getAccentColor():tab===t.id?getAccentColor():(themeMode==='dark'?'text-gray-400':'text-gray-500')}`}><span className={`mb-0.5 ${t.special?'text-2xl':'text-xl'}`}>{t.icon}</span><span className="text-[10px] font-semibold">{t.label}</span>{tab===t.id&&<div className={`w-1 h-1 rounded-full mt-0.5 bg-gradient-to-r ${getThemeColors().from} ${getThemeColors().to}`}/>}</button>)}
         {/* More Menu */}
         <div className="relative">
-          <button onClick={()=>setShowMoreNav(!showMoreNav)} className={`flex flex-col items-center py-2.5 px-1 w-full transition-all ${['stats','deadlines','sessions','skills','classroom','leaderboard'].includes(tab)?'text-cyan-400':'text-gray-400'}`}><span className="text-xl mb-0.5">☰</span><span className="text-[10px] font-semibold">More</span>{['stats','deadlines','sessions','skills','classroom','leaderboard'].includes(tab)&&<div className="w-1 h-1 rounded-full bg-cyan-400 mt-0.5"/>}</button>
+          <button onClick={()=>setShowMoreNav(!showMoreNav)} className={`flex flex-col items-center py-2.5 px-1 w-full transition-all ${['stats','deadlines','sessions','skills','classroom','leaderboard'].includes(tab)?getAccentColor():(themeMode==='dark'?'text-gray-400':'text-gray-500')}`}><span className="text-xl mb-0.5">☰</span><span className="text-[10px] font-semibold">More</span>{['stats','deadlines','sessions','skills','classroom','leaderboard'].includes(tab)&&<div className={`w-1 h-1 rounded-full mt-0.5 bg-gradient-to-r ${getThemeColors().from} ${getThemeColors().to}`}/>}</button>
           {showMoreNav&&<div className={`absolute bottom-full right-0 mb-2 rounded-xl shadow-2xl border overflow-hidden w-48 ${themeMode==='dark'?'bg-gray-800 border-white border-opacity-10':'bg-white border-gray-200'}`}>
             {[
               {id:'stats',label:'Stats',icon:'📈'},
@@ -2942,7 +2959,7 @@ return(
               {id:'sessions',label:userType==='professional'?'History':'Sessions',icon:'🕐'},
               {id:'skills',label:'Skills',icon:userType==='professional'?'💼':'⚔️'},
               {id:'leaderboard',label:'Ranks',icon:'🏆'},
-            ].map(t=><button key={t.id} onClick={()=>{setTab(t.id);setShowMoreNav(false)}} className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all ${tab===t.id?(themeMode==='dark'?'bg-cyan-500 bg-opacity-20 text-cyan-400':'bg-cyan-50 text-cyan-600'):(themeMode==='dark'?'text-gray-300 hover:bg-white hover:bg-opacity-5':'text-gray-600 hover:bg-gray-100')}`}><span>{t.icon}</span>{t.label}</button>)}
+            ].map(t=><button key={t.id} onClick={()=>{setTab(t.id);setShowMoreNav(false)}} className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all ${tab===t.id?(themeMode==='dark'?`bg-white bg-opacity-10 ${getAccentColor()}`:`bg-gray-100 ${getAccentColor()}`):(themeMode==='dark'?'text-gray-300 hover:bg-white hover:bg-opacity-5':'text-gray-600 hover:bg-gray-100')}`}><span>{t.icon}</span>{t.label}</button>)}
           </div>}
         </div>
       </div>
@@ -2953,14 +2970,14 @@ return(
     {tab==='dashboard'&&(
       <div className="space-y-4">
         {/* Hero Welcome + Stats Bar */}
-        <div className={`relative overflow-hidden rounded-2xl border p-5 md:p-6 ${themeMode==='dark'?'bg-gradient-to-br from-gray-900 via-slate-900 to-gray-950 border-white border-opacity-10':'bg-white shadow-lg border-gray-200'}`}>
-          <div className={`absolute top-0 right-0 w-40 h-40 rounded-full blur-[100px] ${themeMode==='dark'?'bg-cyan-500 opacity-10':'bg-cyan-300 opacity-20'}`}/>
-          <div className={`absolute bottom-0 left-0 w-32 h-32 rounded-full blur-[80px] ${themeMode==='dark'?'bg-blue-500 opacity-10':'bg-blue-300 opacity-15'}`}/>
+        <div className={`relative overflow-hidden rounded-2xl p-5 md:p-6 ${getHeroCardClass()}`}>
+          <div className={`absolute top-0 right-0 w-40 h-40 rounded-full blur-[100px] ${getGlowColors().glow1} ${themeMode==='dark'?'opacity-10':'opacity-20'}`}/>
+          <div className={`absolute bottom-0 left-0 w-32 h-32 rounded-full blur-[80px] ${getGlowColors().glow2} ${themeMode==='dark'?'opacity-10':'opacity-15'}`}/>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-xl md:text-2xl font-black text-white">Hey {name} 👋</h2>
-                {goal&&<p className="text-cyan-400 text-sm mt-0.5">🎯 {goal}</p>}
+                <h2 className={`text-xl md:text-2xl font-black ${getTextClass()}`}>Hey {name} 👋</h2>
+                {goal&&<p className={`${getAccentColor()} text-sm mt-0.5`}>🎯 {goal}</p>}
               </div>
               <div className="flex items-center gap-2">
                 <div className={`rounded-xl px-3 py-1.5 text-center border ${themeMode==='dark'?'bg-white bg-opacity-5 border-white border-opacity-10':'bg-gray-50 border-gray-200'}`}>
@@ -2975,10 +2992,10 @@ return(
             <div className="mb-4">
               <div className="flex justify-between text-xs mb-1">
                 <span className={themeMode==='dark'?'text-gray-400':'text-gray-500'}>Level {level} Progress</span>
-                <span className="text-cyan-400 font-mono font-bold">{levelXp}/100 XP</span>
+                <span className={`${getAccentColor()} font-mono font-bold`}>{levelXp}/100 XP</span>
               </div>
               <div className={`w-full rounded-full h-2 overflow-hidden ${themeMode==='dark'?'bg-gray-800':'bg-gray-200'}`}>
-                <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 transition-all duration-500 relative" style={{width:`${levelXp}%`}}>
+                <div className={`h-full rounded-full bg-gradient-to-r ${getThemeColors().from} ${getThemeColors().to} transition-all duration-500 relative`} style={{width:`${levelXp}%`}}>
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-pulse"/>
                 </div>
               </div>
@@ -3004,7 +3021,7 @@ return(
         {/* Streak + Weekly Progress Side by Side */}
         <div className="grid md:grid-cols-2 gap-4">
           {/* Streak Card */}
-          <div className={`relative overflow-hidden rounded-2xl border p-5 ${themeMode==='dark'?'border-orange-500 border-opacity-20 bg-gradient-to-br from-gray-900 to-gray-950':'border-orange-200 bg-white shadow-lg'}`}>
+          <div className={`relative overflow-hidden rounded-2xl border p-5 ${themeMode==='dark'?`border-orange-500 border-opacity-20 bg-gradient-to-br ${getThemeColors().darkCard}`:'border-orange-200 bg-white shadow-lg'}`}>
             <div className={`absolute top-0 right-0 w-24 h-24 bg-orange-500 rounded-full blur-[60px] ${themeMode==='dark'?'opacity-15':'opacity-10'}`}/>
             <style>{`@keyframes flamePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}.flame-pulse{animation:flamePulse 2s ease-in-out infinite}`}</style>
             <div className="relative z-10">
@@ -3036,15 +3053,15 @@ return(
           </div>
 
           {/* Weekly Progress Card */}
-          <div className={`relative overflow-hidden rounded-2xl border p-5 ${themeMode==='dark'?'border-cyan-500 border-opacity-20 bg-gradient-to-br from-gray-900 to-gray-950':'border-cyan-200 bg-white shadow-lg'}`}>
-            <div className={`absolute bottom-0 left-0 w-24 h-24 bg-cyan-500 rounded-full blur-[60px] ${themeMode==='dark'?'opacity-15':'opacity-10'}`}/>
+          <div className={`relative overflow-hidden rounded-2xl border p-5 ${themeMode==='dark'?`${getThemeColors().accentBorder} border-opacity-20 bg-gradient-to-br ${getThemeColors().darkCard}`:'border-gray-200 bg-white shadow-lg'}`}>
+            <div className={`absolute bottom-0 left-0 w-24 h-24 ${getGlowColors().glow1} rounded-full blur-[60px] ${themeMode==='dark'?'opacity-15':'opacity-10'}`}/>
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <span className="text-lg">📊</span>
                   <span className={`text-sm font-bold uppercase tracking-wider ${themeMode==='dark'?'text-gray-400':'text-gray-500'}`}>This Week</span>
                 </div>
-                <span className="text-cyan-400 font-mono text-sm font-bold">{Math.round(getWeeklyHours())}h / {weeklyTarget}h</span>
+                <span className={`${getAccentColor()} font-mono text-sm font-bold`}>{Math.round(getWeeklyHours())}h / {weeklyTarget}h</span>
               </div>
               <div className="w-full bg-gray-800 rounded-full h-3 mb-3 overflow-hidden">
                 <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-700 relative" style={{width:`${Math.min((getWeeklyHours()/weeklyTarget)*100,100)}%`}}>
@@ -3054,7 +3071,7 @@ return(
               <div className={`text-xs px-3 py-1.5 rounded-lg inline-block ${
                 getWeeklyHours()>=weeklyTarget
                   ?'bg-green-500 bg-opacity-20 text-green-400 border border-green-500 border-opacity-20'
-                  :'bg-cyan-500 bg-opacity-10 text-cyan-400 border border-cyan-500 border-opacity-20'
+                  :`bg-white bg-opacity-10 ${getAccentColor()} ${getThemeColors().accentBorder} border border-opacity-20`
               }`}>
                 {getWeeklyHours()>=weeklyTarget?'🎉 Weekly goal reached!':weeklyTarget-getWeeklyHours()>0?`${Math.round(weeklyTarget-getWeeklyHours())}h to go`:'Almost there!'}
               </div>
@@ -3082,7 +3099,7 @@ return(
 
         {/* Quick Actions - Compact */}
         <div className="grid grid-cols-3 gap-2">
-          <button onClick={()=>setTab('timer')} className="bg-gradient-to-br from-cyan-600 to-blue-700 text-white py-3 md:py-4 rounded-xl font-bold flex flex-col items-center gap-1 hover:scale-105 transition-all border border-cyan-400 border-opacity-20 text-xs md:text-sm">
+          <button onClick={()=>setTab('timer')} className={`bg-gradient-to-r ${getThemeColors().from} ${getThemeColors().to} text-white py-3 md:py-4 rounded-xl font-bold flex flex-col items-center gap-1 hover:scale-105 transition-all border ${getThemeColors().accentBorder} border-opacity-20 text-xs md:text-sm`}>
             <Icon name="play" className="w-5 h-5"/>
             Study
           </button>
@@ -3090,16 +3107,16 @@ return(
             <span className="text-lg">🤖</span>
             LearnBot
           </button>
-          <button onClick={()=>setTab('courses')} className="bg-gradient-to-br from-gray-700 to-gray-800 text-white py-3 md:py-4 rounded-xl font-bold flex flex-col items-center gap-1 hover:scale-105 transition-all border border-white border-opacity-10 text-xs md:text-sm">
+          <button onClick={()=>setTab('courses')} className={`py-3 md:py-4 rounded-xl font-bold flex flex-col items-center gap-1 hover:scale-105 transition-all border text-xs md:text-sm ${themeMode==='dark'?'bg-white bg-opacity-10 text-white border-white border-opacity-10':'bg-gray-100 text-gray-700 border-gray-200'}`}>
             <Icon name="plus" className="w-5 h-5"/>
             Courses
           </button>
         </div>
 
         {/* Beta Notice - Minimal */}
-        <div className="bg-cyan-500 bg-opacity-10 border border-cyan-500 border-opacity-15 rounded-xl px-4 py-2.5 flex items-center justify-between gap-3">
-          <span className="text-cyan-300 text-xs">🚀 <strong>Beta</strong> — some features are being polished</span>
-          <button onClick={()=>setShowFeedback(true)} className="text-cyan-400 text-xs font-bold hover:underline whitespace-nowrap">Feedback →</button>
+        <div className={`bg-white bg-opacity-10 ${getThemeColors().accentBorder} border border-opacity-15 rounded-xl px-4 py-2.5 flex items-center justify-between gap-3`}>
+          <span className={`${getAccentColor()} text-xs`}>🚀 <strong>Beta</strong> — some features are being polished</span>
+          <button onClick={()=>setShowFeedback(true)} className={`${getAccentColor()} text-xs font-bold hover:underline whitespace-nowrap`}>Feedback →</button>
         </div>
 
         {/* Upcoming Deadlines on Dashboard */}
@@ -4625,7 +4642,7 @@ return(
     
     {/* Floating Mini Timer - shows when timer is running on non-timer tabs */}
     {view==='app'&&running&&tab!=='timer'&&<div onClick={()=>setTab('timer')} className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-30 cursor-pointer hover:scale-105 transition-all">
-      <div className="bg-gradient-to-r from-cyan-600 to-blue-700 rounded-2xl px-4 py-3 shadow-2xl border border-cyan-400 border-opacity-40 flex items-center gap-3 min-w-[140px]">
+      <div className={`bg-gradient-to-r ${getThemeColors().from} ${getThemeColors().to} rounded-2xl px-4 py-3 shadow-2xl border ${getThemeColors().accentBorder} border-opacity-40 flex items-center gap-3 min-w-[140px]`}>
         <div className="relative">
           <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"/>
         </div>
