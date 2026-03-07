@@ -860,6 +860,9 @@ async function loadUserData(firebaseUser){try{const userDoc=await db.collection(
 
 if(data.organizationId){const orgDoc=await db.collection('organizations').doc(data.organizationId).get();if(orgDoc.exists){setOrganization({id:orgDoc.id,...orgDoc.data()})}}
 
+// Pro daily token bonus: grant 5 tokens once per day
+if(data.isPro){const today=new Date().toISOString().split('T')[0];if(data.lastTokenBonusDate!==today){const bonusTokens=(data.learnTokens!=null?data.learnTokens:STARTING_TOKENS)+5;setLearnTokens(bonusTokens);db.collection('users').doc(firebaseUser.uid).update({learnTokens:bonusTokens,lastTokenBonusDate:today})}}
+
 if(!data.username){setShowUsernamePrompt(true)}else if(!data.onboardingCompleted){setShowOnboarding(true)}}}catch(err){console.error('Error loading user data:',err)}}
 
 async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,classrooms,isTeacher,teachingClasses,appMode,organizationId:organization?.id||null,isOrgAdmin,themeMode,colorTheme,fontFamily,learnTokens,referralCode,referralCount,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
@@ -2036,8 +2039,12 @@ function finish(){
   setSessions(prev=>[...prev,sessionData]);
   setXp(prev=>prev+pts);
   setEarnedXp(pts);
-  
-  // Tokens no longer earned by studying — purchase or referral only
+
+  // Earn 1 token per 30 minutes studied
+  const tokensEarned = Math.floor(actualDuration / 30);
+  if (tokensEarned > 0) {
+    setLearnTokens(prev => prev + tokensEarned);
+  }
   
   // Store current session for summary card
   setCurrentSessionData(sessionData);
@@ -2056,7 +2063,7 @@ function finish(){
   }
 }
 
-function addCourse(){if(!hasAccess&&courses.length>=2){setShowPaywall(true);return}if(newCourse.trim()){setCourses(prev=>[...prev,{id:Date.now(),name:newCourse.trim()}]);setNewCourse('')}}
+function addCourse(){if(!hasAccess&&courses.length>=3){setShowPaywall(true);return}if(newCourse.trim()){setCourses(prev=>[...prev,{id:Date.now(),name:newCourse.trim()}]);setNewCourse('')}}
 
 function getTierBadge(){if(tier===0)return'';if(tier===1)return'🥈';if(tier===2)return'🥇';return'💎'.repeat(Math.max(tier-2,1))}
 
@@ -3170,7 +3177,7 @@ return(
           <input type="text" placeholder="Add course" value={newCourse} onChange={e=>setNewCourse(e.target.value)} onKeyPress={e=>e.key==='Enter'&&addCourse()} className="flex-1 bg-white rounded-lg px-4 py-2"/>
           <button onClick={addCourse} className={`${getThemeColors().accent} text-white px-4 py-2 rounded-lg`}><Icon name="plus" className="w-5 h-5"/></button>
         </div>
-        {!isPro&&<p className="text-white text-sm mb-4">Free: {courses.length}/2 courses</p>}
+        {!isPro&&<p className="text-white text-sm mb-4">Free: {courses.length}/3 courses</p>}
         <div className="space-y-3">
           {courses.length===0?<div className="text-center py-12"><Icon name="book" className="w-16 h-16 text-white opacity-40 mx-auto mb-4"/><p className="text-white opacity-70">No courses yet!</p></div>:courses.map(c=><div key={c.id} className="bg-white bg-opacity-20 rounded-lg p-4 flex justify-between items-center"><span className="text-white font-semibold">{c.name}</span><button onClick={()=>setCourses(courses.filter(x=>x.id!==c.id))} className="text-red-300"><Icon name="x" className="w-5 h-5"/></button></div>)}
         </div>
@@ -3307,8 +3314,14 @@ return(
               </div>
             </div>
             
-            {/* Course Breakdown */}
-            <div className="bg-white bg-opacity-20 rounded-2xl p-6">
+            {/* Course Breakdown — Pro only */}
+            {!isPro&&<div className="bg-white bg-opacity-10 rounded-2xl p-6 text-center border border-white border-opacity-10">
+              <div className="text-4xl mb-3">📚</div>
+              <h3 className="text-lg font-bold text-white mb-2">Course Breakdown</h3>
+              <p className="text-white text-opacity-60 text-sm mb-4">See time spent per course with visual charts</p>
+              <button onClick={()=>setShowPaywall(true)} className="bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 px-6 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-all">Unlock with Pro</button>
+            </div>}
+            {isPro&&<div className="bg-white bg-opacity-20 rounded-2xl p-6">
               <h3 className="text-xl font-bold text-white mb-4">📚 Time by Course</h3>
               <div className="space-y-3">
                 {Object.entries(sessions.reduce((acc,s)=>{
@@ -3339,8 +3352,16 @@ return(
                   );
                 })}
               </div>
-            </div>
-            
+            </div>}
+
+            {/* This Week vs Last Week — Pro only */}
+            {!isPro&&<div className="bg-white bg-opacity-10 rounded-2xl p-6 text-center border border-white border-opacity-10">
+              <div className="text-4xl mb-3">🎯</div>
+              <h3 className="text-lg font-bold text-white mb-2">Weekly Trends & Insights</h3>
+              <p className="text-white text-opacity-60 text-sm mb-4">Track weekly patterns, streaks, and personalized study insights</p>
+              <button onClick={()=>setShowPaywall(true)} className="bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 px-6 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-all">Unlock with Pro</button>
+            </div>}
+            {isPro&&<>
             {/* This Week vs Last Week */}
             <div className="grid md:grid-cols-2 gap-4">
               <div className="bg-white bg-opacity-20 rounded-2xl p-6">
@@ -3431,6 +3452,7 @@ return(
                 )}
               </div>
             </div>
+          </>}
           </>
         )}
       </div>
@@ -4205,7 +4227,7 @@ return(
           <button onClick={()=>setShowAddDeadline(false)} className="flex-1 bg-white bg-opacity-10 text-white py-3 rounded-xl font-bold hover:bg-opacity-20 transition-colors">Cancel</button>
           <button onClick={()=>{
             if(!newDeadline.title.trim()||!newDeadline.date){return}
-            if(!hasAccess&&deadlines.length>=3){setShowAddDeadline(false);setShowPaywall(true);return}
+            if(!hasAccess&&deadlines.length>=5){setShowAddDeadline(false);setShowPaywall(true);return}
             setDeadlines(prev=>[...prev,{...newDeadline,id:Date.now(),title:newDeadline.title.trim()}]);
             setNewDeadline({course:'',title:'',date:'',type:'assignment',time:'',notes:''});
             setShowAddDeadline(false);
@@ -4431,14 +4453,15 @@ return(
           </div>
 
           <div className="space-y-3 mb-6">
-            <div className="flex items-center gap-3 text-white"><span className="text-lg">📚</span><div><span className="font-bold">Unlimited courses</span><span className="text-white text-opacity-50 text-sm block">Free users limited to 2</span></div></div>
-            <div className="flex items-center gap-3 text-white"><span className="text-lg">📅</span><div><span className="font-bold">Unlimited deadlines</span><span className="text-white text-opacity-50 text-sm block">Free users limited to 3</span></div></div>
-            <div className="flex items-center gap-3 text-white"><span className="text-lg">📊</span><div><span className="font-bold">Full analytics dashboard</span><span className="text-white text-opacity-50 text-sm block">Deep insights into your study habits</span></div></div>
-            <div className="flex items-center gap-3 text-white"><span className="text-lg">🎨</span><div><span className="font-bold">Custom themes & colors</span><span className="text-white text-opacity-50 text-sm block">Personalize your study space</span></div></div>
-            <div className="flex items-center gap-3 text-white"><span className="text-lg">🚀</span><div><span className="font-bold">Early access to features</span><span className="text-white text-opacity-50 text-sm block">Be the first to try new tools</span></div></div>
+            <div className="flex items-center gap-3 text-white"><span className="text-lg">📚</span><div><span className="font-bold">Unlimited courses</span><span className="text-white text-opacity-50 text-sm block">Free users limited to 3</span></div></div>
+            <div className="flex items-center gap-3 text-white"><span className="text-lg">📅</span><div><span className="font-bold">Unlimited deadlines</span><span className="text-white text-opacity-50 text-sm block">Free users limited to 5</span></div></div>
+            <div className="flex items-center gap-3 text-white"><span className="text-lg">📊</span><div><span className="font-bold">Full analytics dashboard</span><span className="text-white text-opacity-50 text-sm block">Course breakdowns, weekly trends & insights</span></div></div>
+            <div className="flex items-center gap-3 text-white"><span className="text-lg">🎨</span><div><span className="font-bold">All themes, colors & fonts</span><span className="text-white text-opacity-50 text-sm block">5 color themes, light mode & extra fonts</span></div></div>
+            <div className="flex items-center gap-3 text-white"><span className="text-lg">🪙</span><div><span className="font-bold">5 free AI tokens daily</span><span className="text-white text-opacity-50 text-sm block">Quizzes, flashcards, summaries & explanations</span></div></div>
           </div>
 
-          {isTrialActive()&&<button onClick={()=>setShowPaywall(false)} className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 py-4 rounded-xl font-black text-lg mb-3 hover:scale-105 transition-all shadow-lg">🎉 Free trial — {getTrialDaysLeft()} day{getTrialDaysLeft()!==1?'s':''} left! Try Pro features free</button>}
+          <button onClick={()=>startCheckout('pro')} disabled={paymentProcessing} className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 py-4 rounded-xl font-black text-lg mb-3 hover:scale-105 transition-all shadow-lg disabled:opacity-50">{paymentProcessing?'Processing...':'Upgrade Now — $5 Lifetime'}</button>
+          {isTrialActive()&&<button onClick={()=>setShowPaywall(false)} className="w-full bg-white bg-opacity-10 text-white py-3 rounded-xl font-semibold mb-2 hover:bg-opacity-20 transition-all">Continue Free Trial ({getTrialDaysLeft()} day{getTrialDaysLeft()!==1?'s':''} left)</button>}
           {paymentError&&<div className="bg-red-500 bg-opacity-20 border border-red-300 text-red-200 p-3 rounded-lg mb-3 text-sm text-center">{paymentError}</div>}
           <button onClick={()=>setShowPaywall(false)} className="w-full text-white text-sm opacity-50 hover:opacity-75 py-2">Maybe later</button>
           <p className="text-white text-opacity-30 text-xs text-center mt-3">Secure payment via Stripe · No subscription · Cancel-proof</p>
@@ -4459,7 +4482,7 @@ return(
     {showBreakGame&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50 p-4"><div className="bg-gradient-to-br from-slate-700 via-gray-800 to-zinc-900 rounded-2xl p-8 max-w-4xl w-full h-[80vh] relative overflow-hidden"><button onClick={()=>{setShowBreakGame(false);setGameActive(false)}} className="absolute top-4 right-4 text-white opacity-75 hover:opacity-100 z-10"><Icon name="x" className="w-8 h-8"/></button>{!gameActive&&gameTime===60?<div className="text-center h-full flex flex-col items-center justify-center"><div className="text-6xl mb-6">🎮</div><h2 className="text-4xl font-bold text-white mb-4">Focus Trainer</h2><p className="text-white opacity-90 text-lg mb-8">Click the targets as fast as you can!<br/>60 seconds • Improve your reaction time</p>{gameHighScore>0&&<div className="bg-white bg-opacity-20 rounded-xl p-4 mb-6"><div className="text-white text-sm opacity-75">High Score</div><div className="text-yellow-300 text-3xl font-bold">{gameHighScore} points</div></div>}<button onClick={startBreakGame} className="bg-white text-slate-800 px-8 py-4 rounded-xl font-bold text-xl hover:scale-105 transition-all">Start Game 🚀</button></div>:<div className="h-full flex flex-col"><div className="flex justify-between items-center mb-4"><div className="text-white"><span className="text-4xl font-bold">{gameScore}</span><span className="text-lg opacity-75 ml-2">points</span></div><div className="text-white"><span className="text-4xl font-bold">{gameTime}</span><span className="text-lg opacity-75 ml-2">seconds</span></div></div><div className="flex-1 bg-white bg-opacity-10 rounded-xl relative overflow-hidden">{gameTargets.map(target=><div key={target.id} onClick={()=>hitTarget(target.id)} className="absolute bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full cursor-pointer hover:scale-110 transition-transform shadow-lg" style={{left:`${target.x}%`,top:`${target.y}%`,width:`${target.size}px`,height:`${target.size}px`}}/>)}{gameTime===0&&<div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75"><div className="text-center"><div className="text-6xl mb-4">🎉</div><div className="text-white text-4xl font-bold mb-2">Game Over!</div><div className="text-yellow-300 text-5xl font-black mb-6">{gameScore} points</div>{gameScore>gameHighScore&&<div className="text-green-400 text-xl mb-6">🏆 New High Score!</div>}<button onClick={startBreakGame} className="bg-white text-slate-800 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all mr-3">Play Again</button><button onClick={()=>setShowBreakGame(false)} className="bg-white bg-opacity-20 text-white px-6 py-3 rounded-xl font-bold hover:bg-opacity-30">Close</button></div></div>}</div></div>}</div></div>}
     
     {/* Customization Modal */}
-    {showCustomization&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50 p-4"><div className="bg-gradient-to-br from-slate-700 to-gray-900 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"><div className="flex justify-between items-center mb-6"><h2 className="text-3xl font-bold text-white">🎨 Customize Appearance</h2><button onClick={()=>setShowCustomization(false)} className="text-white opacity-75 hover:opacity-100"><Icon name="x" className="w-8 h-8"/></button></div><div className="space-y-6"><div className="bg-white bg-opacity-20 rounded-xl p-6"><h3 className="text-white font-bold mb-4 text-xl">Theme Mode</h3><div className="grid grid-cols-2 gap-3"><button onClick={()=>setThemeMode('dark')} className={`p-4 rounded-lg font-semibold transition-all ${themeMode==='dark'?'bg-white text-slate-800':'bg-white bg-opacity-20 text-white'}`}><div className="text-3xl mb-2">🌙</div>Dark Mode</button><button onClick={()=>setThemeMode('light')} className={`p-4 rounded-lg font-semibold transition-all ${themeMode==='light'?'bg-white text-slate-800':'bg-white bg-opacity-20 text-white'}`}><div className="text-3xl mb-2">☀️</div>Light Mode</button></div></div><div className="bg-white bg-opacity-20 rounded-xl p-6"><h3 className="text-white font-bold mb-4 text-xl">Color Theme</h3><div className="grid grid-cols-3 gap-3">{[{name:'cyan',label:'Cyan',gradient:'from-cyan-500 to-blue-600',emoji:'💙'},{name:'purple',label:'Indigo',gradient:'from-indigo-500 to-blue-700',emoji:'🔵'},{name:'orange',label:'Orange',gradient:'from-orange-500 to-red-600',emoji:'🧡'},{name:'green',label:'Green',gradient:'from-green-500 to-emerald-600',emoji:'💚'},{name:'blue',label:'Blue',gradient:'from-blue-500 to-indigo-600',emoji:'💙'}].map(theme=><button key={theme.name} onClick={()=>setColorTheme(theme.name)} className={`p-4 rounded-lg font-semibold transition-all ${colorTheme===theme.name?'bg-white text-slate-800 ring-4 ring-white':'bg-white bg-opacity-20 text-white'}`}><div className={`w-full h-12 rounded-lg mb-2 bg-gradient-to-r ${theme.gradient}`}/>{theme.emoji} {theme.label}</button>)}</div></div><div className="bg-white bg-opacity-20 rounded-xl p-6"><h3 className="text-white font-bold mb-4 text-xl">Font Style</h3><div className="grid grid-cols-2 gap-3">{[{name:'default',label:'Default',sample:'Aa'},{name:'dyslexic',label:'Dyslexic-Friendly',sample:'Aa'},{name:'serif',label:'Serif',sample:'Aa'},{name:'mono',label:'Monospace',sample:'Aa'}].map(font=><button key={font.name} onClick={()=>setFontFamily(font.name)} className={`p-4 rounded-lg font-semibold transition-all ${fontFamily===font.name?'bg-white text-slate-800':'bg-white bg-opacity-20 text-white'} ${font.name==='serif'?'font-serif':font.name==='mono'?'font-mono':'font-sans'}`}><div className="text-3xl mb-1">{font.sample}</div>{font.label}</button>)}</div></div></div><button onClick={()=>setShowCustomization(false)} className="w-full bg-white text-slate-800 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all mt-6">Done ✨</button></div></div>}
+    {showCustomization&&<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50 p-4"><div className="bg-gradient-to-br from-slate-700 to-gray-900 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"><div className="flex justify-between items-center mb-6"><h2 className="text-3xl font-bold text-white">🎨 Customize Appearance</h2><button onClick={()=>setShowCustomization(false)} className="text-white opacity-75 hover:opacity-100"><Icon name="x" className="w-8 h-8"/></button></div><div className="space-y-6"><div className="bg-white bg-opacity-20 rounded-xl p-6"><h3 className="text-white font-bold mb-4 text-xl">Theme Mode</h3><div className="grid grid-cols-2 gap-3"><button onClick={()=>setThemeMode('dark')} className={`p-4 rounded-lg font-semibold transition-all ${themeMode==='dark'?'bg-white text-slate-800':'bg-white bg-opacity-20 text-white'}`}><div className="text-3xl mb-2">🌙</div>Dark Mode</button><button onClick={()=>{if(!isPro){setShowCustomization(false);setShowPaywall(true);return}setThemeMode('light')}} className={`p-4 rounded-lg font-semibold transition-all relative ${themeMode==='light'?'bg-white text-slate-800':'bg-white bg-opacity-20 text-white'}`}><div className="text-3xl mb-2">☀️</div>Light Mode{!isPro&&<span className="absolute top-2 right-2 text-xs bg-yellow-400 text-gray-900 px-1.5 py-0.5 rounded-full font-bold">PRO</span>}</button></div></div><div className="bg-white bg-opacity-20 rounded-xl p-6"><h3 className="text-white font-bold mb-4 text-xl">Color Theme</h3><div className="grid grid-cols-3 gap-3">{[{name:'cyan',label:'Cyan',gradient:'from-cyan-500 to-blue-600',emoji:'💙',free:true},{name:'purple',label:'Indigo',gradient:'from-indigo-500 to-blue-700',emoji:'🔵',free:true},{name:'orange',label:'Orange',gradient:'from-orange-500 to-red-600',emoji:'🧡',free:false},{name:'green',label:'Green',gradient:'from-green-500 to-emerald-600',emoji:'💚',free:false},{name:'blue',label:'Blue',gradient:'from-blue-500 to-indigo-600',emoji:'💙',free:false}].map(theme=><button key={theme.name} onClick={()=>{if(!theme.free&&!isPro){setShowCustomization(false);setShowPaywall(true);return}setColorTheme(theme.name)}} className={`p-4 rounded-lg font-semibold transition-all relative ${colorTheme===theme.name?'bg-white text-slate-800 ring-4 ring-white':'bg-white bg-opacity-20 text-white'}`}><div className={`w-full h-12 rounded-lg mb-2 bg-gradient-to-r ${theme.gradient}`}/>{theme.emoji} {theme.label}{!theme.free&&!isPro&&<span className="absolute top-2 right-2 text-xs bg-yellow-400 text-gray-900 px-1.5 py-0.5 rounded-full font-bold">PRO</span>}</button>)}</div></div><div className="bg-white bg-opacity-20 rounded-xl p-6"><h3 className="text-white font-bold mb-4 text-xl">Font Style</h3><div className="grid grid-cols-2 gap-3">{[{name:'default',label:'Default',sample:'Aa',free:true},{name:'dyslexic',label:'Dyslexic-Friendly',sample:'Aa',free:true},{name:'serif',label:'Serif',sample:'Aa',free:false},{name:'mono',label:'Monospace',sample:'Aa',free:false}].map(font=><button key={font.name} onClick={()=>{if(!font.free&&!isPro){setShowCustomization(false);setShowPaywall(true);return}setFontFamily(font.name)}} className={`p-4 rounded-lg font-semibold transition-all relative ${fontFamily===font.name?'bg-white text-slate-800':'bg-white bg-opacity-20 text-white'} ${font.name==='serif'?'font-serif':font.name==='mono'?'font-mono':'font-sans'}`}><div className="text-3xl mb-1">{font.sample}</div>{font.label}{!font.free&&!isPro&&<span className="absolute top-2 right-2 text-xs bg-yellow-400 text-gray-900 px-1.5 py-0.5 rounded-full font-bold">PRO</span>}</button>)}</div></div></div><button onClick={()=>setShowCustomization(false)} className="w-full bg-white text-slate-800 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all mt-6">Done ✨</button></div></div>}
     
     {/* Calculator Modal */}
     {showCalculator&&<div className="fixed bottom-4 right-4 bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 shadow-2xl z-50 w-80"><div className="flex justify-between items-center mb-4"><h3 className="text-white font-bold text-lg">🧮 Calculator</h3><button onClick={()=>setShowCalculator(false)} className="text-white opacity-75 hover:opacity-100"><Icon name="x" className="w-6 h-6"/></button></div><div className="bg-black rounded-lg p-4 mb-4"><div className="text-white text-right text-3xl font-mono">{calcDisplay}</div></div><div className="grid grid-cols-4 gap-2">{['7','8','9','÷'].map(btn=><button key={btn} onClick={()=>['÷','×','-','+'].includes(btn)?calcOp(btn):calcNumber(btn)} className="bg-gray-700 hover:bg-gray-600 text-white text-xl font-bold py-4 rounded-lg transition-colors">{btn}</button>)}{['4','5','6','×'].map(btn=><button key={btn} onClick={()=>['÷','×','-','+'].includes(btn)?calcOp(btn):calcNumber(btn)} className="bg-gray-700 hover:bg-gray-600 text-white text-xl font-bold py-4 rounded-lg transition-colors">{btn}</button>)}{['1','2','3','-'].map(btn=><button key={btn} onClick={()=>['÷','×','-','+'].includes(btn)?calcOp(btn):calcNumber(btn)} className="bg-gray-700 hover:bg-gray-600 text-white text-xl font-bold py-4 rounded-lg transition-colors">{btn}</button>)}<button onClick={calcClear} className="bg-red-600 hover:bg-red-700 text-white text-xl font-bold py-4 rounded-lg transition-colors">C</button><button onClick={()=>calcNumber('0')} className="bg-gray-700 hover:bg-gray-600 text-white text-xl font-bold py-4 rounded-lg transition-colors">0</button><button onClick={calcEquals} className="bg-green-600 hover:bg-green-700 text-white text-xl font-bold py-4 rounded-lg transition-colors col-span-2">=</button>{['+'].map(btn=><button key={btn} onClick={()=>calcOp(btn)} className="hidden"></button>)}</div></div>}
@@ -4501,7 +4524,7 @@ return(
             <span className="text-2xl">👑</span>
             <div className="flex-1 text-left">
               <div className="text-gray-900 font-bold text-sm">Go Pro — Unlock everything</div>
-              <div className="text-gray-900 text-opacity-60 text-xs">Unlimited courses, deadlines, themes & analytics</div>
+              <div className="text-gray-900 text-opacity-60 text-xs">Unlimited courses, themes, full analytics & 5 free tokens/day</div>
             </div>
             <div className="text-gray-900 font-black">$5</div>
           </button>}
@@ -4527,8 +4550,10 @@ return(
           <div className="bg-white bg-opacity-5 rounded-xl p-3 border border-white border-opacity-10">
             <h3 className="text-white font-bold text-xs uppercase tracking-wide opacity-60 mb-2">Get Free Tokens</h3>
             <div className="space-y-1.5 text-xs">
+              <div className="flex items-center justify-between text-white text-opacity-80"><span>⏱️ Study 30 minutes</span><span className="text-yellow-400 font-bold">+1 🪙</span></div>
               <div className="flex items-center justify-between text-white text-opacity-80"><span>🤝 Refer a friend</span><span className="text-yellow-400 font-bold">+10 🪙 each</span></div>
               <div className="flex items-center justify-between text-white text-opacity-80"><span>🆕 Sign up bonus</span><span className="text-yellow-400 font-bold">+10 🪙</span></div>
+              {isPro&&<div className="flex items-center justify-between text-white text-opacity-80"><span>👑 Pro daily bonus</span><span className="text-yellow-400 font-bold">+5 🪙/day</span></div>}
             </div>
           </div>
 
