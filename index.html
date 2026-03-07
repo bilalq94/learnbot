@@ -114,10 +114,88 @@
       border: 1px solid #e5e7eb;
     }
 
-    /* Light mode: muted text colors flip to readable grays */
+    /* Light mode: dark gradient cards/sections → white cards
+       This catches from-slate-*, from-gray-* gradient backgrounds
+       EXCEPT inside modals (fixed inset-0 overlays) */
+    [data-theme="light"] .bg-gradient-to-br[class*="from-slate-"],
+    [data-theme="light"] .bg-gradient-to-br[class*="from-gray-"],
+    [data-theme="light"] .bg-gradient-to-r[class*="from-slate-"],
+    [data-theme="light"] .bg-gradient-to-r[class*="from-gray-"] {
+      background: #ffffff !important;
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
+      border: 1px solid #e5e7eb !important;
+    }
+    /* But keep modals dark */
+    [data-theme="light"] .fixed.inset-0 .bg-gradient-to-br[class*="from-slate-"],
+    [data-theme="light"] .fixed.inset-0 .bg-gradient-to-br[class*="from-gray-"],
+    [data-theme="light"] .fixed.inset-0 .bg-gradient-to-r[class*="from-slate-"],
+    [data-theme="light"] .fixed.inset-0 .bg-gradient-to-r[class*="from-gray-"] {
+      background: none !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    /* Light mode: dark solid backgrounds → light */
+    [data-theme="light"] .bg-gray-800 {
+      background-color: #f9fafb !important;
+      border: 1px solid #e5e7eb;
+    }
+    [data-theme="light"] .bg-gray-900 {
+      background-color: #f9fafb !important;
+    }
+    [data-theme="light"] .bg-slate-700,
+    [data-theme="light"] .bg-slate-800,
+    [data-theme="light"] .bg-slate-900 {
+      background-color: #f9fafb !important;
+    }
+    /* Keep dark bgs in modals */
+    [data-theme="light"] .fixed.inset-0 .bg-gray-800 {
+      background-color: rgb(31 41 55) !important;
+      border: none !important;
+    }
+    [data-theme="light"] .fixed.inset-0 .bg-gray-900 {
+      background-color: rgb(17 24 39) !important;
+    }
+    [data-theme="light"] .fixed.inset-0 .bg-slate-700 {
+      background-color: rgb(51 65 85) !important;
+    }
+    [data-theme="light"] .fixed.inset-0 .bg-slate-800 {
+      background-color: rgb(30 41 59) !important;
+    }
+    [data-theme="light"] .fixed.inset-0 .bg-slate-900 {
+      background-color: rgb(15 23 42) !important;
+    }
+    /* Keep white text in modals */
+    [data-theme="light"] .fixed.inset-0 .text-white {
+      color: #ffffff !important;
+    }
+    [data-theme="light"] .fixed.inset-0 .text-gray-300 {
+      color: rgb(209 213 219) !important;
+    }
+    [data-theme="light"] .fixed.inset-0 .text-gray-400 {
+      color: rgb(156 163 175) !important;
+    }
+    [data-theme="light"] .fixed.inset-0 .bg-white.bg-opacity-20,
+    [data-theme="light"] .fixed.inset-0 .bg-white.bg-opacity-10,
+    [data-theme="light"] .fixed.inset-0 .bg-white.bg-opacity-15 {
+      --tw-bg-opacity: 0.2 !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    /* Light mode: dark text helpers */
+    [data-theme="light"] .text-gray-300 { color: #4b5563 !important; }
     [data-theme="light"] .text-gray-400 { color: #6b7280 !important; }
     [data-theme="light"] .text-gray-500 { color: #6b7280 !important; }
     [data-theme="light"] .text-gray-600 { color: #4b5563 !important; }
+    [data-theme="light"] .text-gray-700 { color: #374151 !important; }
+    [data-theme="light"] .text-slate-100 { color: #1f2937 !important; }
+
+    /* Light mode: bg-opacity-30 used in progress bars etc */
+    [data-theme="light"] .bg-white.bg-opacity-30 {
+      background-color: #e5e7eb !important;
+      --tw-bg-opacity: 1 !important;
+    }
 
     /* Light mode scrollbar */
     [data-theme="light"] ::-webkit-scrollbar-thumb {
@@ -2880,15 +2958,15 @@ return(
     )}
     <div className="flex items-center justify-between mb-4 md:mb-6">
       <div className="flex items-center gap-2 md:gap-3">
-        <div className="w-10 h-10 md:w-12 md:h-12 bg-cyan-400 rounded-xl flex items-center justify-center"><span className="text-xl md:text-2xl">🤖</span></div>
+        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center bg-gradient-to-r ${getThemeColors().from} ${getThemeColors().to}`}><span className="text-xl md:text-2xl">🤖</span></div>
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-white">LearnBot <span className="text-[10px] md:text-xs bg-cyan-400 bg-opacity-30 text-cyan-300 px-1.5 py-0.5 rounded-full font-semibold align-middle">BETA</span></h1>
-          <p className="text-white opacity-70 text-xs md:text-sm">Hey {name}! {isPro&&<Icon name="crown" className="inline w-3 h-3 md:w-4 md:h-4 text-yellow-300"/>}</p>
+          <h1 className={`text-xl md:text-2xl font-bold ${getTextClass()}`}>LearnBot <span className={`text-[10px] md:text-xs ${getAccentColor()} bg-white bg-opacity-10 px-1.5 py-0.5 rounded-full font-semibold align-middle`}>BETA</span></h1>
+          <p className={`${themeMode==='dark'?'text-white opacity-70':'text-gray-500'} text-xs md:text-sm`}>Hey {name}! {isPro&&<Icon name="crown" className="inline w-3 h-3 md:w-4 md:h-4 text-yellow-300"/>}</p>
         </div>
       </div>
       <div className="flex items-center gap-2 md:gap-3">
         <button onClick={()=>setShowTokenShop(true)} className={`bg-gradient-to-r from-yellow-400 to-amber-500 px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg text-gray-900 text-xs md:text-sm font-bold flex items-center gap-1 hover:scale-105 transition-all ${tokenAnimation?'scale-110':''}`}><span>🪙</span>{learnTokens}</button>
-        <button onClick={()=>setShowMenu(true)} className="text-white opacity-80 hover:opacity-100 p-2">
+        <button onClick={()=>setShowMenu(true)} className={`${themeMode==='dark'?'text-white':'text-gray-600'} opacity-80 hover:opacity-100 p-2`}>
           <svg className="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/>
           </svg>
