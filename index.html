@@ -14,6 +14,115 @@
     /* Hide scrollbar on nav */
     .nav-scroll::-webkit-scrollbar { display: none; }
     .nav-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* ── Light Mode Overrides ────────────────────────────────── */
+    /* Glass cards → solid white cards with shadow */
+    [data-theme="light"] .bg-white.bg-opacity-20,
+    [data-theme="light"] .bg-white.bg-opacity-15,
+    [data-theme="light"] .bg-white.bg-opacity-10,
+    [data-theme="light"] .bg-white.bg-opacity-5 {
+      --tw-bg-opacity: 1 !important;
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+      border: 1px solid #e5e7eb;
+    }
+
+    /* White text → dark text in light mode */
+    [data-theme="light"] .text-white {
+      color: #1f2937 !important;
+    }
+    [data-theme="light"] .text-white.text-opacity-75 {
+      color: rgba(31, 41, 55, 0.7) !important;
+    }
+    [data-theme="light"] .text-white.text-opacity-90 {
+      color: rgba(31, 41, 55, 0.85) !important;
+    }
+    [data-theme="light"] .text-white.text-opacity-60 {
+      color: rgba(31, 41, 55, 0.55) !important;
+    }
+    [data-theme="light"] .text-white.text-opacity-50 {
+      color: rgba(31, 41, 55, 0.45) !important;
+    }
+
+    /* Keep white text on gradient backgrounds (buttons, badges, stat cards) */
+    [data-theme="light"] .bg-gradient-to-r .text-white,
+    [data-theme="light"] .bg-gradient-to-r.text-white,
+    [data-theme="light"] .bg-gradient-to-br .text-white,
+    [data-theme="light"] .bg-gradient-to-br.text-white,
+    [data-theme="light"] .bg-gradient-to-l .text-white,
+    [data-theme="light"] .bg-gradient-to-l.text-white {
+      color: #ffffff !important;
+    }
+    /* Keep white text on solid colored backgrounds */
+    [data-theme="light"] .bg-green-600 .text-white,
+    [data-theme="light"] .bg-red-600 .text-white,
+    [data-theme="light"] .bg-blue-600 .text-white,
+    [data-theme="light"] .bg-yellow-400 .text-white,
+    [data-theme="light"] [class*="bg-cyan-"] .text-white,
+    [data-theme="light"] [class*="bg-purple-"] .text-white,
+    [data-theme="light"] [class*="bg-indigo-"] .text-white,
+    [data-theme="light"] [class*="bg-emerald-"] .text-white,
+    [data-theme="light"] [class*="bg-teal-"] .text-white,
+    [data-theme="light"] [class*="bg-pink-"] .text-white,
+    [data-theme="light"] [class*="bg-orange-"] .text-white,
+    [data-theme="light"] [class*="bg-rose-"] .text-white {
+      color: #ffffff !important;
+    }
+
+    /* Light mode inputs */
+    [data-theme="light"] input.bg-white.bg-opacity-10,
+    [data-theme="light"] textarea.bg-white.bg-opacity-10,
+    [data-theme="light"] select.bg-white.bg-opacity-10 {
+      background: #ffffff !important;
+      border: 1px solid #d1d5db !important;
+      color: #1f2937 !important;
+    }
+    [data-theme="light"] input.bg-white.bg-opacity-20,
+    [data-theme="light"] textarea.bg-white.bg-opacity-20,
+    [data-theme="light"] select.bg-white.bg-opacity-20 {
+      background: #ffffff !important;
+      border: 1px solid #d1d5db !important;
+      color: #1f2937 !important;
+    }
+
+    /* Placeholder text in light mode */
+    [data-theme="light"] input::placeholder,
+    [data-theme="light"] textarea::placeholder {
+      color: #9ca3af !important;
+    }
+
+    /* Keep modals/overlays dark regardless of theme */
+    .fixed.inset-0 .bg-gradient-to-br[class*="from-slate"],
+    .fixed.inset-0 .bg-gradient-to-br[class*="from-gray"] {
+      /* Modals stay dark */
+    }
+
+    /* Light mode border adjustments */
+    [data-theme="light"] .border-white {
+      border-color: #e5e7eb !important;
+    }
+    [data-theme="light"] .border-white.border-opacity-10,
+    [data-theme="light"] .border-white.border-opacity-20 {
+      border-color: #e5e7eb !important;
+      --tw-border-opacity: 1 !important;
+    }
+
+    /* Light mode: bg-gray-800/900 used as content backgrounds → white */
+    [data-theme="light"] .bg-gray-900.bg-opacity-50,
+    [data-theme="light"] .bg-gray-800.bg-opacity-50 {
+      background: rgba(255,255,255,0.9) !important;
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08);
+      border: 1px solid #e5e7eb;
+    }
+
+    /* Light mode: muted text colors flip to readable grays */
+    [data-theme="light"] .text-gray-400 { color: #6b7280 !important; }
+    [data-theme="light"] .text-gray-500 { color: #6b7280 !important; }
+    [data-theme="light"] .text-gray-600 { color: #4b5563 !important; }
+
+    /* Light mode scrollbar */
+    [data-theme="light"] ::-webkit-scrollbar-thumb {
+      background: #d1d5db;
+    }
   </style>
 </head>
 <body>
@@ -874,7 +983,7 @@ if(!data.username){setShowUsernamePrompt(true)}else if(!data.onboardingCompleted
 
 async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,classrooms,isTeacher,teachingClasses,appMode,organizationId:organization?.id||null,isOrgAdmin,themeMode,colorTheme,fontFamily,learnTokens,referralCode,referralCount,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
 
-useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,skills,totalLevel,learnTokens,referralCount]);
+useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,skills,totalLevel,learnTokens,referralCount,themeMode,colorTheme,fontFamily]);
 
 // Load classroom data when classrooms change
 useEffect(() => {
@@ -2741,7 +2850,7 @@ function ClassroomDetail() {
 }
 
 return(
-<div className={`min-h-screen ${getBgClass()} ${getFontClass()} p-4 pb-20 md:pb-4`} onClick={()=>showMoreNav&&setShowMoreNav(false)}>
+<div data-theme={themeMode} className={`min-h-screen ${getBgClass()} ${getFontClass()} p-4 pb-20 md:pb-4`} onClick={()=>showMoreNav&&setShowMoreNav(false)}>
   <div className="max-w-4xl mx-auto">
     {!isPro&&(
       <div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 text-center py-3 px-4 rounded-xl mb-6 shadow-lg flex items-center justify-center gap-3 flex-wrap">
@@ -2800,7 +2909,7 @@ return(
     </div>}
 
     {/* Desktop Navigation - hidden on mobile */}
-    <div className="hidden md:flex gap-2 mb-6 bg-white bg-opacity-10 rounded-xl p-2 flex-wrap">
+    <div className={`hidden md:flex gap-2 mb-6 rounded-xl p-2 flex-wrap ${themeMode==='dark'?'bg-white bg-opacity-10':'bg-gray-100 border border-gray-200'}`}>
       {[
         {id:'dashboard',label:'Dashboard',icon:'📊'},
         {id:'timer',label:'Timer',icon:'⏱️'},
@@ -2811,11 +2920,11 @@ return(
         {id:'skills',label:userType==='professional'?'Skills':'Skills',icon:userType==='professional'?'💼':'⚔️'},
         {id:'leaderboard',label:'Ranks',icon:'🏆'},
         {id:'aicoach',label:'Ask LearnBot',icon:'🤖'},
-      ].map(t=><button key={t.id} onClick={()=>setTab(t.id)} className={`px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all ${tab===t.id?'bg-white text-gray-800 shadow-md':'text-white hover:bg-white hover:bg-opacity-10'}`}><span>{t.icon}</span>{t.label}</button>)}
+      ].map(t=><button key={t.id} onClick={()=>setTab(t.id)} className={`px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all ${tab===t.id?(themeMode==='dark'?'bg-white text-gray-800 shadow-md':'bg-white text-gray-800 shadow-md'):(themeMode==='dark'?'text-white hover:bg-white hover:bg-opacity-10':'text-gray-600 hover:bg-gray-200')}`}><span>{t.icon}</span>{t.label}</button>)}
     </div>
 
     {/* Mobile Bottom Navigation Bar - fixed at bottom, shown only on mobile */}
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-gray-900 bg-opacity-95 backdrop-blur-lg border-t border-white border-opacity-10 safe-area-bottom">
+    <div className={`md:hidden fixed bottom-0 left-0 right-0 z-40 backdrop-blur-lg border-t safe-area-bottom ${themeMode==='dark'?'bg-gray-900 bg-opacity-95 border-white border-opacity-10':'bg-white bg-opacity-95 border-gray-200'}`}>
       <div className="grid grid-cols-5 gap-0">
         {[
           {id:'dashboard',label:'Home',icon:'🏠'},
@@ -2826,14 +2935,14 @@ return(
         {/* More Menu */}
         <div className="relative">
           <button onClick={()=>setShowMoreNav(!showMoreNav)} className={`flex flex-col items-center py-2.5 px-1 w-full transition-all ${['stats','deadlines','sessions','skills','classroom','leaderboard'].includes(tab)?'text-cyan-400':'text-gray-400'}`}><span className="text-xl mb-0.5">☰</span><span className="text-[10px] font-semibold">More</span>{['stats','deadlines','sessions','skills','classroom','leaderboard'].includes(tab)&&<div className="w-1 h-1 rounded-full bg-cyan-400 mt-0.5"/>}</button>
-          {showMoreNav&&<div className="absolute bottom-full right-0 mb-2 bg-gray-800 rounded-xl shadow-2xl border border-white border-opacity-10 overflow-hidden w-48">
+          {showMoreNav&&<div className={`absolute bottom-full right-0 mb-2 rounded-xl shadow-2xl border overflow-hidden w-48 ${themeMode==='dark'?'bg-gray-800 border-white border-opacity-10':'bg-white border-gray-200'}`}>
             {[
               {id:'stats',label:'Stats',icon:'📈'},
               {id:'deadlines',label:'Deadlines',icon:'📅'},
               {id:'sessions',label:userType==='professional'?'History':'Sessions',icon:'🕐'},
               {id:'skills',label:'Skills',icon:userType==='professional'?'💼':'⚔️'},
               {id:'leaderboard',label:'Ranks',icon:'🏆'},
-            ].map(t=><button key={t.id} onClick={()=>{setTab(t.id);setShowMoreNav(false)}} className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all ${tab===t.id?'bg-cyan-500 bg-opacity-20 text-cyan-400':'text-gray-300 hover:bg-white hover:bg-opacity-5'}`}><span>{t.icon}</span>{t.label}</button>)}
+            ].map(t=><button key={t.id} onClick={()=>{setTab(t.id);setShowMoreNav(false)}} className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all ${tab===t.id?(themeMode==='dark'?'bg-cyan-500 bg-opacity-20 text-cyan-400':'bg-cyan-50 text-cyan-600'):(themeMode==='dark'?'text-gray-300 hover:bg-white hover:bg-opacity-5':'text-gray-600 hover:bg-gray-100')}`}><span>{t.icon}</span>{t.label}</button>)}
           </div>}
         </div>
       </div>
@@ -2844,9 +2953,9 @@ return(
     {tab==='dashboard'&&(
       <div className="space-y-4">
         {/* Hero Welcome + Stats Bar */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-slate-900 to-gray-950 border border-white border-opacity-10 p-5 md:p-6">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-500 rounded-full blur-[100px] opacity-10"/>
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500 rounded-full blur-[80px] opacity-10"/>
+        <div className={`relative overflow-hidden rounded-2xl border p-5 md:p-6 ${themeMode==='dark'?'bg-gradient-to-br from-gray-900 via-slate-900 to-gray-950 border-white border-opacity-10':'bg-white shadow-lg border-gray-200'}`}>
+          <div className={`absolute top-0 right-0 w-40 h-40 rounded-full blur-[100px] ${themeMode==='dark'?'bg-cyan-500 opacity-10':'bg-cyan-300 opacity-20'}`}/>
+          <div className={`absolute bottom-0 left-0 w-32 h-32 rounded-full blur-[80px] ${themeMode==='dark'?'bg-blue-500 opacity-10':'bg-blue-300 opacity-15'}`}/>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -2854,9 +2963,9 @@ return(
                 {goal&&<p className="text-cyan-400 text-sm mt-0.5">🎯 {goal}</p>}
               </div>
               <div className="flex items-center gap-2">
-                <div className="bg-white bg-opacity-5 border border-white border-opacity-10 rounded-xl px-3 py-1.5 text-center">
-                  <div className="text-yellow-400 text-lg font-black leading-none">{level}</div>
-                  <div className="text-[10px] text-gray-500 uppercase tracking-wider">LVL</div>
+                <div className={`rounded-xl px-3 py-1.5 text-center border ${themeMode==='dark'?'bg-white bg-opacity-5 border-white border-opacity-10':'bg-gray-50 border-gray-200'}`}>
+                  <div className={`text-lg font-black leading-none ${themeMode==='dark'?'text-yellow-400':'text-yellow-600'}`}>{level}</div>
+                  <div className={`text-[10px] uppercase tracking-wider ${themeMode==='dark'?'text-gray-500':'text-gray-400'}`}>LVL</div>
                 </div>
                 {tier>0&&<div className="text-2xl">{getTierBadge()}</div>}
               </div>
@@ -2865,10 +2974,10 @@ return(
             {/* XP Progress Bar */}
             <div className="mb-4">
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-gray-400">Level {level} Progress</span>
+                <span className={themeMode==='dark'?'text-gray-400':'text-gray-500'}>Level {level} Progress</span>
                 <span className="text-cyan-400 font-mono font-bold">{levelXp}/100 XP</span>
               </div>
-              <div className="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
+              <div className={`w-full rounded-full h-2 overflow-hidden ${themeMode==='dark'?'bg-gray-800':'bg-gray-200'}`}>
                 <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 transition-all duration-500 relative" style={{width:`${levelXp}%`}}>
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-pulse"/>
                 </div>
@@ -2877,22 +2986,17 @@ return(
 
             {/* Stats Row */}
             <div className="grid grid-cols-4 gap-2">
-              <div className="bg-white bg-opacity-5 rounded-lg p-2 text-center border border-white border-opacity-5">
-                <div className="text-orange-400 text-xl md:text-2xl font-black font-mono leading-none">{xp}</div>
-                <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Total XP</div>
-              </div>
-              <div className="bg-white bg-opacity-5 rounded-lg p-2 text-center border border-white border-opacity-5">
-                <div className="text-green-400 text-xl md:text-2xl font-black font-mono leading-none">{sessions.length}</div>
-                <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Sessions</div>
-              </div>
-              <div className="bg-white bg-opacity-5 rounded-lg p-2 text-center border border-white border-opacity-5">
-                <div className="text-yellow-400 text-xl md:text-2xl font-black font-mono leading-none">{learnTokens}</div>
-                <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Tokens</div>
-              </div>
-              <div className="bg-white bg-opacity-5 rounded-lg p-2 text-center border border-white border-opacity-5">
-                <div className="text-purple-400 text-xl md:text-2xl font-black font-mono leading-none">{courses.length}</div>
-                <div className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Courses</div>
-              </div>
+              {[
+                {value:xp,label:'Total XP',color:themeMode==='dark'?'text-orange-400':'text-orange-600'},
+                {value:sessions.length,label:'Sessions',color:themeMode==='dark'?'text-green-400':'text-green-600'},
+                {value:learnTokens,label:'Tokens',color:themeMode==='dark'?'text-yellow-400':'text-yellow-600'},
+                {value:courses.length,label:'Courses',color:themeMode==='dark'?'text-purple-400':'text-purple-600'}
+              ].map((s,i)=>
+                <div key={i} className={`rounded-lg p-2 text-center border ${themeMode==='dark'?'bg-white bg-opacity-5 border-white border-opacity-5':'bg-gray-50 border-gray-200'}`}>
+                  <div className={`${s.color} text-xl md:text-2xl font-black font-mono leading-none`}>{s.value}</div>
+                  <div className={`text-[10px] uppercase tracking-wider mt-0.5 ${themeMode==='dark'?'text-gray-500':'text-gray-400'}`}>{s.label}</div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -2900,14 +3004,14 @@ return(
         {/* Streak + Weekly Progress Side by Side */}
         <div className="grid md:grid-cols-2 gap-4">
           {/* Streak Card */}
-          <div className="relative overflow-hidden rounded-2xl border border-orange-500 border-opacity-20 bg-gradient-to-br from-gray-900 to-gray-950 p-5">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500 rounded-full blur-[60px] opacity-15"/>
+          <div className={`relative overflow-hidden rounded-2xl border p-5 ${themeMode==='dark'?'border-orange-500 border-opacity-20 bg-gradient-to-br from-gray-900 to-gray-950':'border-orange-200 bg-white shadow-lg'}`}>
+            <div className={`absolute top-0 right-0 w-24 h-24 bg-orange-500 rounded-full blur-[60px] ${themeMode==='dark'?'opacity-15':'opacity-10'}`}/>
             <style>{`@keyframes flamePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}.flame-pulse{animation:flamePulse 2s ease-in-out infinite}`}</style>
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <span className="text-2xl flame-pulse">🔥</span>
-                  <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">Streak</span>
+                  <span className={`text-sm font-bold uppercase tracking-wider ${themeMode==='dark'?'text-gray-400':'text-gray-500'}`}>Streak</span>
                 </div>
                 {longestStreak>0&&longestStreak>streak&&<span className="text-xs text-gray-600">Best: {longestStreak}d</span>}
               </div>
@@ -2917,9 +3021,9 @@ return(
               </div>
               <div className={`text-xs px-3 py-1.5 rounded-lg inline-block ${
                 lastStudyDate===new Date().toISOString().split('T')[0]
-                  ?'bg-green-500 bg-opacity-20 text-green-400 border border-green-500 border-opacity-20'
-                  :streak>0?'bg-yellow-500 bg-opacity-20 text-yellow-400 border border-yellow-500 border-opacity-20'
-                  :'bg-gray-800 text-gray-500 border border-gray-700'
+                  ?`bg-green-500 bg-opacity-20 border border-green-500 border-opacity-20 ${themeMode==='dark'?'text-green-400':'text-green-700'}`
+                  :streak>0?`bg-yellow-500 bg-opacity-20 border border-yellow-500 border-opacity-20 ${themeMode==='dark'?'text-yellow-400':'text-yellow-700'}`
+                  :themeMode==='dark'?'bg-gray-800 text-gray-500 border border-gray-700':'bg-gray-100 text-gray-500 border border-gray-300'
               }`}>
                 {streak===0?'Start a session to begin!':lastStudyDate===new Date().toISOString().split('T')[0]?'✅ Studied today':'⚡ Study today to keep it alive'}
               </div>
@@ -2932,13 +3036,13 @@ return(
           </div>
 
           {/* Weekly Progress Card */}
-          <div className="relative overflow-hidden rounded-2xl border border-cyan-500 border-opacity-20 bg-gradient-to-br from-gray-900 to-gray-950 p-5">
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-cyan-500 rounded-full blur-[60px] opacity-15"/>
+          <div className={`relative overflow-hidden rounded-2xl border p-5 ${themeMode==='dark'?'border-cyan-500 border-opacity-20 bg-gradient-to-br from-gray-900 to-gray-950':'border-cyan-200 bg-white shadow-lg'}`}>
+            <div className={`absolute bottom-0 left-0 w-24 h-24 bg-cyan-500 rounded-full blur-[60px] ${themeMode==='dark'?'opacity-15':'opacity-10'}`}/>
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <span className="text-lg">📊</span>
-                  <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">This Week</span>
+                  <span className={`text-sm font-bold uppercase tracking-wider ${themeMode==='dark'?'text-gray-400':'text-gray-500'}`}>This Week</span>
                 </div>
                 <span className="text-cyan-400 font-mono text-sm font-bold">{Math.round(getWeeklyHours())}h / {weeklyTarget}h</span>
               </div>
@@ -2967,7 +3071,7 @@ return(
                   return(
                     <div key={i} className="flex-1 text-center">
                       <div className="text-[10px] text-gray-600 mb-1">{day}</div>
-                      <div className={`h-5 rounded ${hasSession?'bg-cyan-500':'isToday'?'bg-gray-700 border border-gray-600':'bg-gray-800'} ${isToday&&!hasSession?'border border-cyan-500 border-opacity-40':''}`}/>
+                      <div className={`h-5 rounded ${hasSession?'bg-cyan-500':themeMode==='dark'?(isToday?'bg-gray-700 border border-gray-600':'bg-gray-800'):(isToday?'bg-gray-200 border border-gray-300':'bg-gray-100')} ${isToday&&!hasSession?'border border-cyan-500 border-opacity-40':''}`}/>
                     </div>
                   );
                 })}
@@ -3000,10 +3104,10 @@ return(
 
         {/* Upcoming Deadlines on Dashboard */}
         {deadlines.length>0&&(
-          <div className="bg-gray-900 bg-opacity-50 rounded-2xl p-4 md:p-5 border border-white border-opacity-5">
+          <div className={`rounded-2xl p-4 md:p-5 border ${themeMode==='dark'?'bg-gray-900 bg-opacity-50 border-white border-opacity-5':'bg-white shadow-md border-gray-200'}`}>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2"><span>📅</span> Upcoming</h3>
-              <button onClick={()=>setTab('deadlines')} className="text-cyan-400 text-xs font-bold hover:underline">View All →</button>
+              <h3 className={`text-sm font-bold uppercase tracking-wider flex items-center gap-2 ${themeMode==='dark'?'text-gray-400':'text-gray-500'}`}><span>📅</span> Upcoming</h3>
+              <button onClick={()=>setTab('deadlines')} className={`text-xs font-bold hover:underline ${themeMode==='dark'?'text-cyan-400':'text-cyan-600'}`}>View All →</button>
             </div>
             <div className="space-y-2">
               {deadlines
@@ -3037,8 +3141,8 @@ return(
         )}
 
         {/* Recent Activity */}
-        <div className="bg-gray-900 bg-opacity-50 rounded-2xl p-4 md:p-5 border border-white border-opacity-5">
-          <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2"><span>⚡</span> Recent Activity</h3>
+        <div className={`rounded-2xl p-4 md:p-5 border ${themeMode==='dark'?'bg-gray-900 bg-opacity-50 border-white border-opacity-5':'bg-white shadow-md border-gray-200'}`}>
+          <h3 className={`text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2 ${themeMode==='dark'?'text-gray-400':'text-gray-500'}`}><span>⚡</span> Recent Activity</h3>
           <div className="space-y-2">
             {sessions.length===0?<div className="text-center py-6"><div className="text-4xl mb-2 opacity-30">📚</div><p className="text-gray-600 text-xs">Complete your first session to see activity</p></div>:sessions.slice(-5).reverse().map((s,i)=><div key={i} className="flex items-center justify-between p-2.5 rounded-lg bg-white bg-opacity-5 border border-white border-opacity-5"><div className="flex items-center gap-2.5"><div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-600 to-blue-700 flex items-center justify-center text-white text-xs font-bold">{s.duration}m</div><div><div className="text-white font-semibold text-xs">{s.course}</div><div className="text-gray-500 text-[10px]">{s.date?new Date(s.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'Recent'}</div></div></div><span className="text-yellow-400 font-mono font-bold text-xs">+{s.xp} XP</span></div>)}
           </div>
