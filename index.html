@@ -2212,7 +2212,7 @@ if(view==='landing'){return(<div className={`min-h-screen ${getBgClass()}`}><sty
 <div className="relative overflow-hidden"><div className="absolute inset-0 opacity-20"><div className="absolute top-20 left-10 text-4xl float-anim" style={{animationDelay:'0s'}}>⚡</div><div className="absolute top-40 right-20 text-5xl float-anim" style={{animationDelay:'0.5s'}}>🏆</div><div className="absolute bottom-32 left-20 text-4xl float-anim" style={{animationDelay:'1s'}}>📚</div><div className="absolute bottom-20 right-10 text-5xl float-anim" style={{animationDelay:'1.5s'}}>🎯</div></div><div className="max-w-6xl mx-auto px-4 py-20 text-center relative z-10"><div className="text-7xl mb-6 fade-in float-anim">🤖</div><h1 className="text-6xl md:text-8xl font-black text-white mb-6 fade-in">LearnBot <span className="text-lg md:text-2xl bg-white bg-opacity-20 text-white px-3 py-1 rounded-full font-bold align-middle">BETA</span></h1><p className="text-3xl md:text-5xl font-bold text-white mb-4 fade-in">Turn Study Time into Game Time</p><p className="text-xl md:text-2xl text-white opacity-90 mb-8 fade-in max-w-3xl mx-auto">Level up your skills, compete with friends, and make studying addictive with gamification, AI tools, and real-time progress tracking.</p><button onClick={()=>{document.getElementById('signup-section').scrollIntoView({behavior:'smooth'})}} className="bg-white text-cyan-600 px-10 py-5 rounded-2xl font-black text-2xl hover:scale-110 transition-all shadow-2xl fade-in">Start Free →</button><p className="text-white text-sm mt-4 opacity-75 fade-in">No credit card required • Free forever</p></div></div>
 
 {/* Features Grid */}
-<div className="bg-white py-20"><div className="max-w-6xl mx-auto px-4"><h2 className="text-5xl font-black text-center mb-4">Everything You Need to Study Better</h2><p className="text-xl text-gray-600 text-center mb-16 max-w-3xl mx-auto">From Pomodoro timers to chess breaks, LearnBot has every tool you need to maximize focus and retention.</p><div className="grid md:grid-cols-3 gap-8">{[
+<div className="bg-white py-20"><div className="max-w-6xl mx-auto px-4"><h2 className="text-5xl font-black text-center mb-4">Everything You Need to Study Better</h2><p className="text-xl text-gray-600 text-center mb-16 max-w-3xl mx-auto">From Pomodoro timers to AI-powered quizzes, LearnBot has every tool you need to maximize focus and retention.</p><div className="grid md:grid-cols-3 gap-8">{[
 {icon:'🤖',title:'Ask LearnBot',desc:'Paste your notes → get instant quizzes, flashcards, summaries & explanations. Your AI study tutor.'},
 {icon:'⏱️',title:'Smart Timer',desc:'Pomodoro technique with automatic breaks. Study 25 min, rest 5 min. Perfect rhythm.'},
 {icon:'⚔️',title:'Skill System',desc:'RuneScape-style skills! Level up in Math, Science, Languages. Track your progress visually.'},
@@ -2246,7 +2246,7 @@ if(view==='landing'){return(<div className={`min-h-screen ${getBgClass()}`}><sty
 {num:'⏱️',label:'Pomodoro & Free Timers'},
 {num:'🧠',label:'AI Quizzes & Flashcards'},
 {num:'🏆',label:'XP, Streaks & Leaderboards'},
-{num:'♟️',label:'Chess, Lofi & Study Breaks'}
+{num:'🎵',label:'Lofi Music & Study Breaks'}
 ].map((s,i)=><div key={i}><div className="text-5xl font-black mb-2">{s.num}</div><div className="text-xl opacity-90">{s.label}</div></div>)}</div></div></div>
 
 {/* Pricing */}
