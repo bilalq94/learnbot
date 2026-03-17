@@ -4,3 +4,6 @@ node_modules/
 .env
 .vercel
 learnbotkey1.txt
+stripekey.txt
+*.json.bak
+learnbot-*-firebase-adminsdk-*.json
