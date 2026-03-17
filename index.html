@@ -872,9 +872,9 @@ if(data.organizationId){const orgDoc=await db.collection('organizations').doc(da
 
 if(!data.username){setShowUsernamePrompt(true)}else if(!data.onboardingCompleted){setShowOnboarding(true)}}}catch(err){console.error('Error loading user data:',err)}}
 
-async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,isPro,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,classrooms,isTeacher,teachingClasses,appMode,organizationId:organization?.id||null,isOrgAdmin,themeMode,colorTheme,fontFamily,learnTokens,referralCode,referralCount,trialStartDate:user.trialStartDate||new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
+async function saveUserData(){if(!user)return;try{const monday=getMonday();await db.collection('users').doc(user.uid).set({name,email:user.email,courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,weekStartDate:weekStartDate||monday,skills,totalLevel,classrooms,isTeacher,teachingClasses,appMode,organizationId:organization?.id||null,isOrgAdmin,themeMode,colorTheme,fontFamily,updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error('Error saving:',err)}}
 
-useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,isPro,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,skills,totalLevel,learnTokens,referralCount]);
+useEffect(()=>{if(user){saveUserData()}},[courses,sessions,deadlines,xp,goal,weeklyTarget,emailReminders,smsReminders,tier,streak,lastStudyDate,longestStreak,userType,username,weeklyMinutes,totalMinutes,skills,totalLevel]);
 
 // Load classroom data when classrooms change
 useEffect(() => {
